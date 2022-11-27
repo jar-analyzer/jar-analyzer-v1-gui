@@ -62,6 +62,10 @@ For example, We did not add the `rt.jar` of JDK in the situation. If you add it,
 
 ![](img/006.png)
 
+You can press `Ctrl+F` to search string in Java code.
+
+![](img/008.png)
+
 You can one-click to chose item, and then the item will show the method details.
 
 ![](img/004.png)
