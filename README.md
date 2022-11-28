@@ -3,6 +3,8 @@
 ![](https://img.shields.io/badge/build-JDK%208-orange)
 ![](https://img.shields.io/github/v/release/4ra1n/jar-analyzer)
 
+[中文文档](doc/README.md)
+
 ## Introduce
 
 A GUI project for analyzing `jar` files, especially suitable for code security analysis.
