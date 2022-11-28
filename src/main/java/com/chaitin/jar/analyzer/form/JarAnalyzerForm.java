@@ -241,7 +241,7 @@ public class JarAnalyzerForm {
             @Override
             public void mousePressed(MouseEvent evt) {
                 JList<?> list = (JList<?>) evt.getSource();
-                if (SwingUtilities.isRightMouseButton(evt)) {
+                if (SwingUtilities.isRightMouseButton(evt) || evt.isControlDown()) {
                     int index = list.locationToIndex(evt.getPoint());
                     ResObj res = (ResObj) list.getModel().getElementAt(index);
                     chainDataList.addElement(res);
@@ -273,7 +273,7 @@ public class JarAnalyzerForm {
             @Override
             public void mousePressed(MouseEvent evt) {
                 JList<?> list = (JList<?>) evt.getSource();
-                if (SwingUtilities.isRightMouseButton(evt)) {
+                if (SwingUtilities.isRightMouseButton(evt) || evt.isControlDown()) {
                     int index = list.locationToIndex(evt.getPoint());
                     ResObj res = (ResObj) list.getModel().getElementAt(index);
                     chainDataList.removeElement(res);
@@ -306,7 +306,7 @@ public class JarAnalyzerForm {
             @Override
             public void mousePressed(MouseEvent evt) {
                 JList<?> list = (JList<?>) evt.getSource();
-                if (SwingUtilities.isRightMouseButton(evt)) {
+                if (SwingUtilities.isRightMouseButton(evt) || evt.isControlDown()) {
                     int index = list.locationToIndex(evt.getPoint());
                     ResObj res = (ResObj) list.getModel().getElementAt(index);
                     chainDataList.addElement(res);
@@ -339,7 +339,7 @@ public class JarAnalyzerForm {
             @Override
             public void mousePressed(MouseEvent evt) {
                 JList<?> list = (JList<?>) evt.getSource();
-                if (SwingUtilities.isRightMouseButton(evt)) {
+                if (SwingUtilities.isRightMouseButton(evt) || evt.isControlDown()) {
                     int index = list.locationToIndex(evt.getPoint());
                     ResObj res = (ResObj) list.getModel().getElementAt(index);
                     chainDataList.addElement(res);
