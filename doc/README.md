@@ -109,7 +109,7 @@ Who call target: `Test` class `a` method
 
 Target call whom: `Test` class `c` method
 
-(2) 如果解决接口实现的问题：
+(2) 如何解决接口实现的问题：
 
 ```java
 class Demo{
@@ -145,7 +145,7 @@ class Test2Impl implements Test {
 - `Demo.demo -> Test.test`
 - `Test.test -> Test1Impl.test`/`Test.test -> Test2Impl.test`
 
-(3) 如果解决继承关系：
+(3) 如何解决继承关系：
 
 ```java
 class Zoo{
