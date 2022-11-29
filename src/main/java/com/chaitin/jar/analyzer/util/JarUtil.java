@@ -52,6 +52,19 @@ public class JarUtil {
                     Path fullPath = tmpDir.resolve(jarEntry.getName());
                     if (!jarEntry.isDirectory()) {
                         if (!jarEntry.getName().endsWith(".class")) {
+                            if (jarEntry.getName().endsWith(".jar")) {
+                                Path dirName = fullPath.getParent();
+                                if (!Files.exists(dirName)) {
+                                    Files.createDirectories(dirName);
+                                }
+                                try {
+                                    Files.createFile(fullPath);
+                                } catch (Exception ignored) {
+                                }
+                                OutputStream outputStream = Files.newOutputStream(fullPath);
+                                IOUtil.copy(jarInputStream, outputStream);
+                                doInternal(fullPath, tmpDir);
+                            }
                             continue;
                         }
                         Path dirName = fullPath.getParent();
@@ -76,6 +89,41 @@ public class JarUtil {
             }
         } catch (Exception e) {
             logger.error("error ", e);
+        }
+    }
+
+    private static void doInternal(Path jarPath, Path tmpDir) {
+        try {
+            InputStream is = Files.newInputStream(jarPath);
+            JarInputStream jarInputStream = new JarInputStream(is);
+            JarEntry jarEntry;
+            while ((jarEntry = jarInputStream.getNextJarEntry()) != null) {
+                Path fullPath = tmpDir.resolve(jarEntry.getName());
+                if (!jarEntry.isDirectory()) {
+                    if (!jarEntry.getName().endsWith(".class")) {
+                        continue;
+                    }
+                    Path dirName = fullPath.getParent();
+                    if (!Files.exists(dirName)) {
+                        Files.createDirectories(dirName);
+                    }
+                    OutputStream outputStream = Files.newOutputStream(fullPath);
+                    IOUtil.copy(jarInputStream, outputStream);
+                    ClassFile classFile = new ClassFile(jarEntry.getName(), fullPath);
+                    String splitStr;
+                    if (OSUtil.isWindows()) {
+                        splitStr = "\\\\";
+                    } else {
+                        splitStr = "/";
+                    }
+                    String[] splits = jarPath.toString().split(splitStr);
+                    classFile.jarName = splits[splits.length - 1];
+
+                    classFileSet.add(classFile);
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 }
