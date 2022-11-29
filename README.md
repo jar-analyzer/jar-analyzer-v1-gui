@@ -38,6 +38,8 @@ mvn package
 
 Please don't worry, the loading and building will take some seconds. 
 
+Notice: please wait until you see the total number of classes and method showing on the label.
+
 (2) Second Step: Input your search data.
 
 We support three format input:
