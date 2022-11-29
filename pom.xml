@@ -6,7 +6,7 @@
 
     <groupId>com.chaitin</groupId>
     <artifactId>jar-analyzer</artifactId>
-    <version>0.1-beta</version>
+    <version>0.2-beta</version>
 
     <properties>
         <asm.version>9.4</asm.version>
