@@ -28,7 +28,7 @@ mvn package
 
 ## Quick Start
 
-(1) 第一步：添加`jar`文件
+(1) 第一步：添加`jar`文件（支持单个`jar`文件和`jar`目录）
 - 点击按钮 `Select Jar File` 打开jar文件
 - 支持上传多个jar文件并且会在一起进行分析
 

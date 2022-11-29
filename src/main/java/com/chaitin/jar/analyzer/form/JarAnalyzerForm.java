@@ -16,7 +16,10 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
+import java.util.List;
 
 public class JarAnalyzerForm {
     private JButton startAnalysisButton;
@@ -61,14 +64,25 @@ public class JarAnalyzerForm {
     private void loadJar() {
         selectJarFileButton.addActionListener(e -> {
             JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
             int option = fileChooser.showOpenDialog(new JFrame());
             if (option == JFileChooser.APPROVE_OPTION) {
                 File file = fileChooser.getSelectedFile();
                 String absPath = file.getAbsolutePath();
                 totalJars++;
                 new Thread(() -> {
-                    classFileList.addAll(CoreUtil.getAllClassesFromJar(absPath));
+                    List<String> jarPathList = new ArrayList<>();
+                    if (Files.isDirectory(Paths.get(absPath))) {
+                        List<String> data = DirUtil.GetFiles(absPath);
+                        for(String d:data){
+                            if(d.endsWith(".jar")){
+                                jarPathList.add(d);
+                            }
+                        }
+                    }else{
+                        jarPathList.add(absPath);
+                    }
+                    classFileList.addAll(CoreUtil.getAllClassesFromJars(jarPathList));
                     System.out.println(classFileList.size());
                     Discovery.start(classFileList, discoveredClasses,
                             discoveredMethods, classMap, methodMap);

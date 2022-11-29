@@ -64,6 +64,7 @@ public class JarUtil {
                                 OutputStream outputStream = Files.newOutputStream(fullPath);
                                 IOUtil.copy(jarInputStream, outputStream);
                                 doInternal(fullPath, tmpDir);
+                                outputStream.close();
                             }
                             continue;
                         }
@@ -73,6 +74,7 @@ public class JarUtil {
                         }
                         OutputStream outputStream = Files.newOutputStream(fullPath);
                         IOUtil.copy(jarInputStream, outputStream);
+                        outputStream.close();
                         ClassFile classFile = new ClassFile(jarEntry.getName(), fullPath);
                         String splitStr;
                         if (OSUtil.isWindows()) {
@@ -86,6 +88,8 @@ public class JarUtil {
                         classFileSet.add(classFile);
                     }
                 }
+                is.close();
+                jarInputStream.close();
             }
         } catch (Exception e) {
             logger.error("error ", e);
@@ -109,6 +113,7 @@ public class JarUtil {
                     }
                     OutputStream outputStream = Files.newOutputStream(fullPath);
                     IOUtil.copy(jarInputStream, outputStream);
+                    outputStream.close();
                     ClassFile classFile = new ClassFile(jarEntry.getName(), fullPath);
                     String splitStr;
                     if (OSUtil.isWindows()) {
@@ -122,6 +127,8 @@ public class JarUtil {
                     classFileSet.add(classFile);
                 }
             }
+            is.close();
+            jarInputStream.close();
         } catch (Exception ex) {
             ex.printStackTrace();
         }

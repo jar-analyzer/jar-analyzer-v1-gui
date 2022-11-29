@@ -32,7 +32,7 @@ mvn package
 
 ## Quick Start
 
-(1) First Step: Add Jars file.
+(1) First Step: Add Jars file. (Support jar file and jars directory)
 - Open jar file with button `Select Jar File`.
 - Support to upload multiple Jar files which will be analyzed together.
 
