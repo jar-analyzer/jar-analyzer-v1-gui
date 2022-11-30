@@ -202,5 +202,4 @@ How to find `readObject` in mysql-connector
 
 ![](img/009.png)
 
-(3) We found that is autoDeserialize param is open, there is a deserialization vulnerability.
-
+(3) We found that if autoDeserialize param is open, there is a deserialization vulnerability.
