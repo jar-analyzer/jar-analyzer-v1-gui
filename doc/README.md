@@ -184,3 +184,15 @@ class Cat extends Animal {
 首先确保数据不会丢失，然后我们可以自行手动分析反编译的代码：
 - `Zoo.run -> Animal.eat`
 - `Animal.eat -> Dog.eat`/`Animal.eat -> Cat.eat`
+
+## 小练习
+
+如何找mysql-connector中的`readObject`方法
+
+(1) 从 https://mvnrepository.com/artifact/com.mysql/mysql-connector-j 下载jar
+
+(2) 打开jar-analyzer
+
+![](../img/009.png)
+
+(3) 我们发现如果开启了autoDeserialize参数，将会存在反序列化的漏洞

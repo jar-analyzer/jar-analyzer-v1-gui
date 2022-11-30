@@ -191,3 +191,16 @@ In this case, We added new rules: `Animal.eat -> Dog.eat` and `Animal.eat -> Cat
 Ensure no loss of results, then we can analyze it ourselves manually with automatically decompiled java code:
 - `Zoo.run -> Animal.eat`
 - `Animal.eat -> Dog.eat`/`Animal.eat -> Cat.eat`
+
+## Example
+
+How to find `readObject` in mysql-connector
+
+(1) Download jar from https://mvnrepository.com/artifact/com.mysql/mysql-connector-j
+
+(2) Open jar-analyzer
+
+![](img/009.png)
+
+(3) We found that is autoDeserialize param is open, there is a deserialization vulnerability.
+
