@@ -3,12 +3,15 @@ package com.chaitin.jar.analyzer.form;
 import com.chaitin.jar.analyzer.core.*;
 import com.chaitin.jar.analyzer.util.CoreUtil;
 import com.chaitin.jar.analyzer.util.DirUtil;
+import com.chaitin.jar.analyzer.util.OSUtil;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.strobel.decompiler.Decompiler;
 import com.strobel.decompiler.PlainTextOutput;
 import jsyntaxpane.syntaxkits.JavaSyntaxKit;
+import org.benf.cfr.reader.Main;
+import org.jetbrains.java.decompiler.main.decompiler.ConsoleDecompiler;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -17,6 +20,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.List;
@@ -48,12 +52,14 @@ public class JarAnalyzerForm {
     private JList<ResObj> chanList;
     private JPanel configPanel;
     private JScrollPane chanScroll;
-    private JLabel currentLabel;
+    private JTextField currentLabel;
     private JRadioButton procyonRadioButton;
     private JRadioButton cfrRadioButton;
     private JRadioButton quiltFlowerRadioButton;
     private JPanel opPanel;
     private JPanel dcPanel;
+    private JPanel curPanel;
+    private JLabel curLabel;
 
     public static Set<ClassFile> classFileList = new HashSet<>();
     private static final Set<ClassReference> discoveredClasses = new HashSet<>();
@@ -79,12 +85,12 @@ public class JarAnalyzerForm {
                     List<String> jarPathList = new ArrayList<>();
                     if (Files.isDirectory(Paths.get(absPath))) {
                         List<String> data = DirUtil.GetFiles(absPath);
-                        for(String d:data){
-                            if(d.endsWith(".jar")){
+                        for (String d : data) {
+                            if (d.endsWith(".jar")) {
                                 jarPathList.add(d);
                             }
                         }
-                    }else{
+                    } else {
                         jarPathList.add(absPath);
                     }
                     classFileList.addAll(CoreUtil.getAllClassesFromJars(jarPathList));
@@ -160,16 +166,66 @@ public class JarAnalyzerForm {
         BufferedWriter writer = new BufferedWriter(ows);
 
         String finalClassPath = classPath;
+
+        String[] temp;
+        if (OSUtil.isWindows()) {
+            temp = finalClassPath.split(File.separator + File.separator);
+        } else {
+            temp = finalClassPath.split(File.separator);
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < temp.length - 1; i++) {
+            sb.append(temp[i]);
+            sb.append(File.separator);
+        }
+        String javaDir = sb.toString();
+        String tempName = temp[temp.length - 1].split("\\.class")[0];
+        String javaPath = sb.append(tempName).append(".java").toString();
+        Path javaPathPath = Paths.get(javaPath);
+
         new Thread(() -> {
-            Decompiler.decompile(
-                    finalClassPath,
-                    new PlainTextOutput(writer));
-            try {
-                writer.flush();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            String total;
+            if (procyonRadioButton.isSelected()) {
+                Decompiler.decompile(
+                        finalClassPath,
+                        new PlainTextOutput(writer));
+                try {
+                    writer.flush();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                total = bao.toString();
+                total = "// Procyon \n" + total;
+            } else if (quiltFlowerRadioButton.isSelected()) {
+                String[] args = new String[]{
+                        finalClassPath,
+                        javaDir
+                };
+                ConsoleDecompiler.main(args);
+                try {
+                    total = new String(Files.readAllBytes(javaPathPath));
+                    total = "// QuiltFlower \n" + total;
+                    Files.delete(javaPathPath);
+                } catch (Exception ignored) {
+                    total = "";
+                }
+            } else if (cfrRadioButton.isSelected()) {
+                String[] args = new String[]{
+                        finalClassPath,
+                        "--outputpath",
+                        "temp"
+                };
+                Main.main(args);
+                try {
+                    total = new String(Files.readAllBytes(javaPathPath));
+                    Files.delete(javaPathPath);
+                } catch (Exception ignored) {
+                    total = "";
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Error!");
+                return;
             }
-            String total = bao.toString();
             editorPane.setText(total);
 
             String methodName = res.getMethod().getName();
@@ -186,7 +242,6 @@ public class JarAnalyzerForm {
                     }
                 }
             }
-
         }).start();
 
         JOptionPane.showMessageDialog(null, "Decompiling...");
@@ -213,7 +268,7 @@ public class JarAnalyzerForm {
             }
         }
 
-        currentLabel.setText(String.format("  Current: %s", res));
+        currentLabel.setText(res.toString());
         currentLabel.setToolTipText(res.getMethod().getDescStd());
 
         sourceList.setModel(sourceDataList);
@@ -222,6 +277,9 @@ public class JarAnalyzerForm {
 
     public JarAnalyzerForm() {
         DirUtil.removeDir(new File("temp"));
+
+        quiltFlowerRadioButton.setSelected(true);
+
         editorPane.setEditorKit(new JavaSyntaxKit());
         loadJar();
 
@@ -418,22 +476,42 @@ public class JarAnalyzerForm {
         topPanel.setLayout(new GridLayoutManager(1, 3, new Insets(0, 0, 0, 0), -1, -1));
         topPanel.setBackground(new Color(-725535));
         jarAnalyzerPanel.add(topPanel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        startAnalysisButton = new JButton();
-        startAnalysisButton.setText("Start Analysis");
-        topPanel.add(startAnalysisButton, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        allCleanButton = new JButton();
-        allCleanButton.setText("All Clean");
-        topPanel.add(allCleanButton, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        opPanel = new JPanel();
+        opPanel.setLayout(new GridLayoutManager(1, 3, new Insets(0, 0, 0, 0), -1, -1));
+        opPanel.setBackground(new Color(-725535));
+        topPanel.add(opPanel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         selectJarFileButton = new JButton();
         selectJarFileButton.setText("Select Jar File");
-        topPanel.add(selectJarFileButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        opPanel.add(selectJarFileButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        startAnalysisButton = new JButton();
+        startAnalysisButton.setText("Start Analysis");
+        opPanel.add(startAnalysisButton, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        allCleanButton = new JButton();
+        allCleanButton.setText("All Clean");
+        opPanel.add(allCleanButton, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        dcPanel = new JPanel();
+        dcPanel.setLayout(new GridLayoutManager(1, 3, new Insets(0, 0, 0, 0), -1, -1));
+        dcPanel.setBackground(new Color(-725535));
+        topPanel.add(dcPanel, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        procyonRadioButton = new JRadioButton();
+        procyonRadioButton.setBackground(new Color(-725535));
+        procyonRadioButton.setText("Procyon");
+        dcPanel.add(procyonRadioButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        cfrRadioButton = new JRadioButton();
+        cfrRadioButton.setBackground(new Color(-725535));
+        cfrRadioButton.setText("CFR");
+        dcPanel.add(cfrRadioButton, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        quiltFlowerRadioButton = new JRadioButton();
+        quiltFlowerRadioButton.setBackground(new Color(-725535));
+        quiltFlowerRadioButton.setText("QuiltFlower");
+        dcPanel.add(quiltFlowerRadioButton, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         editorPanel = new JPanel();
         editorPanel.setLayout(new GridLayoutManager(3, 2, new Insets(0, 0, 0, 0), -1, -1));
         editorPanel.setBackground(new Color(-725535));
         jarAnalyzerPanel.add(editorPanel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         editorScroll = new JScrollPane();
         editorScroll.setBackground(new Color(-725535));
-        editorPanel.add(editorScroll, new GridConstraints(0, 0, 2, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(600, 500), new Dimension(600, 500), new Dimension(600, 500), 0, false));
+        editorPanel.add(editorScroll, new GridConstraints(0, 0, 2, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(600, 500), new Dimension(600, 500), null, 0, false));
         editorScroll.setBorder(BorderFactory.createTitledBorder(null, "Decompile Java Code", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         editorPane = new JEditorPane();
         editorScroll.setViewportView(editorPane);
@@ -449,9 +527,16 @@ public class JarAnalyzerForm {
         callScroll.setBorder(BorderFactory.createTitledBorder(null, "Target Call Whom", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         callList = new JList();
         callScroll.setViewportView(callList);
-        currentLabel = new JLabel();
-        currentLabel.setText("");
-        editorPanel.add(currentLabel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        curPanel = new JPanel();
+        curPanel.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
+        curPanel.setBackground(new Color(-725535));
+        editorPanel.add(curPanel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        curLabel = new JLabel();
+        curLabel.setText("Current:");
+        curPanel.add(curLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        currentLabel = new JTextField();
+        currentLabel.setEditable(false);
+        curPanel.add(currentLabel, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         authorPanel = new JPanel();
         authorPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
         authorPanel.setBackground(new Color(-725535));
@@ -477,8 +562,9 @@ public class JarAnalyzerForm {
         jarInfoLabel.setText("   Jar Information:");
         configPanel.add(jarInfoLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         jarInfoResultText = new JTextField();
-        jarInfoResultText.setText("");
-        configPanel.add(jarInfoResultText, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        jarInfoResultText.setEditable(false);
+        jarInfoResultText.setEnabled(true);
+        configPanel.add(jarInfoResultText, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         resultPane = new JPanel();
         resultPane.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
         resultPane.setBackground(new Color(-725535));
@@ -497,6 +583,11 @@ public class JarAnalyzerForm {
         final DefaultListModel defaultListModel1 = new DefaultListModel();
         chanList.setModel(defaultListModel1);
         chanScroll.setViewportView(chanList);
+        ButtonGroup buttonGroup;
+        buttonGroup = new ButtonGroup();
+        buttonGroup.add(procyonRadioButton);
+        buttonGroup.add(cfrRadioButton);
+        buttonGroup.add(quiltFlowerRadioButton);
     }
 
     /**
@@ -505,4 +596,5 @@ public class JarAnalyzerForm {
     public JComponent $$$getRootComponent$$$() {
         return jarAnalyzerPanel;
     }
+
 }
