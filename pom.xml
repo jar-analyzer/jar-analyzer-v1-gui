@@ -10,8 +10,8 @@
 
     <properties>
         <asm.version>9.4</asm.version>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -20,6 +20,11 @@
             <id>local</id>
             <name>local</name>
             <url>file://${basedir}/lib</url>
+        </repository>
+        <repository>
+            <id>quiltm</id>
+            <name>quiltm</name>
+            <url>https://maven.quiltmc.org/repository/release</url>
         </repository>
     </repositories>
 
@@ -68,6 +73,16 @@
             <groupId>org.bitbucket.mstrobel</groupId>
             <artifactId>procyon-expressions</artifactId>
             <version>0.6.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.benf</groupId>
+            <artifactId>cfr</artifactId>
+            <version>0.152</version>
+        </dependency>
+        <dependency>
+            <groupId>org.quiltmc</groupId>
+            <artifactId>quiltflower</artifactId>
+            <version>1.9.0</version>
         </dependency>
         <dependency>
             <groupId>com.chaitin.jar</groupId>
