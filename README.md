@@ -1,6 +1,7 @@
 # Jar Analyzer
 ![](https://img.shields.io/badge/build-passing-brightgreen)
 ![](https://img.shields.io/badge/build-JDK%2011-orange)
+![](https://img.shields.io/github/downloads/4ra1n/jar-analyzer/total)
 ![](https://img.shields.io/github/v/release/4ra1n/jar-analyzer)
 
 [中文文档](doc/README.md)
