@@ -14,7 +14,12 @@ Others:
 
 ## 0.3-beta
 
-Congratulates, I make some meaningful updates.
+## 0.3-beta
+
+Congratulates, I make some meaningful updates. Please note, run this on Java 11-17, other versions not support, 
+and I had not test this on Mac OS and Linux, if you found a bug, please report a issue, much thanks. 
+(In fact, I can chose a lower version of QuiltFlower so that this can run under Java 8, 
+but I wonder if it's worth it, is there many Java 8 users?)
 
 Support 3 ways to decompile class file:
 - QuiltFlower (FernFlower)
