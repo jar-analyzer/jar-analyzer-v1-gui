@@ -10,6 +10,7 @@ import java.nio.file.Path;
 public class Application {
     public static void main(String[] args) {
         try {
+            // --add-opens=java.desktop/sun.awt.shell=ALL-UNNAMED
             Path outLogPath = new File("jar-analyzer-out.log").toPath();
             Path errLogPath = new File("jar-analyzer-err.log").toPath();
             System.setOut(new PrintStream(Files.newOutputStream(outLogPath)));

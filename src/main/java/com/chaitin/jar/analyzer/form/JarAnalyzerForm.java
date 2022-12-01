@@ -218,7 +218,6 @@ public class JarAnalyzerForm {
     public JarAnalyzerForm() {
         DirUtil.removeDir(new File("temp"));
         editorPane.setEditorKit(new JavaSyntaxKit());
-        loadFont();
         loadJar();
 
         allCleanButton.addActionListener(e -> {
@@ -381,18 +380,6 @@ public class JarAnalyzerForm {
                 }
             }
         });
-    }
-
-    private void loadFont() {
-        try {
-            Font customFont = Font.createFont(Font.TRUETYPE_FONT,
-                    Objects.requireNonNull(JarAnalyzerForm.class.getClassLoader()
-                            .getResourceAsStream("Consolas.ttf")));
-            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            ge.registerFont(customFont);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
     }
 
     public static void start() {
