@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 
-public class InheritanceUtil {
+public class Inheritance {
     public static InheritanceMap derive(Map<ClassReference.Handle, ClassReference> classMap) {
         Map<ClassReference.Handle, Set<ClassReference.Handle>> implicitInheritance = new HashMap<>();
         for (ClassReference classReference : classMap.values()) {

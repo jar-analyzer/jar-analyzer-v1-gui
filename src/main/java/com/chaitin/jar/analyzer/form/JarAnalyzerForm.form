@@ -20,30 +20,81 @@
         </properties>
         <border type="none"/>
         <children>
-          <component id="f0cfe" class="javax.swing.JButton" binding="startAnalysisButton" default-binding="true">
+          <grid id="e194" binding="opPanel" layout-manager="GridLayoutManager" row-count="1" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
-              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="Start Analysis"/>
+              <background color="-725535"/>
             </properties>
-          </component>
-          <component id="992f5" class="javax.swing.JButton" binding="allCleanButton" default-binding="true">
+            <border type="none"/>
+            <children>
+              <component id="4d23" class="javax.swing.JButton" binding="selectJarFileButton" default-binding="true">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Select Jar File"/>
+                </properties>
+              </component>
+              <component id="f0cfe" class="javax.swing.JButton" binding="startAnalysisButton" default-binding="true">
+                <constraints>
+                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Start Analysis"/>
+                </properties>
+              </component>
+              <component id="992f5" class="javax.swing.JButton" binding="allCleanButton" default-binding="true">
+                <constraints>
+                  <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="All Clean"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+          <grid id="f56c6" binding="dcPanel" layout-manager="GridLayoutManager" row-count="1" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
-              <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="All Clean"/>
+              <background color="-725535"/>
             </properties>
-          </component>
-          <component id="4d23" class="javax.swing.JButton" binding="selectJarFileButton" default-binding="true">
-            <constraints>
-              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <text value="Select Jar File"/>
-            </properties>
-          </component>
+            <border type="none"/>
+            <children>
+              <component id="3f599" class="javax.swing.JRadioButton" binding="procyonRadioButton" default-binding="true">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <background color="-725535"/>
+                  <text value="Procyon"/>
+                </properties>
+              </component>
+              <component id="2f618" class="javax.swing.JRadioButton" binding="cfrRadioButton">
+                <constraints>
+                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <background color="-725535"/>
+                  <text value="CFR"/>
+                </properties>
+              </component>
+              <component id="55583" class="javax.swing.JRadioButton" binding="quiltFlowerRadioButton" default-binding="true">
+                <constraints>
+                  <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <background color="-725535"/>
+                  <text value="QuiltFlower"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
         </children>
       </grid>
       <grid id="7b9e" binding="editorPanel" layout-manager="GridLayoutManager" row-count="3" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
@@ -61,7 +112,6 @@
               <grid row="0" column="0" row-span="2" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
                 <minimum-size width="600" height="500"/>
                 <preferred-size width="600" height="500"/>
-                <maximum-size width="600" height="500"/>
               </grid>
             </constraints>
             <properties>
@@ -189,12 +239,15 @@
               <text value="   Jar Information:"/>
             </properties>
           </component>
-          <component id="a4be9" class="javax.swing.JLabel" binding="jarInfoResultText">
+          <component id="f44" class="javax.swing.JTextField" binding="jarInfoResultText">
             <constraints>
-              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
             </constraints>
             <properties>
-              <text value=""/>
+              <editable value="false"/>
+              <enabled value="false"/>
             </properties>
           </component>
         </children>
@@ -249,4 +302,11 @@
       </grid>
     </children>
   </grid>
+  <buttonGroups>
+    <group name="dc">
+      <member id="3f599"/>
+      <member id="2f618"/>
+      <member id="55583"/>
+    </group>
+  </buttonGroups>
 </form>

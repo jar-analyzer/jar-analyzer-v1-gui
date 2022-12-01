@@ -40,7 +40,7 @@ public class JarAnalyzerForm {
     private JLabel methodLabel;
     private JLabel classLabel;
     private JLabel jarInfoLabel;
-    private JLabel jarInfoResultText;
+    private JTextField jarInfoResultText;
     private JScrollPane sourceScroll;
     private JList<ResObj> sourceList;
     private JList<ResObj> callList;
@@ -49,6 +49,11 @@ public class JarAnalyzerForm {
     private JPanel configPanel;
     private JScrollPane chanScroll;
     private JLabel currentLabel;
+    private JRadioButton procyonRadioButton;
+    private JRadioButton cfrRadioButton;
+    private JRadioButton quiltFlowerRadioButton;
+    private JPanel opPanel;
+    private JPanel dcPanel;
 
     public static Set<ClassFile> classFileList = new HashSet<>();
     private static final Set<ClassReference> discoveredClasses = new HashSet<>();
@@ -91,9 +96,9 @@ public class JarAnalyzerForm {
                             totalJars, discoveredClasses.size(), discoveredMethods.size()
                     ));
                     MethodCall.start(classFileList, methodCalls);
-                    inheritanceMap = InheritanceUtil.derive(classMap);
+                    inheritanceMap = Inheritance.derive(classMap);
                     Map<MethodReference.Handle, Set<MethodReference.Handle>> implMap =
-                            InheritanceUtil.getAllMethodImplementations(inheritanceMap, methodMap);
+                            Inheritance.getAllMethodImplementations(inheritanceMap, methodMap);
                     for (Map.Entry<MethodReference.Handle, Set<MethodReference.Handle>> entry :
                             implMap.entrySet()) {
                         MethodReference.Handle k = entry.getKey();
@@ -471,7 +476,7 @@ public class JarAnalyzerForm {
         jarInfoLabel = new JLabel();
         jarInfoLabel.setText("   Jar Information:");
         configPanel.add(jarInfoLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        jarInfoResultText = new JLabel();
+        jarInfoResultText = new JTextField();
         jarInfoResultText.setText("");
         configPanel.add(jarInfoResultText, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         resultPane = new JPanel();

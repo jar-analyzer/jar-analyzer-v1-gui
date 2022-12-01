@@ -5,7 +5,8 @@ import org.jetbrains.java.decompiler.main.decompiler.ConsoleDecompiler;
 public class QuiltFlowerTest {
     public static void main(String[] a) {
         String[] args = new String[]{
-                "Application.class"
+                "Application.class",
+                "temp/test.java"
         };
         ConsoleDecompiler.main(args);
     }
