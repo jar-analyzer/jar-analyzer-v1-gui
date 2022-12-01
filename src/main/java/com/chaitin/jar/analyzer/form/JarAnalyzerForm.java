@@ -60,6 +60,8 @@ public class JarAnalyzerForm {
     private JPanel dcPanel;
     private JPanel curPanel;
     private JLabel curLabel;
+    private JLabel progressLabel;
+    private JProgressBar progress;
 
     public static Set<ClassFile> classFileList = new HashSet<>();
     private static final Set<ClassReference> discoveredClasses = new HashSet<>();
@@ -81,6 +83,7 @@ public class JarAnalyzerForm {
                 File file = fileChooser.getSelectedFile();
                 String absPath = file.getAbsolutePath();
                 totalJars++;
+                progress.setValue(0);
                 new Thread(() -> {
                     List<String> jarPathList = new ArrayList<>();
                     if (Files.isDirectory(Paths.get(absPath))) {
@@ -93,7 +96,9 @@ public class JarAnalyzerForm {
                     } else {
                         jarPathList.add(absPath);
                     }
+                    progress.setValue(20);
                     classFileList.addAll(CoreUtil.getAllClassesFromJars(jarPathList));
+                    progress.setValue(50);
                     System.out.println(classFileList.size());
                     Discovery.start(classFileList, discoveredClasses,
                             discoveredMethods, classMap, methodMap);
@@ -101,6 +106,7 @@ public class JarAnalyzerForm {
                             "total jars: %d   total classes: %s   total methods: %s",
                             totalJars, discoveredClasses.size(), discoveredMethods.size()
                     ));
+                    progress.setValue(80);
                     MethodCall.start(classFileList, methodCalls);
                     inheritanceMap = Inheritance.derive(classMap);
                     Map<MethodReference.Handle, Set<MethodReference.Handle>> implMap =
@@ -112,8 +118,8 @@ public class JarAnalyzerForm {
                         HashSet<MethodReference.Handle> calls = methodCalls.get(k);
                         calls.addAll(v);
                     }
+                    progress.setValue(100);
                 }).start();
-                JOptionPane.showMessageDialog(null, "Analyzing...");
             }
         });
 
@@ -502,7 +508,7 @@ public class JarAnalyzerForm {
         dcPanel = new JPanel();
         dcPanel.setLayout(new GridLayoutManager(1, 3, new Insets(0, 0, 0, 0), -1, -1));
         dcPanel.setBackground(new Color(-725535));
-        topPanel.add(dcPanel, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        topPanel.add(dcPanel, new GridConstraints(0, 1, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         procyonRadioButton = new JRadioButton();
         procyonRadioButton.setBackground(new Color(-725535));
         procyonRadioButton.setText("Procyon");
@@ -555,26 +561,37 @@ public class JarAnalyzerForm {
         authorLabel.setText("Author: 4ra1n (github.com/4ra1n) from Chaitin Tech");
         authorPanel.add(authorLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_NORTH, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         configPanel = new JPanel();
-        configPanel.setLayout(new GridLayoutManager(3, 4, new Insets(0, 0, 0, 0), -1, -1));
+        configPanel.setLayout(new GridLayoutManager(4, 4, new Insets(0, 0, 0, 0), -1, -1));
         configPanel.setBackground(new Color(-725535));
         jarAnalyzerPanel.add(configPanel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         methodLabel = new JLabel();
         methodLabel.setText("   Input Target Method:");
-        configPanel.add(methodLabel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        configPanel.add(methodLabel, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         methodText = new JTextField();
-        configPanel.add(methodText, new GridConstraints(2, 1, 1, 3, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        configPanel.add(methodText, new GridConstraints(3, 1, 1, 3, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         classLabel = new JLabel();
         classLabel.setText("   Input Target Class:");
-        configPanel.add(classLabel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        configPanel.add(classLabel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         classText = new JTextField();
-        configPanel.add(classText, new GridConstraints(1, 1, 1, 3, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        configPanel.add(classText, new GridConstraints(2, 1, 1, 3, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         jarInfoLabel = new JLabel();
         jarInfoLabel.setText("   Jar Information:");
-        configPanel.add(jarInfoLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        configPanel.add(jarInfoLabel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         jarInfoResultText = new JTextField();
         jarInfoResultText.setEditable(false);
         jarInfoResultText.setEnabled(true);
-        configPanel.add(jarInfoResultText, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        configPanel.add(jarInfoResultText, new GridConstraints(1, 1, 1, 3, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        progressLabel = new JLabel();
+        progressLabel.setText("   Load Jar Progress:");
+        configPanel.add(progressLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        progress = new JProgressBar();
+        progress.setBackground(new Color(-725535));
+        progress.setForeground(new Color(-9524737));
+        progress.setString("");
+        progress.setStringPainted(true);
+        progress.setToolTipText("");
+        progress.setValue(0);
+        configPanel.add(progress, new GridConstraints(0, 1, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         resultPane = new JPanel();
         resultPane.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
         resultPane.setBackground(new Color(-725535));
