@@ -13,6 +13,8 @@ Support decompile of class files, automatically build call relationships between
 help experienced Java code analysts improve efficiency.
 For detailed use of this tool, refer to Quick Start.
 
+[go to download](https://github.com/4ra1n/jar-analyzer/releases/latest)
+
 ![](img/010.png)
 
 Core Module:

@@ -9,6 +9,8 @@
 支持反编译字节码并自动构建类和方法之间的关系，帮助Java安全研究员更高效地工作。
 更多细节在 Quick Start中。
 
+[前往下载](https://github.com/4ra1n/jar-analyzer/releases/latest)
+
 ![](../img/010.png)
 
 核心模块:
