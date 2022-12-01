@@ -1,6 +1,6 @@
 # Jar Analyzer
 ![](https://img.shields.io/badge/build-passing-brightgreen)
-![](https://img.shields.io/badge/build-JDK%208-orange)
+![](https://img.shields.io/badge/build-JDK%2011-orange)
 ![](https://img.shields.io/github/v/release/4ra1n/jar-analyzer)
 
 [中文文档](doc/README.md)
@@ -13,12 +13,19 @@ Support decompile of class files, automatically build call relationships between
 help experienced Java code analysts improve efficiency.
 For detailed use of this tool, refer to Quick Start.
 
-![](img/000.png)
+![](img/010.png)
 
 Core Module:
 - Java Decompiler API: https://github.com/mstrobel/procyon
+- Java Decompiler API: https://github.com/QuiltMC/quiltflower (recommend)
+- Java Decompiler API: https://github.com/leibnitz27/cfr
 - Flat Look and Feel UI: https://github.com/JFormDesigner/FlatLaf
 - JSyntaxPane: https://code.google.com/archive/p/jsyntaxpane
+
+Support 3 API to decompile:
+- QuiltFlower (FernFlower)
+- Procyon
+- CFR
 
 We use customized JSyntaxPane (not official) to show Java code.
 
@@ -31,6 +38,9 @@ mvn package
 ```
 
 ## Quick Start
+
+Important: Please use Java 11-17 to run this, because the decompiler API need high version Java.
+
 
 (1) First Step: Add Jars file. (Support jar file and jars directory)
 - Open jar file with button `Select Jar File`.

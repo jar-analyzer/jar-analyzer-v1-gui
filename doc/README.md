@@ -1,6 +1,6 @@
 # Jar Analyzer
 ![](https://img.shields.io/badge/build-passing-brightgreen)
-![](https://img.shields.io/badge/build-JDK%208-orange)
+![](https://img.shields.io/badge/build-JDK%2011-orange)
 ![](https://img.shields.io/github/v/release/4ra1n/jar-analyzer)
 
 ## 介绍
@@ -9,12 +9,19 @@
 支持反编译字节码并自动构建类和方法之间的关系，帮助Java安全研究员更高效地工作。
 更多细节在 Quick Start中。
 
-![](../img/000.png)
+![](../img/010.png)
 
 核心模块:
 - 反编译的API: https://github.com/mstrobel/procyon
+- 反编译的API: https://github.com/QuiltMC/quiltflower (推荐)
+- 反编译的API: ttps://github.com/leibnitz27/cfr
 - IDEA同款UI: https://github.com/JFormDesigner/FlatLaf
 - JSyntaxPane: https://code.google.com/archive/p/jsyntaxpane
+
+支持选择三项反编译方式：
+- QuiltFlower (FernFlower)
+- Procyon
+- CFR
 
 我们使用类定制化的`JSyntaxPane`组件（非官方）来展示`Java`代码
 
@@ -27,6 +34,8 @@ mvn package
 ```
 
 ## Quick Start
+
+重要：请使用Java 11-17运行，因为一些反编译的API要求高版本Java
 
 (1) 第一步：添加`jar`文件（支持单个`jar`文件和`jar`目录）
 - 点击按钮 `Select Jar File` 打开jar文件
