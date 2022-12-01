@@ -11,3 +11,11 @@ Bugs:
 Others:
 - [new feature] jars in jar file situation #1
 - [new feature] allow user input a jar directory #3
+
+## 0.3-beta
+
+Important:
+- Add CFR and QuiltFlower decompilers #8
+
+Bugs:
+- [bug] code panel cannot resize #10
