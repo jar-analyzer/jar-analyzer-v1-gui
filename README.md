@@ -202,7 +202,7 @@ Ensure no loss of results, then we can analyze it ourselves manually with automa
 - `Zoo.run -> Animal.eat`
 - `Animal.eat -> Dog.eat`/`Animal.eat -> Cat.eat`
 
-## Example
+## Easy Example
 
 How to find `readObject` in mysql-connector
 
@@ -213,3 +213,29 @@ How to find `readObject` in mysql-connector
 ![](img/009.png)
 
 (3) We found that if autoDeserialize param is open, there is a deserialization vulnerability.
+
+## Advance Example
+
+How to analyze CVE-2020-9484?
+
+Download Apache Tomcat 8.5.50: https://archive.apache.org/dist/tomcat/tomcat-8/v8.5.50/bin/apache-tomcat-8.5.50.zip
+
+(1) Open jar-analyzer, select Tomcat lib dir:
+
+![](img/012.png)
+
+(2) Search ObjectInputStream readObject method:
+
+![](img/013.png)
+
+Double-Click Who all Target to find the caller.
+
+(3) Continue to double-click to find the next caller:
+
+![](img/014.png)
+
+(4) We can find the vulnerability sink:
+
+![](img/015.png)
+
+(5) Have fun!

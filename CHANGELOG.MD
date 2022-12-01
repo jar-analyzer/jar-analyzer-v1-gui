@@ -16,6 +16,7 @@ Others:
 
 Important:
 - Add CFR and QuiltFlower decompilers #8
+- [docs] add a more complex example case #9
 
 Bugs:
 - [bug] code panel cannot resize #10

@@ -205,3 +205,29 @@ class Cat extends Animal {
 ![](../img/009.png)
 
 (3) 我们发现如果开启了autoDeserialize参数，将会存在反序列化的漏洞
+
+## 进阶练习
+
+如何分析 CVE-2020-9484?
+
+下载 Apache Tomcat 8.5.50: https://archive.apache.org/dist/tomcat/tomcat-8/v8.5.50/bin/apache-tomcat-8.5.50.zip
+
+(1) 打开 jar-analyzer, 选择Tomcat的lib目录:
+
+![](../img/012.png)
+
+(2) 搜索 ObjectInputStream readObject 方法:
+
+![](../img/013.png)
+
+双击 Who all Target 找到调用者
+
+(3) 继续双击找到下一个调用者：
+
+![](../img/014.png)
+
+(4) 我们找到了漏洞触发点：
+
+![](../img/015.png)
+
+(5) 继续探索吧！
