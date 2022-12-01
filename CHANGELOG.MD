@@ -20,3 +20,6 @@ Important:
 
 Bugs:
 - [bug] code panel cannot resize #10
+
+Others:
+- [new feature] allow use null class name and search all methods #7

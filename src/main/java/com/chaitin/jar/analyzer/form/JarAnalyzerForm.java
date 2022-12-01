@@ -120,7 +120,13 @@ public class JarAnalyzerForm {
         startAnalysisButton.addActionListener(e -> {
             DefaultListModel<ResObj> searchList = new DefaultListModel<>();
 
-            String className = classText.getText().replace(".", "/").trim();
+            String inputClass = classText.getText();
+            String className;
+            if (inputClass != null && !inputClass.trim().equals("")) {
+                className = inputClass.trim().replace(".", "/").trim();
+            } else {
+                className = "ALL";
+            }
             String shortClassName;
             if (className.contains("/")) {
                 String[] temp = className.split("/");
@@ -139,7 +145,11 @@ public class JarAnalyzerForm {
                     String c = h.getClassReference().getName();
                     String[] st = c.split("/");
                     String s = st[st.length - 1];
-                    if (c.equals(className) || s.equals(shortClassName)) {
+                    if (className.equals("ALL")) {
+                        if (h.getName().equals(methodName)) {
+                            searchList.addElement(new ResObj(k, k.getClassReference().getName()));
+                        }
+                    } else if (c.equals(className) || s.equals(shortClassName)) {
                         if (h.getName().equals(methodName)) {
                             searchList.addElement(new ResObj(k, k.getClassReference().getName()));
                         }
