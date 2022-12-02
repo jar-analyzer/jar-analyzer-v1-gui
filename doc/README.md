@@ -12,12 +12,12 @@
 
 [前往下载](https://github.com/4ra1n/jar-analyzer/releases/latest)
 
-![](../img/010.png)
+![](../img/016.png)
 
 核心模块:
-- 反编译的API: https://github.com/mstrobel/procyon
-- 反编译的API: https://github.com/QuiltMC/quiltflower (推荐)
-- 反编译的API: https://github.com/leibnitz27/cfr
+- procyon: https://github.com/mstrobel/procyon
+- quilt flower: https://github.com/QuiltMC/quiltflower (推荐)
+- cfr: https://github.com/leibnitz27/cfr
 - IDEA同款UI: https://github.com/JFormDesigner/FlatLaf
 - JSyntaxPane: https://code.google.com/archive/p/jsyntaxpane
 

@@ -16,12 +16,12 @@ For detailed use of this tool, refer to Quick Start.
 
 [go to download](https://github.com/4ra1n/jar-analyzer/releases/latest)
 
-![](img/010.png)
+![](img/016.png)
 
 Core Module:
-- Java Decompiler API: https://github.com/mstrobel/procyon
-- Java Decompiler API: https://github.com/QuiltMC/quiltflower (recommend)
-- Java Decompiler API: https://github.com/leibnitz27/cfr
+- procyon: https://github.com/mstrobel/procyon
+- quilt flower: https://github.com/QuiltMC/quiltflower (recommend)
+- cfr: https://github.com/leibnitz27/cfr
 - Flat Look and Feel UI: https://github.com/JFormDesigner/FlatLaf
 - JSyntaxPane: https://code.google.com/archive/p/jsyntaxpane
 

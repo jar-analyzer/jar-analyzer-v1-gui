@@ -57,3 +57,12 @@ Important:
 Others:
 - use quilt flower 1.8.1 to support Java 8 #15
 - remove unnecessary dependencies to reduce jar file size
+
+## 0.5-beta
+
+Important:
+- [important] [feat] add a new panel to show your decompile history #13
+- [important] [feat] add a panel to show sub classes and super classes #11
+
+Others:
+- use quilt flower 1.8.1 to support Java 8 #15 (support 8 and 11)
