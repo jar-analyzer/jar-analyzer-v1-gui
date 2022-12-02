@@ -27,6 +27,38 @@ import java.util.*;
 import java.util.List;
 
 public class JarAnalyzerForm {
+
+    private class ListMouseAdapter extends MouseAdapter {
+        public void mousePressed(MouseEvent evt) {
+            JList<?> list = (JList<?>) evt.getSource();
+            if (SwingUtilities.isRightMouseButton(evt) || evt.isControlDown()) {
+                int index = list.locationToIndex(evt.getPoint());
+                ResObj res = (ResObj) list.getModel().getElementAt(index);
+                chainDataList.addElement(res);
+                chanList.setModel(chainDataList);
+            }
+        }
+
+        public void mouseClicked(MouseEvent evt) {
+            JList<?> list = (JList<?>) evt.getSource();
+            if (evt.getClickCount() == 1) {
+                JList<?> l = (JList<?>) evt.getSource();
+                ListModel<?> m = l.getModel();
+                int index = l.locationToIndex(evt.getPoint());
+                if (index > -1) {
+                    ResObj res = (ResObj) m.getElementAt(index);
+                    l.setToolTipText(res.getMethod().getDescStd());
+
+                    ToolTipManager.sharedInstance().mouseMoved(
+                            new MouseEvent(l, 0, 0, 0,
+                                    evt.getX(), evt.getY(), 0, false));
+                }
+            } else if (evt.getClickCount() == 2) {
+                core(evt, list);
+            }
+        }
+    }
+
     private JButton startAnalysisButton;
     private JButton allCleanButton;
     private JPanel jarAnalyzerPanel;
@@ -67,10 +99,8 @@ public class JarAnalyzerForm {
     private JTabbedPane classInfoPanel;
     private JScrollPane subScroll;
     private JScrollPane superScroll;
-    private JScrollPane implScroll;
     private JList<ResObj> subList;
     private JList<ResObj> superList;
-    private JList<ResObj> implList;
 
     public static Set<ClassFile> classFileList = new HashSet<>();
     private static final Set<ClassReference> discoveredClasses = new HashSet<>();
@@ -286,6 +316,8 @@ public class JarAnalyzerForm {
 
         DefaultListModel<ResObj> sourceDataList = new DefaultListModel<>();
         DefaultListModel<ResObj> callDataList = new DefaultListModel<>();
+        DefaultListModel<ResObj> subDataList = new DefaultListModel<>();
+        DefaultListModel<ResObj> superDataList = new DefaultListModel<>();
 
         MethodReference.Handle handle = res.getMethod();
         HashSet<MethodReference.Handle> callMh = methodCalls.get(handle);
@@ -306,11 +338,31 @@ public class JarAnalyzerForm {
             }
         }
 
+        Set<ClassReference.Handle> subClasses = inheritanceMap.getSubClasses(handle.getClassReference());
+        if (subClasses != null && subClasses.size() != 0) {
+            for (ClassReference.Handle c : subClasses) {
+                MethodReference.Handle h = new MethodReference.Handle(c, handle.getName(), handle.getDesc());
+                ResObj resObj = new ResObj(h, c.getName());
+                subDataList.addElement(resObj);
+            }
+        }
+
+        Set<ClassReference.Handle> superClasses = inheritanceMap.getSuperClasses(handle.getClassReference());
+        if (superClasses != null && superClasses.size() != 0) {
+            for (ClassReference.Handle c : superClasses) {
+                MethodReference.Handle h = new MethodReference.Handle(c, handle.getName(), handle.getDesc());
+                ResObj resObj = new ResObj(h, c.getName());
+                superDataList.addElement(resObj);
+            }
+        }
+
         currentLabel.setText(res.toString());
         currentLabel.setToolTipText(res.getMethod().getDescStd());
 
         sourceList.setModel(sourceDataList);
         callList.setModel(callDataList);
+        subList.setModel(subDataList);
+        superList.setModel(superDataList);
     }
 
     public JarAnalyzerForm() {
@@ -351,37 +403,11 @@ public class JarAnalyzerForm {
         ToolTipManager.sharedInstance().setDismissDelay(10000);
         ToolTipManager.sharedInstance().setInitialDelay(300);
 
-        resultList.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent evt) {
-                JList<?> list = (JList<?>) evt.getSource();
-                if (SwingUtilities.isRightMouseButton(evt) || evt.isControlDown()) {
-                    int index = list.locationToIndex(evt.getPoint());
-                    ResObj res = (ResObj) list.getModel().getElementAt(index);
-                    chainDataList.addElement(res);
-                    chanList.setModel(chainDataList);
-                }
-            }
-
-            public void mouseClicked(MouseEvent evt) {
-                JList<?> list = (JList<?>) evt.getSource();
-                if (evt.getClickCount() == 1) {
-                    JList<?> l = (JList<?>) evt.getSource();
-                    ListModel<?> m = l.getModel();
-                    int index = l.locationToIndex(evt.getPoint());
-                    if (index > -1) {
-                        ResObj res = (ResObj) m.getElementAt(index);
-                        l.setToolTipText(res.getMethod().getDescStd());
-
-                        ToolTipManager.sharedInstance().mouseMoved(
-                                new MouseEvent(l, 0, 0, 0,
-                                        evt.getX(), evt.getY(), 0, false));
-                    }
-                } else if (evt.getClickCount() == 2) {
-                    core(evt, list);
-                }
-            }
-        });
+        resultList.addMouseListener(new ListMouseAdapter());
+        callList.addMouseListener(new ListMouseAdapter());
+        sourceList.addMouseListener(new ListMouseAdapter());
+        subList.addMouseListener(new ListMouseAdapter());
+        superList.addMouseListener(new ListMouseAdapter());
 
         chanList.addMouseListener(new MouseAdapter() {
             @Override
@@ -391,72 +417,6 @@ public class JarAnalyzerForm {
                     int index = list.locationToIndex(evt.getPoint());
                     ResObj res = (ResObj) list.getModel().getElementAt(index);
                     chainDataList.removeElement(res);
-                    chanList.setModel(chainDataList);
-                }
-            }
-
-            @Override
-            public void mouseClicked(MouseEvent evt) {
-                JList<?> list = (JList<?>) evt.getSource();
-                if (evt.getClickCount() == 1) {
-                    JList<?> l = (JList<?>) evt.getSource();
-                    ListModel<?> m = l.getModel();
-                    int index = l.locationToIndex(evt.getPoint());
-                    if (index > -1) {
-                        ResObj res = (ResObj) m.getElementAt(index);
-                        l.setToolTipText(res.getMethod().getDescStd());
-
-                        ToolTipManager.sharedInstance().mouseMoved(
-                                new MouseEvent(l, 0, 0, 0,
-                                        evt.getX(), evt.getY(), 0, false));
-                    }
-                } else if (evt.getClickCount() == 2) {
-                    core(evt, list);
-                }
-            }
-        });
-
-        callList.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent evt) {
-                JList<?> list = (JList<?>) evt.getSource();
-                if (SwingUtilities.isRightMouseButton(evt) || evt.isControlDown()) {
-                    int index = list.locationToIndex(evt.getPoint());
-                    ResObj res = (ResObj) list.getModel().getElementAt(index);
-                    chainDataList.addElement(res);
-                    chanList.setModel(chainDataList);
-                }
-            }
-
-            @Override
-            public void mouseClicked(MouseEvent evt) {
-                JList<?> list = (JList<?>) evt.getSource();
-                if (evt.getClickCount() == 1) {
-                    JList<?> l = (JList<?>) evt.getSource();
-                    ListModel<?> m = l.getModel();
-                    int index = l.locationToIndex(evt.getPoint());
-                    if (index > -1) {
-                        ResObj res = (ResObj) m.getElementAt(index);
-                        l.setToolTipText(res.getMethod().getDescStd());
-
-                        ToolTipManager.sharedInstance().mouseMoved(
-                                new MouseEvent(l, 0, 0, 0,
-                                        evt.getX(), evt.getY(), 0, false));
-                    }
-                } else if (evt.getClickCount() == 2) {
-                    core(evt, list);
-                }
-            }
-        });
-
-        sourceList.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent evt) {
-                JList<?> list = (JList<?>) evt.getSource();
-                if (SwingUtilities.isRightMouseButton(evt) || evt.isControlDown()) {
-                    int index = list.locationToIndex(evt.getPoint());
-                    ResObj res = (ResObj) list.getModel().getElementAt(index);
-                    chainDataList.addElement(res);
                     chanList.setModel(chainDataList);
                 }
             }
@@ -593,11 +553,6 @@ public class JarAnalyzerForm {
         classInfoPanel.addTab("All Superclasses", superScroll);
         superList = new JList();
         superScroll.setViewportView(superList);
-        implScroll = new JScrollPane();
-        implScroll.setBackground(new Color(-528927));
-        classInfoPanel.addTab("All Implements", implScroll);
-        implList = new JList();
-        implScroll.setViewportView(implList);
         authorPanel = new JPanel();
         authorPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
         authorPanel.setBackground(new Color(-725535));

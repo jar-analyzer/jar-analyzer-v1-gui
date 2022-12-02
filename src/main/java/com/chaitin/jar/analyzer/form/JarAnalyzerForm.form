@@ -241,21 +241,6 @@
                   </component>
                 </children>
               </scrollpane>
-              <scrollpane id="a06b7" binding="implScroll">
-                <constraints>
-                  <tabbedpane title="All Implements"/>
-                </constraints>
-                <properties>
-                  <background color="-528927"/>
-                </properties>
-                <border type="none"/>
-                <children>
-                  <component id="cce61" class="javax.swing.JList" binding="implList">
-                    <constraints/>
-                    <properties/>
-                  </component>
-                </children>
-              </scrollpane>
             </children>
           </tabbedpane>
         </children>
