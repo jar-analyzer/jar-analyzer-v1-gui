@@ -1,5 +1,6 @@
-package com.chaitin.jar.analyzer.core;
+package com.chaitin.jar.analyzer.model;
 
+import com.chaitin.jar.analyzer.core.MethodReference;
 import org.objectweb.asm.Type;
 
 public class ResObj {

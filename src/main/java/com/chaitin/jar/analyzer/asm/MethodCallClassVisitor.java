@@ -1,5 +1,6 @@
-package com.chaitin.jar.analyzer.core;
+package com.chaitin.jar.analyzer.asm;
 
+import com.chaitin.jar.analyzer.core.MethodReference;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
@@ -13,7 +14,7 @@ public class MethodCallClassVisitor extends ClassVisitor {
 
     private final HashMap<MethodReference.Handle, HashSet<MethodReference.Handle>> methodCalls;
 
-    protected MethodCallClassVisitor(HashMap<MethodReference.Handle,
+    public MethodCallClassVisitor(HashMap<MethodReference.Handle,
             HashSet<MethodReference.Handle>> methodCalls) {
         super(Opcodes.ASM9);
         this.methodCalls = methodCalls;

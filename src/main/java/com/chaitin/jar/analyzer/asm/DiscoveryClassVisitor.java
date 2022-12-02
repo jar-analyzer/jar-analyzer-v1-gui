@@ -1,6 +1,8 @@
-package com.chaitin.jar.analyzer.core;
+package com.chaitin.jar.analyzer.asm;
 
 
+import com.chaitin.jar.analyzer.core.ClassReference;
+import com.chaitin.jar.analyzer.core.MethodReference;
 import org.objectweb.asm.*;
 
 import java.util.*;

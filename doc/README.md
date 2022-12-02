@@ -1,8 +1,9 @@
 # Jar Analyzer
 ![](https://img.shields.io/badge/build-passing-brightgreen)
-![](https://img.shields.io/badge/build-JDK%2011-orange)
+![](https://img.shields.io/badge/build-Java%208-orange)
 ![](https://img.shields.io/github/downloads/4ra1n/jar-analyzer/total)
 ![](https://img.shields.io/github/v/release/4ra1n/jar-analyzer)
+![](https://img.shields.io/badge/Java%20Code%20Lines-1513-orange)
 
 ## 介绍
 

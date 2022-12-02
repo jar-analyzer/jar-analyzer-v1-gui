@@ -1,4 +1,6 @@
-package com.chaitin.jar.analyzer.core;
+package com.chaitin.jar.analyzer.model;
+
+import com.chaitin.jar.analyzer.core.ClassReference;
 
 public class ClassObj {
     private final String className;

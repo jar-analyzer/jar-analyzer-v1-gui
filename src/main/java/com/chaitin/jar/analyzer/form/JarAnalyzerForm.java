@@ -1,6 +1,8 @@
 package com.chaitin.jar.analyzer.form;
 
 import com.chaitin.jar.analyzer.core.*;
+import com.chaitin.jar.analyzer.model.ClassObj;
+import com.chaitin.jar.analyzer.model.ResObj;
 import com.chaitin.jar.analyzer.util.CoreUtil;
 import com.chaitin.jar.analyzer.util.DirUtil;
 import com.chaitin.jar.analyzer.util.OSUtil;

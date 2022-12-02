@@ -1,5 +1,6 @@
 package com.chaitin.jar.analyzer.core;
 
+import com.chaitin.jar.analyzer.asm.DiscoveryClassVisitor;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.objectweb.asm.ClassReader;
