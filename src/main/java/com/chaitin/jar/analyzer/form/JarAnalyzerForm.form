@@ -3,7 +3,7 @@
   <grid id="27dc6" binding="jarAnalyzerPanel" layout-manager="GridLayoutManager" row-count="5" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
-      <xy x="20" y="20" width="1297" height="1078"/>
+      <xy x="20" y="20" width="1357" height="1078"/>
     </constraints>
     <properties>
       <background color="-725535"/>
@@ -97,7 +97,7 @@
           </grid>
         </children>
       </grid>
-      <grid id="7b9e" binding="editorPanel" layout-manager="GridLayoutManager" row-count="3" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+      <grid id="7b9e" binding="editorPanel" layout-manager="GridLayoutManager" row-count="4" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="0" left="0" bottom="0" right="0"/>
         <constraints>
           <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -109,7 +109,7 @@
         <children>
           <scrollpane id="3b6ee" binding="editorScroll">
             <constraints>
-              <grid row="0" column="0" row-span="2" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
+              <grid row="0" column="0" row-span="3" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
                 <minimum-size width="600" height="400"/>
                 <preferred-size width="600" height="500"/>
               </grid>
@@ -125,44 +125,10 @@
               </component>
             </children>
           </scrollpane>
-          <scrollpane id="332b8" binding="sourceScroll">
-            <constraints>
-              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                <minimum-size width="600" height="-1"/>
-              </grid>
-            </constraints>
-            <properties>
-              <background color="-725535"/>
-            </properties>
-            <border type="none" title="Who Call Target"/>
-            <children>
-              <component id="86ea4" class="javax.swing.JList" binding="sourceList">
-                <constraints/>
-                <properties/>
-              </component>
-            </children>
-          </scrollpane>
-          <scrollpane id="ed73f" binding="callScroll">
-            <constraints>
-              <grid row="1" column="1" row-span="2" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                <minimum-size width="600" height="-1"/>
-              </grid>
-            </constraints>
-            <properties>
-              <background color="-725535"/>
-            </properties>
-            <border type="none" title="Target Call Whom"/>
-            <children>
-              <component id="c31e7" class="javax.swing.JList" binding="callList">
-                <constraints/>
-                <properties/>
-              </component>
-            </children>
-          </scrollpane>
           <grid id="8649b" binding="curPanel" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
-              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <grid row="3" column="0" row-span="1" col-span="2" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <background color="-725535"/>
@@ -189,6 +155,109 @@
               </component>
             </children>
           </grid>
+          <tabbedpane id="bbddd" binding="callPanel">
+            <constraints>
+              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                <minimum-size width="600" height="-1"/>
+              </grid>
+            </constraints>
+            <properties>
+              <background color="-528927"/>
+              <foreground color="-16777216"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <scrollpane id="332b8" binding="sourceScroll">
+                <constraints>
+                  <tabbedpane title="Who Call Target"/>
+                </constraints>
+                <properties>
+                  <background color="-725535"/>
+                </properties>
+                <border type="none" title=""/>
+                <children>
+                  <component id="86ea4" class="javax.swing.JList" binding="sourceList">
+                    <constraints/>
+                    <properties/>
+                  </component>
+                </children>
+              </scrollpane>
+              <scrollpane id="ed73f" binding="callScroll">
+                <constraints>
+                  <tabbedpane title="Target Call Whom"/>
+                </constraints>
+                <properties>
+                  <background color="-725535"/>
+                </properties>
+                <border type="none" title=""/>
+                <children>
+                  <component id="c31e7" class="javax.swing.JList" binding="callList">
+                    <constraints/>
+                    <properties/>
+                  </component>
+                </children>
+              </scrollpane>
+            </children>
+          </tabbedpane>
+          <tabbedpane id="fd8a4" binding="classInfoPanel">
+            <constraints>
+              <grid row="1" column="1" row-span="2" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                <preferred-size width="200" height="200"/>
+              </grid>
+            </constraints>
+            <properties>
+              <background color="-528927"/>
+              <foreground color="-16777216"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <scrollpane id="1ca1b" binding="subScroll">
+                <constraints>
+                  <tabbedpane title="All Subclasses"/>
+                </constraints>
+                <properties>
+                  <background color="-528927"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <component id="6e049" class="javax.swing.JList" binding="subList">
+                    <constraints/>
+                    <properties/>
+                  </component>
+                </children>
+              </scrollpane>
+              <scrollpane id="2653a" binding="superScroll">
+                <constraints>
+                  <tabbedpane title="All Superclasses"/>
+                </constraints>
+                <properties>
+                  <background color="-528927"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <component id="7166c" class="javax.swing.JList" binding="superList">
+                    <constraints/>
+                    <properties/>
+                  </component>
+                </children>
+              </scrollpane>
+              <scrollpane id="a06b7" binding="implScroll">
+                <constraints>
+                  <tabbedpane title="All Implements"/>
+                </constraints>
+                <properties>
+                  <background color="-528927"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <component id="cce61" class="javax.swing.JList" binding="implList">
+                    <constraints/>
+                    <properties/>
+                  </component>
+                </children>
+              </scrollpane>
+            </children>
+          </tabbedpane>
         </children>
       </grid>
       <grid id="1097c" binding="authorPanel" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">

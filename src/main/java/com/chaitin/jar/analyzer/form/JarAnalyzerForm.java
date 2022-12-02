@@ -63,6 +63,14 @@ public class JarAnalyzerForm {
     private JLabel curLabel;
     private JLabel progressLabel;
     private JProgressBar progress;
+    private JTabbedPane callPanel;
+    private JTabbedPane classInfoPanel;
+    private JScrollPane subScroll;
+    private JScrollPane superScroll;
+    private JScrollPane implScroll;
+    private JList<ResObj> subList;
+    private JList<ResObj> superList;
+    private JList<ResObj> implList;
 
     public static Set<ClassFile> classFileList = new HashSet<>();
     private static final Set<ClassReference> discoveredClasses = new HashSet<>();
@@ -257,16 +265,16 @@ public class JarAnalyzerForm {
                     int paramNum = Type.getMethodType(
                             res.getMethod().getDesc()).getArgumentTypes().length;
                     int curNum = 1;
-                    for(int j=i+methodName.length();;j++){
-                        if(total.charAt(j)==')'){
-                            if(total.charAt(j-1)=='('){
+                    for (int j = i + methodName.length(); ; j++) {
+                        if (total.charAt(j) == ')') {
+                            if (total.charAt(j - 1) == '(') {
                                 curNum = 0;
                             }
-                            if(curNum==paramNum){
+                            if (curNum == paramNum) {
                                 editorPane.setCaretPosition(i);
                             }
                             break;
-                        }else if (total.charAt(j)==','){
+                        } else if (total.charAt(j) == ',') {
                             curNum++;
                         }
                     }
@@ -536,37 +544,60 @@ public class JarAnalyzerForm {
         quiltFlowerRadioButton.setText("QuiltFlower");
         dcPanel.add(quiltFlowerRadioButton, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         editorPanel = new JPanel();
-        editorPanel.setLayout(new GridLayoutManager(3, 2, new Insets(0, 0, 0, 0), -1, -1));
+        editorPanel.setLayout(new GridLayoutManager(4, 2, new Insets(0, 0, 0, 0), -1, -1));
         editorPanel.setBackground(new Color(-725535));
         jarAnalyzerPanel.add(editorPanel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         editorScroll = new JScrollPane();
         editorScroll.setBackground(new Color(-725535));
-        editorPanel.add(editorScroll, new GridConstraints(0, 0, 2, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(600, 500), new Dimension(600, 500), null, 0, false));
+        editorPanel.add(editorScroll, new GridConstraints(0, 0, 3, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(600, 400), new Dimension(600, 500), null, 0, false));
         editorScroll.setBorder(BorderFactory.createTitledBorder(null, "Decompile Java Code", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         editorPane = new JEditorPane();
         editorScroll.setViewportView(editorPane);
-        sourceScroll = new JScrollPane();
-        sourceScroll.setBackground(new Color(-725535));
-        editorPanel.add(sourceScroll, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(600, -1), null, null, 0, false));
-        sourceScroll.setBorder(BorderFactory.createTitledBorder(null, "Who Call Target", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        sourceList = new JList();
-        sourceScroll.setViewportView(sourceList);
-        callScroll = new JScrollPane();
-        callScroll.setBackground(new Color(-725535));
-        editorPanel.add(callScroll, new GridConstraints(1, 1, 2, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(600, -1), null, null, 0, false));
-        callScroll.setBorder(BorderFactory.createTitledBorder(null, "Target Call Whom", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        callList = new JList();
-        callScroll.setViewportView(callList);
         curPanel = new JPanel();
         curPanel.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
         curPanel.setBackground(new Color(-725535));
-        editorPanel.add(curPanel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        editorPanel.add(curPanel, new GridConstraints(3, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         curLabel = new JLabel();
         curLabel.setText("Current:");
         curPanel.add(curLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         currentLabel = new JTextField();
         currentLabel.setEditable(false);
         curPanel.add(currentLabel, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        callPanel = new JTabbedPane();
+        callPanel.setBackground(new Color(-528927));
+        callPanel.setForeground(new Color(-16777216));
+        editorPanel.add(callPanel, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, new Dimension(600, -1), null, null, 0, false));
+        sourceScroll = new JScrollPane();
+        sourceScroll.setBackground(new Color(-725535));
+        callPanel.addTab("Who Call Target", sourceScroll);
+        sourceScroll.setBorder(BorderFactory.createTitledBorder(null, "", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        sourceList = new JList();
+        sourceScroll.setViewportView(sourceList);
+        callScroll = new JScrollPane();
+        callScroll.setBackground(new Color(-725535));
+        callPanel.addTab("Target Call Whom", callScroll);
+        callScroll.setBorder(BorderFactory.createTitledBorder(null, "", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        callList = new JList();
+        callScroll.setViewportView(callList);
+        classInfoPanel = new JTabbedPane();
+        classInfoPanel.setBackground(new Color(-528927));
+        classInfoPanel.setForeground(new Color(-16777216));
+        editorPanel.add(classInfoPanel, new GridConstraints(1, 1, 2, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, new Dimension(200, 200), null, 0, false));
+        subScroll = new JScrollPane();
+        subScroll.setBackground(new Color(-528927));
+        classInfoPanel.addTab("All Subclasses", subScroll);
+        subList = new JList();
+        subScroll.setViewportView(subList);
+        superScroll = new JScrollPane();
+        superScroll.setBackground(new Color(-528927));
+        classInfoPanel.addTab("All Superclasses", superScroll);
+        superList = new JList();
+        superScroll.setViewportView(superList);
+        implScroll = new JScrollPane();
+        implScroll.setBackground(new Color(-528927));
+        classInfoPanel.addTab("All Implements", implScroll);
+        implList = new JList();
+        implScroll.setViewportView(implList);
         authorPanel = new JPanel();
         authorPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
         authorPanel.setBackground(new Color(-725535));
@@ -612,13 +643,13 @@ public class JarAnalyzerForm {
         jarAnalyzerPanel.add(resultPane, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         resultScroll = new JScrollPane();
         resultScroll.setBackground(new Color(-725535));
-        resultPane.add(resultScroll, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(600, 200), null, null, 0, false));
+        resultPane.add(resultScroll, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(600, 100), null, null, 0, false));
         resultScroll.setBorder(BorderFactory.createTitledBorder(null, "Search Result", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         resultList = new JList();
         resultScroll.setViewportView(resultList);
         chanScroll = new JScrollPane();
         chanScroll.setBackground(new Color(-725535));
-        resultPane.add(chanScroll, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(600, 200), null, null, 0, false));
+        resultPane.add(chanScroll, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(600, 100), null, null, 0, false));
         chanScroll.setBorder(BorderFactory.createTitledBorder(null, "Your Chain", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         chanList = new JList();
         final DefaultListModel defaultListModel1 = new DefaultListModel();
