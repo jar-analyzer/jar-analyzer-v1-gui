@@ -12,6 +12,7 @@ import com.strobel.decompiler.PlainTextOutput;
 import jsyntaxpane.syntaxkits.JavaSyntaxKit;
 import org.benf.cfr.reader.Main;
 import org.jetbrains.java.decompiler.main.decompiler.ConsoleDecompiler;
+import org.objectweb.asm.Type;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -252,9 +253,22 @@ public class JarAnalyzerForm {
 
             for (int i = total.indexOf(methodName);
                  i >= 0; i = total.indexOf(methodName, i + 1)) {
-                if (total.charAt(i - 1) == '.') {
-                    if (total.charAt(i + methodName.length()) == '(') {
-                        editorPane.setCaretPosition(i);
+                if (total.charAt(i + methodName.length()) == '(') {
+                    int paramNum = Type.getMethodType(
+                            res.getMethod().getDesc()).getArgumentTypes().length;
+                    int curNum = 1;
+                    for(int j=i+methodName.length();;j++){
+                        if(total.charAt(j)==')'){
+                            if(total.charAt(j-1)=='('){
+                                curNum = 0;
+                            }
+                            if(curNum==paramNum){
+                                editorPane.setCaretPosition(i);
+                            }
+                            break;
+                        }else if (total.charAt(j)==','){
+                            curNum++;
+                        }
                     }
                 }
             }

@@ -43,5 +43,16 @@ Others:
 
 ## 0.4-beta
 
+This is a buf fix version, does not contain new features.
+So I had not made an exe version, only a jar version.
+
+I try to make the cursor as accurate as possible to point to the real method call position.
+But I can't confirm all the situations. If you find any problems, you can ask for issue.
+And I chose a lower version of QuiltFlower to support Java 8.
+
+Important:
+- [important] [bug] method position not accurate enough #2
+- [important] [bug] the number of parameters does not match show info #16
+
 Others:
 - use quilt flower 1.8.1 to support Java 8 #15

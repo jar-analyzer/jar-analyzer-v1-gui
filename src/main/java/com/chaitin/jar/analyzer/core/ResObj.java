@@ -1,5 +1,7 @@
 package com.chaitin.jar.analyzer.core;
 
+import org.objectweb.asm.Type;
+
 public class ResObj {
     private final String className;
     private final MethodReference.Handle method;
@@ -18,15 +20,8 @@ public class ResObj {
     }
 
     private int getNumFromDesc() {
-        String desc = this.method.getDesc();
-        String in = desc.split("\\)")[0];
-        if (in.equals("(")) {
-            return 0;
-        }
-        if (!in.contains(";")) {
-            return 1;
-        }
-        return in.split(";").length;
+        Type methodType = Type.getMethodType(this.method.getDesc());
+        return methodType.getArgumentTypes().length;
     }
 
     @Override
