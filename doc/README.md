@@ -15,6 +15,10 @@
 
 ![](../img/016.png)
 
+你可以很方便地查看字节码和ASM代码。
+
+![](../img/017.png)
+
 核心模块:
 - procyon: https://github.com/mstrobel/procyon
 - quilt flower: https://github.com/QuiltMC/quiltflower (推荐)

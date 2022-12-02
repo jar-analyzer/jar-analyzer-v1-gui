@@ -19,6 +19,10 @@ For detailed use of this tool, refer to Quick Start.
 
 ![](img/016.png)
 
+You can simply view the bytecode and ASM code.
+
+![](img/017.png)
+
 Core Module:
 - procyon: https://github.com/mstrobel/procyon
 - quilt flower: https://github.com/QuiltMC/quiltflower (recommend)

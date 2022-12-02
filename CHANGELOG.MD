@@ -60,9 +60,10 @@ Others:
 
 ## 0.5-beta
 
-Important:
+New Features:
 - [important] [feat] add a new panel to show your decompile history #13
 - [important] [feat] add a panel to show sub classes and super classes #11
+- [feat] show formatted bytecode and asm code #18
 
 Others:
 - use quilt flower 1.8.1 to support Java 8 #15 (support 8 and 11)

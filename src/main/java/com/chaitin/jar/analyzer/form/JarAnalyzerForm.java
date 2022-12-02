@@ -643,7 +643,7 @@ public class JarAnalyzerForm {
         showASMCodeButton.setText("Show ASM Code");
         curPanel.add(showASMCodeButton, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         showByteCodeButton = new JButton();
-        showByteCodeButton.setText("Show ByteCode");
+        showByteCodeButton.setText("Show Bytecode");
         curPanel.add(showByteCodeButton, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         callPanel = new JTabbedPane();
         callPanel.setBackground(new Color(-528927));
