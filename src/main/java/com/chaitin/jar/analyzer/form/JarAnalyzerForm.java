@@ -96,6 +96,7 @@ public class JarAnalyzerForm {
     private JPanel configPanel;
     private JScrollPane chanScroll;
     private JTextField currentLabel;
+    private static ResObj curRes;
     private JRadioButton procyonRadioButton;
     private JRadioButton cfrRadioButton;
     private JRadioButton quiltFlowerRadioButton;
@@ -113,6 +114,8 @@ public class JarAnalyzerForm {
     private JList<ClassObj> superList;
     private JList<ResObj> historyList;
     private JScrollPane historyScroll;
+    private JButton showControlFlowGraphButton;
+    private JButton showByteCodeButton;
 
     private static final DefaultListModel<ResObj> historyDataList = new DefaultListModel<>();
 
@@ -470,6 +473,7 @@ public class JarAnalyzerForm {
             }
         }
 
+        curRes = res;
         currentLabel.setText(res.toString());
         currentLabel.setToolTipText(res.getMethod().getDescStd());
 
@@ -529,6 +533,19 @@ public class JarAnalyzerForm {
                     core(evt, list);
                 }
             }
+        });
+
+        showByteCodeButton.addActionListener(e -> {
+            if (curRes == null) {
+                JOptionPane.showMessageDialog(null, "Error!");
+                return;
+            }
+            JFrame frame = new JFrame("Show Bytecode");
+            String className = curRes.getClassName();
+            className = className.replace(File.separator, ".");
+            frame.setContentPane(new BytecodeForm(className).parentPanel);
+            frame.pack();
+            frame.setVisible(true);
         });
     }
 
@@ -600,7 +617,7 @@ public class JarAnalyzerForm {
         editorPane = new JEditorPane();
         editorScroll.setViewportView(editorPane);
         curPanel = new JPanel();
-        curPanel.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
+        curPanel.setLayout(new GridLayoutManager(1, 4, new Insets(0, 0, 0, 0), -1, -1));
         curPanel.setBackground(new Color(-725535));
         editorPanel.add(curPanel, new GridConstraints(3, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         curLabel = new JLabel();
@@ -609,6 +626,12 @@ public class JarAnalyzerForm {
         currentLabel = new JTextField();
         currentLabel.setEditable(false);
         curPanel.add(currentLabel, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        showControlFlowGraphButton = new JButton();
+        showControlFlowGraphButton.setText("Show Control Flow Graph");
+        curPanel.add(showControlFlowGraphButton, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        showByteCodeButton = new JButton();
+        showByteCodeButton.setText("Show ByteCode");
+        curPanel.add(showByteCodeButton, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         callPanel = new JTabbedPane();
         callPanel.setBackground(new Color(-528927));
         callPanel.setForeground(new Color(-16777216));
