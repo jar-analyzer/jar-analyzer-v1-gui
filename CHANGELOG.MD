@@ -56,3 +56,4 @@ Important:
 
 Others:
 - use quilt flower 1.8.1 to support Java 8 #15
+- remove unnecessary dependencies to reduce jar file size
