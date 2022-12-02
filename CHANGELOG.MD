@@ -40,3 +40,8 @@ Bugs:
 
 Others:
 - [new feature] allow use null class name and search all methods #7
+
+## 0.4-beta
+
+Others:
+- use quilt flower 1.8.1 to support Java 8 #15

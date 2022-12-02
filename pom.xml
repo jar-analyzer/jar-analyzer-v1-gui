@@ -6,12 +6,11 @@
 
     <groupId>com.chaitin</groupId>
     <artifactId>jar-analyzer</artifactId>
-    <version>0.3-beta</version>
+    <version>0.4-beta</version>
 
     <properties>
-        <asm.version>9.4</asm.version>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -32,12 +31,7 @@
         <dependency>
             <groupId>org.ow2.asm</groupId>
             <artifactId>asm</artifactId>
-            <version>${asm.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.ow2.asm</groupId>
-            <artifactId>asm-commons</artifactId>
-            <version>${asm.version}</version>
+            <version>9.4</version>
         </dependency>
         <dependency>
             <groupId>com.formdev</groupId>
@@ -67,7 +61,7 @@
         <dependency>
             <groupId>org.quiltmc</groupId>
             <artifactId>quiltflower</artifactId>
-            <version>1.9.0</version>
+            <version>1.8.1</version>
         </dependency>
         <dependency>
             <groupId>com.chaitin.jar</groupId>
