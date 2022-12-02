@@ -42,7 +42,7 @@ mvn package
 
 ## Quick Start
 
-Important: Please use Java 11-17 to run this, because the decompiler API need high version Java.
+Important: Please use Java 8 - Java 17 to run this
 
 
 (1) First Step: Add Jars file. (Support jar file and jars directory)

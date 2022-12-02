@@ -38,7 +38,7 @@ mvn package
 
 ## Quick Start
 
-重要：请使用Java 11-17运行，因为一些反编译的API要求高版本Java
+重要：请使用Java 8 - Java 17运行
 
 (1) 第一步：添加`jar`文件（支持单个`jar`文件和`jar`目录）
 - 点击按钮 `Select Jar File` 打开jar文件
