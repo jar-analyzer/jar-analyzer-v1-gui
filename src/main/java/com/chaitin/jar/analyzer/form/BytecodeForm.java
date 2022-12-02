@@ -20,12 +20,12 @@ public class BytecodeForm {
     private JScrollPane scroll;
     private JTextArea byteText;
 
-    public BytecodeForm(String className) {
+    public BytecodeForm(String className, boolean flag) {
         className = className.replace("/", File.separator);
         String targetPath = String.format("temp%s%s.class", File.separator, className);
         try {
             InputStream is = Files.newInputStream(Paths.get(targetPath));
-            String data = ASMPrint.getPrint(is);
+            String data = ASMPrint.getPrint(is, flag);
             byteText.setText(data);
             byteText.setCaretPosition(0);
         } catch (Exception ignored) {

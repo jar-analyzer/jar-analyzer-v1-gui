@@ -114,7 +114,7 @@ public class JarAnalyzerForm {
     private JList<ClassObj> superList;
     private JList<ResObj> historyList;
     private JScrollPane historyScroll;
-    private JButton showControlFlowGraphButton;
+    private JButton showASMCodeButton;
     private JButton showByteCodeButton;
 
     private static final DefaultListModel<ResObj> historyDataList = new DefaultListModel<>();
@@ -543,7 +543,20 @@ public class JarAnalyzerForm {
             JFrame frame = new JFrame("Show Bytecode");
             String className = curRes.getClassName();
             className = className.replace(File.separator, ".");
-            frame.setContentPane(new BytecodeForm(className).parentPanel);
+            frame.setContentPane(new BytecodeForm(className, false).parentPanel);
+            frame.pack();
+            frame.setVisible(true);
+        });
+
+        showASMCodeButton.addActionListener(e -> {
+            if (curRes == null) {
+                JOptionPane.showMessageDialog(null, "Error!");
+                return;
+            }
+            JFrame frame = new JFrame("Show ASM Code");
+            String className = curRes.getClassName();
+            className = className.replace(File.separator, ".");
+            frame.setContentPane(new BytecodeForm(className, true).parentPanel);
             frame.pack();
             frame.setVisible(true);
         });
@@ -626,9 +639,9 @@ public class JarAnalyzerForm {
         currentLabel = new JTextField();
         currentLabel.setEditable(false);
         curPanel.add(currentLabel, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        showControlFlowGraphButton = new JButton();
-        showControlFlowGraphButton.setText("Show Control Flow Graph");
-        curPanel.add(showControlFlowGraphButton, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        showASMCodeButton = new JButton();
+        showASMCodeButton.setText("Show ASM Code");
+        curPanel.add(showASMCodeButton, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         showByteCodeButton = new JButton();
         showByteCodeButton.setText("Show ByteCode");
         curPanel.add(showByteCodeButton, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
