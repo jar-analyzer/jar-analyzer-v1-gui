@@ -112,6 +112,8 @@ public class JarAnalyzerForm {
     private JList<ResObj> historyList;
     private JScrollPane historyScroll;
 
+    private static final DefaultListModel<ResObj> historyDataList = new DefaultListModel<>();
+
     public static Set<ClassFile> classFileList = new HashSet<>();
     private static final Set<ClassReference> discoveredClasses = new HashSet<>();
     private static final Set<MethodReference> discoveredMethods = new HashSet<>();
@@ -351,6 +353,7 @@ public class JarAnalyzerForm {
 
         new Thread(() -> {
             String total;
+            historyDataList.addElement(res);
             if (procyonRadioButton.isSelected()) {
                 Decompiler.decompile(
                         finalClassPath,
@@ -472,6 +475,7 @@ public class JarAnalyzerForm {
         callList.setModel(callDataList);
         subList.setModel(subDataList);
         superList.setModel(superDataList);
+        historyList.setModel(historyDataList);
     }
 
     public JarAnalyzerForm() {
