@@ -59,8 +59,16 @@ public class JarAnalyzerForm {
         }
     }
 
+    private class ListClassMouseAdapter extends MouseAdapter {
+        public void mouseClicked(MouseEvent evt) {
+            JList<?> list = (JList<?>) evt.getSource();
+            if (evt.getClickCount() == 2) {
+                coreClass(evt, list);
+            }
+        }
+    }
+
     private JButton startAnalysisButton;
-    private JButton allCleanButton;
     private JPanel jarAnalyzerPanel;
     private JPanel topPanel;
     private JButton selectJarFileButton;
@@ -99,8 +107,10 @@ public class JarAnalyzerForm {
     private JTabbedPane classInfoPanel;
     private JScrollPane subScroll;
     private JScrollPane superScroll;
-    private JList<ResObj> subList;
-    private JList<ResObj> superList;
+    private JList<ClassObj> subList;
+    private JList<ClassObj> superList;
+    private JList<ResObj> historyList;
+    private JScrollPane historyScroll;
 
     public static Set<ClassFile> classFileList = new HashSet<>();
     private static final Set<ClassReference> discoveredClasses = new HashSet<>();
@@ -207,6 +217,107 @@ public class JarAnalyzerForm {
     }
 
     private static final DefaultListModel<ResObj> chainDataList = new DefaultListModel<>();
+
+    private void coreClass(MouseEvent evt, JList<?> list) {
+        int index = list.locationToIndex(evt.getPoint());
+        ClassObj res = (ClassObj) list.getModel().getElementAt(index);
+        String className = res.getClassName();
+        String classPath = className.replace("/", File.separator);
+        classPath = String.format("temp%s%s.class", File.separator, classPath);
+
+        ByteArrayOutputStream bao = new ByteArrayOutputStream();
+        OutputStreamWriter ows = new OutputStreamWriter(bao);
+        BufferedWriter writer = new BufferedWriter(ows);
+
+        String finalClassPath = classPath;
+
+        String[] temp;
+        if (OSUtil.isWindows()) {
+            temp = finalClassPath.split(File.separator + File.separator);
+        } else {
+            temp = finalClassPath.split(File.separator);
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < temp.length - 1; i++) {
+            sb.append(temp[i]);
+            sb.append(File.separator);
+        }
+        String javaDir = sb.toString();
+        String tempName = temp[temp.length - 1].split("\\.class")[0];
+        String javaPath = sb.append(tempName).append(".java").toString();
+        Path javaPathPath = Paths.get(javaPath);
+
+        new Thread(() -> {
+            String total;
+            if (procyonRadioButton.isSelected()) {
+                Decompiler.decompile(
+                        finalClassPath,
+                        new PlainTextOutput(writer));
+                try {
+                    writer.flush();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                total = bao.toString();
+                total = "// Procyon \n" + total;
+            } else if (quiltFlowerRadioButton.isSelected()) {
+                String[] args = new String[]{
+                        finalClassPath,
+                        javaDir
+                };
+                ConsoleDecompiler.main(args);
+                try {
+                    total = new String(Files.readAllBytes(javaPathPath));
+                    total = "// QuiltFlower \n" + total;
+                    Files.delete(javaPathPath);
+                } catch (Exception ignored) {
+                    total = "";
+                }
+            } else if (cfrRadioButton.isSelected()) {
+                String[] args = new String[]{
+                        finalClassPath,
+                        "--outputpath",
+                        "temp"
+                };
+                Main.main(args);
+                try {
+                    total = new String(Files.readAllBytes(javaPathPath));
+                    Files.delete(javaPathPath);
+                } catch (Exception ignored) {
+                    total = "";
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Error!");
+                return;
+            }
+            editorPane.setText(total);
+            editorPane.setCaretPosition(0);
+        }).start();
+
+        DefaultListModel<ClassObj> subDataList = new DefaultListModel<>();
+        DefaultListModel<ClassObj> superDataList = new DefaultListModel<>();
+
+        Set<ClassReference.Handle> subClasses = inheritanceMap.getSubClasses(res.getHandle());
+        if (subClasses != null && subClasses.size() != 0) {
+            for (ClassReference.Handle c : subClasses) {
+                ClassObj obj = new ClassObj(c.getName(), c);
+                subDataList.addElement(obj);
+            }
+        }
+
+        Set<ClassReference.Handle> superClasses = inheritanceMap.getSuperClasses(res.getHandle());
+        if (superClasses != null && superClasses.size() != 0) {
+            for (ClassReference.Handle c : superClasses) {
+                ClassObj obj = new ClassObj(c.getName(), c);
+                superDataList.addElement(obj);
+            }
+        }
+
+        currentLabel.setText(res.toString());
+
+        subList.setModel(subDataList);
+        superList.setModel(superDataList);
+    }
 
     private void core(MouseEvent evt, JList<?> list) {
         int index = list.locationToIndex(evt.getPoint());
@@ -316,8 +427,8 @@ public class JarAnalyzerForm {
 
         DefaultListModel<ResObj> sourceDataList = new DefaultListModel<>();
         DefaultListModel<ResObj> callDataList = new DefaultListModel<>();
-        DefaultListModel<ResObj> subDataList = new DefaultListModel<>();
-        DefaultListModel<ResObj> superDataList = new DefaultListModel<>();
+        DefaultListModel<ClassObj> subDataList = new DefaultListModel<>();
+        DefaultListModel<ClassObj> superDataList = new DefaultListModel<>();
 
         MethodReference.Handle handle = res.getMethod();
         HashSet<MethodReference.Handle> callMh = methodCalls.get(handle);
@@ -341,18 +452,16 @@ public class JarAnalyzerForm {
         Set<ClassReference.Handle> subClasses = inheritanceMap.getSubClasses(handle.getClassReference());
         if (subClasses != null && subClasses.size() != 0) {
             for (ClassReference.Handle c : subClasses) {
-                MethodReference.Handle h = new MethodReference.Handle(c, handle.getName(), handle.getDesc());
-                ResObj resObj = new ResObj(h, c.getName());
-                subDataList.addElement(resObj);
+                ClassObj obj = new ClassObj(c.getName(), c);
+                subDataList.addElement(obj);
             }
         }
 
         Set<ClassReference.Handle> superClasses = inheritanceMap.getSuperClasses(handle.getClassReference());
         if (superClasses != null && superClasses.size() != 0) {
             for (ClassReference.Handle c : superClasses) {
-                MethodReference.Handle h = new MethodReference.Handle(c, handle.getName(), handle.getDesc());
-                ResObj resObj = new ResObj(h, c.getName());
-                superDataList.addElement(resObj);
+                ClassObj obj = new ClassObj(c.getName(), c);
+                superDataList.addElement(obj);
             }
         }
 
@@ -373,41 +482,15 @@ public class JarAnalyzerForm {
         editorPane.setEditorKit(new JavaSyntaxKit());
         loadJar();
 
-        allCleanButton.addActionListener(e -> {
-            classFileList.clear();
-            discoveredClasses.clear();
-            discoveredMethods.clear();
-            classMap.clear();
-            methodMap.clear();
-            methodCalls.clear();
-            inheritanceMap = null;
-            totalJars = 0;
-
-            classText.setText(null);
-            methodText.setText(null);
-            editorPane.setText(null);
-            jarInfoResultText.setText(null);
-            currentLabel.setText(null);
-
-            DefaultListModel<?> call = (DefaultListModel<?>) callList.getModel();
-            call.removeAllElements();
-            DefaultListModel<?> chan = (DefaultListModel<?>) chanList.getModel();
-            chan.removeAllElements();
-            DefaultListModel<?> result = (DefaultListModel<?>) resultList.getModel();
-            result.removeAllElements();
-            DefaultListModel<?> source = (DefaultListModel<?>) sourceList.getModel();
-            source.removeAllElements();
-            chainDataList.removeAllElements();
-        });
-
         ToolTipManager.sharedInstance().setDismissDelay(10000);
         ToolTipManager.sharedInstance().setInitialDelay(300);
 
         resultList.addMouseListener(new ListMouseAdapter());
         callList.addMouseListener(new ListMouseAdapter());
         sourceList.addMouseListener(new ListMouseAdapter());
-        subList.addMouseListener(new ListMouseAdapter());
-        superList.addMouseListener(new ListMouseAdapter());
+        subList.addMouseListener(new ListClassMouseAdapter());
+        superList.addMouseListener(new ListClassMouseAdapter());
+        historyList.addMouseListener(new ListMouseAdapter());
 
         chanList.addMouseListener(new MouseAdapter() {
             @Override
@@ -475,7 +558,7 @@ public class JarAnalyzerForm {
         topPanel.setBackground(new Color(-725535));
         jarAnalyzerPanel.add(topPanel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         opPanel = new JPanel();
-        opPanel.setLayout(new GridLayoutManager(1, 3, new Insets(0, 0, 0, 0), -1, -1));
+        opPanel.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
         opPanel.setBackground(new Color(-725535));
         topPanel.add(opPanel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         selectJarFileButton = new JButton();
@@ -484,9 +567,6 @@ public class JarAnalyzerForm {
         startAnalysisButton = new JButton();
         startAnalysisButton.setText("Start Analysis");
         opPanel.add(startAnalysisButton, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        allCleanButton = new JButton();
-        allCleanButton.setText("All Clean");
-        opPanel.add(allCleanButton, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         dcPanel = new JPanel();
         dcPanel.setLayout(new GridLayoutManager(1, 3, new Insets(0, 0, 0, 0), -1, -1));
         dcPanel.setBackground(new Color(-725535));
@@ -539,6 +619,10 @@ public class JarAnalyzerForm {
         callScroll.setBorder(BorderFactory.createTitledBorder(null, "", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         callList = new JList();
         callScroll.setViewportView(callList);
+        historyScroll = new JScrollPane();
+        callPanel.addTab("Decompile History", historyScroll);
+        historyList = new JList();
+        historyScroll.setViewportView(historyList);
         classInfoPanel = new JTabbedPane();
         classInfoPanel.setBackground(new Color(-528927));
         classInfoPanel.setForeground(new Color(-16777216));
