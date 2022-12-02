@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch4jConfig>
+  <dontWrapJar>false</dontWrapJar>
+  <headerType>gui</headerType>
+  <jar>D:\jar-analyzer\target\jar-analyzer-0.5-beta.jar</jar>
+  <outfile>D:\jar-analyzer\jar-analyzer-0.5-beta-jdk11.exe</outfile>
+  <errTitle></errTitle>
+  <cmdLine></cmdLine>
+  <chdir>.</chdir>
+  <priority>normal</priority>
+  <downloadUrl></downloadUrl>
+  <supportUrl></supportUrl>
+  <stayAlive>false</stayAlive>
+  <restartOnCrash>false</restartOnCrash>
+  <manifest></manifest>
+  <icon>D:\jar-analyzer\build\jar-analyzer.ico</icon>
+  <jre>
+    <path>%JAVA_HOME%;%PATH%</path>
+    <requiresJdk>false</requiresJdk>
+    <requires64Bit>false</requires64Bit>
+    <minVersion>11</minVersion>
+    <maxVersion>17</maxVersion>
+    <opt>--add-opens=java.desktop/sun.awt.shell=ALL-UNNAMED</opt>
+  </jre>
+</launch4jConfig>
