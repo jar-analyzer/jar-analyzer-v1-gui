@@ -23,13 +23,6 @@ You can simply view the bytecode and ASM code.
 
 ![](img/017.png)
 
-Core Module:
-- procyon: https://github.com/mstrobel/procyon
-- quilt flower: https://github.com/QuiltMC/quiltflower (recommend)
-- cfr: https://github.com/leibnitz27/cfr
-- Flat Look and Feel UI: https://github.com/JFormDesigner/FlatLaf
-- JSyntaxPane: https://code.google.com/archive/p/jsyntaxpane
-
 Support 3 API to decompile:
 - QuiltFlower (FernFlower)
 - Procyon
@@ -49,7 +42,6 @@ mvn package
 
 Important: Please use Java 8 - Java 17 to run this
 
-
 (1) First Step: Add Jars file. (Support jar file and jars directory)
 - Open jar file with button `Select Jar File`.
 - Support to upload multiple Jar files which will be analyzed together.
@@ -65,11 +57,13 @@ We support three format input:
 - `javax/naming/Context`
 - `Context` (Will search all `*.Context` class)
 
+We support two ways:
+- directly search class and method
+- search method call
+
 Method input only needs a simple name, no description.
 
 Please Note: if the jar is large, the initialization will take some time (`rt.jar` cost more than 10 seconds)
-
-![](img/002.png)
 
 At this time, you can see the number of all the classes and methods analyzed.
 
@@ -77,24 +71,17 @@ At this time, you can see the number of all the classes and methods analyzed.
 
 The red cursor will point to the corresponding method as far as possible, not all cases will be handled correctly.
 
-![](img/003.png)
-
 When decompiling, the relationship between methods will be built.
 
 Any items in the panel can be double-clicked to decompile and show its methods relation at the same time.
 
 Please Note: If you cannot decompile like the below screenshot, you can add the corresponding jar. 
-For example, we did not add the `rt.jar` of JDK in the situation. If you add it, you can decompile successfully.
-
-![](img/006.png)
+For example, we did not add the `rt.jar` of JDK, so we cannot decompile `javax.naming.Context`.
+If you add it, you can decompile successfully.
 
 You can press `Ctrl+F` to search string in Java code.
 
-![](img/008.png)
-
 You can one-click to chose item, and then the item will show the method details.
-
-![](img/004.png)
 
 You can right-click to send the item to your chain. Chain can be understood as a favorite or a record list.
 In chain list, you can also double-click to decompile then show new relations, and one-click to show details.
@@ -102,12 +89,8 @@ If the item in chain is not what you want, you can right-click to remove it from
 
 So you can build a chain between methods for yourselves easily.
 
-![](img/005.png)
-
 The relation items (`Who call target` and `Target call whom` panel) between methods can also be used in the above way.
 Click to display details, double-click to decompile then show new relations, and right-click to add to the chain.
-
-![](img/007.png)
 
 ## About
 
@@ -209,41 +192,3 @@ In this case, We added new rules: `Animal.eat -> Dog.eat` and `Animal.eat -> Cat
 Ensure no loss of results, then we can analyze it ourselves manually with automatically decompiled java code:
 - `Zoo.run -> Animal.eat`
 - `Animal.eat -> Dog.eat`/`Animal.eat -> Cat.eat`
-
-## Easy Example
-
-How to find `readObject` in mysql-connector
-
-(1) Download jar from https://mvnrepository.com/artifact/com.mysql/mysql-connector-j
-
-(2) Open jar-analyzer
-
-![](img/009.png)
-
-(3) We found that if autoDeserialize param is open, there is a deserialization vulnerability.
-
-## Advance Example
-
-How to analyze CVE-2020-9484?
-
-Download Apache Tomcat 8.5.50: https://archive.apache.org/dist/tomcat/tomcat-8/v8.5.50/bin/apache-tomcat-8.5.50.zip
-
-(1) Open jar-analyzer, select Tomcat lib dir:
-
-![](img/012.png)
-
-(2) Search ObjectInputStream readObject method:
-
-![](img/013.png)
-
-Double-Click Who all Target to find the caller.
-
-(3) Continue to double-click to find the next caller:
-
-![](img/014.png)
-
-(4) We can find the vulnerability sink:
-
-![](img/015.png)
-
-(5) Have fun!
