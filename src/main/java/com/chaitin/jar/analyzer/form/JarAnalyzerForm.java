@@ -116,6 +116,12 @@ public class JarAnalyzerForm {
     private JScrollPane historyScroll;
     private JButton showASMCodeButton;
     private JButton showByteCodeButton;
+    private JRadioButton callSearchRadioButton;
+    private JRadioButton directSearchRadioButton;
+    private JPanel searchSelPanel;
+    private JLabel callSearchLabel;
+    private JLabel directSearchLabel;
+    private JPanel actionPanel;
 
     private static final DefaultListModel<ResObj> historyDataList = new DefaultListModel<>();
 
@@ -198,28 +204,49 @@ public class JarAnalyzerForm {
             }
             String methodName = methodText.getText().trim();
 
-            for (Map.Entry<MethodReference.Handle,
-                    HashSet<MethodReference.Handle>> entry : methodCalls.entrySet()) {
-                MethodReference.Handle k = entry.getKey();
-                HashSet<MethodReference.Handle> v = entry.getValue();
+            if (callSearchRadioButton.isSelected()) {
+                for (Map.Entry<MethodReference.Handle,
+                        HashSet<MethodReference.Handle>> entry : methodCalls.entrySet()) {
+                    MethodReference.Handle k = entry.getKey();
+                    HashSet<MethodReference.Handle> v = entry.getValue();
 
-                for (MethodReference.Handle h : v) {
+                    for (MethodReference.Handle h : v) {
+                        String c = h.getClassReference().getName();
+                        String[] st = c.split("/");
+                        String s = st[st.length - 1];
+                        if (className.equals("ALL")) {
+                            if (h.getName().equals(methodName)) {
+                                searchList.addElement(new ResObj(k, k.getClassReference().getName()));
+                            }
+                        } else if (c.equals(className) || s.equals(shortClassName)) {
+                            if (h.getName().equals(methodName)) {
+                                searchList.addElement(new ResObj(k, k.getClassReference().getName()));
+                            }
+                        }
+                    }
+                }
+                resultList.setModel(searchList);
+            }
+
+            if (directSearchRadioButton.isSelected()) {
+                for (Map.Entry<MethodReference.Handle, MethodReference> entry : methodMap.entrySet()) {
+                    MethodReference.Handle h = entry.getKey();
                     String c = h.getClassReference().getName();
                     String[] st = c.split("/");
                     String s = st[st.length - 1];
                     if (className.equals("ALL")) {
                         if (h.getName().equals(methodName)) {
-                            searchList.addElement(new ResObj(k, k.getClassReference().getName()));
+                            searchList.addElement(new ResObj(h, h.getClassReference().getName()));
                         }
-                    } else if (c.equals(className) || s.equals(shortClassName)) {
+                    } else if (h.getClassReference().getName().equals(className) ||
+                            s.equals(shortClassName)) {
                         if (h.getName().equals(methodName)) {
-                            searchList.addElement(new ResObj(k, k.getClassReference().getName()));
+                            searchList.addElement(new ResObj(h, h.getClassReference().getName()));
                         }
                     }
                 }
+                resultList.setModel(searchList);
             }
-
-            resultList.setModel(searchList);
         });
     }
 
@@ -488,6 +515,7 @@ public class JarAnalyzerForm {
         DirUtil.removeDir(new File("temp"));
 
         quiltFlowerRadioButton.setSelected(true);
+        callSearchRadioButton.setSelected(true);
 
         editorPane.setEditorKit(new JavaSyntaxKit());
         loadJar();
@@ -594,19 +622,44 @@ public class JarAnalyzerForm {
         topPanel.setBackground(new Color(-725535));
         jarAnalyzerPanel.add(topPanel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         opPanel = new JPanel();
-        opPanel.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
+        opPanel.setLayout(new GridLayoutManager(3, 2, new Insets(0, 0, 0, 0), -1, -1));
         opPanel.setBackground(new Color(-725535));
         topPanel.add(opPanel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        searchSelPanel = new JPanel();
+        searchSelPanel.setLayout(new GridLayoutManager(2, 2, new Insets(0, 0, 0, 0), -1, -1));
+        searchSelPanel.setBackground(new Color(-528927));
+        opPanel.add(searchSelPanel, new GridConstraints(0, 1, 3, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        searchSelPanel.setBorder(BorderFactory.createTitledBorder(null, "Search Options", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        callSearchRadioButton = new JRadioButton();
+        callSearchRadioButton.setBackground(new Color(-528927));
+        callSearchRadioButton.setText("Call Search");
+        searchSelPanel.add(callSearchRadioButton, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        callSearchLabel = new JLabel();
+        callSearchLabel.setText("   Only Search Method Call ");
+        searchSelPanel.add(callSearchLabel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        directSearchLabel = new JLabel();
+        directSearchLabel.setText("   Directly Search Class And Method");
+        searchSelPanel.add(directSearchLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        directSearchRadioButton = new JRadioButton();
+        directSearchRadioButton.setBackground(new Color(-528927));
+        directSearchRadioButton.setText("Direct Search");
+        searchSelPanel.add(directSearchRadioButton, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        actionPanel = new JPanel();
+        actionPanel.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
+        actionPanel.setBackground(new Color(-528927));
+        opPanel.add(actionPanel, new GridConstraints(0, 0, 3, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        actionPanel.setBorder(BorderFactory.createTitledBorder(null, "Action", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        startAnalysisButton = new JButton();
+        startAnalysisButton.setText("Start Search");
+        actionPanel.add(startAnalysisButton, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         selectJarFileButton = new JButton();
         selectJarFileButton.setText("Select Jar File");
-        opPanel.add(selectJarFileButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        startAnalysisButton = new JButton();
-        startAnalysisButton.setText("Start Analysis");
-        opPanel.add(startAnalysisButton, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        actionPanel.add(selectJarFileButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         dcPanel = new JPanel();
         dcPanel.setLayout(new GridLayoutManager(1, 3, new Insets(0, 0, 0, 0), -1, -1));
         dcPanel.setBackground(new Color(-725535));
         topPanel.add(dcPanel, new GridConstraints(0, 1, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        dcPanel.setBorder(BorderFactory.createTitledBorder(null, "Decompile Options", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         procyonRadioButton = new JRadioButton();
         procyonRadioButton.setBackground(new Color(-725535));
         procyonRadioButton.setText("Procyon");
@@ -741,6 +794,9 @@ public class JarAnalyzerForm {
         buttonGroup.add(procyonRadioButton);
         buttonGroup.add(cfrRadioButton);
         buttonGroup.add(quiltFlowerRadioButton);
+        buttonGroup = new ButtonGroup();
+        buttonGroup.add(directSearchRadioButton);
+        buttonGroup.add(callSearchRadioButton);
     }
 
     /**

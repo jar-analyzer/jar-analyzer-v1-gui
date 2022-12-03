@@ -13,7 +13,7 @@
 
 [前往下载](https://github.com/4ra1n/jar-analyzer/releases/latest)
 
-![](../img/016.png)
+![](../img/018.png)
 
 你可以很方便地查看字节码和ASM代码。
 

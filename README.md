@@ -17,7 +17,7 @@ For detailed use of this tool, refer to Quick Start.
 
 [go to download](https://github.com/4ra1n/jar-analyzer/releases/latest)
 
-![](img/016.png)
+![](img/018.png)
 
 You can simply view the bytecode and ASM code.
 
