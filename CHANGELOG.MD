@@ -62,7 +62,7 @@ Others:
 
 New Features:
 - [important] [feat] add a new panel to show your decompile history #13
-- [important] [feat] add a panel to show sub classes and super classes #11
+- [important] [feat] add a panel to show subclasses and super classes #11
 - [feat] show formatted bytecode and asm code #18
 
 Others:
