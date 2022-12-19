@@ -13,7 +13,6 @@ import com.chaitin.jar.analyzer.util.OSUtil;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import com.strobel.core.Mapping;
 import com.strobel.decompiler.Decompiler;
 import com.strobel.decompiler.PlainTextOutput;
 import jsyntaxpane.syntaxkits.JavaSyntaxKit;
