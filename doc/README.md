@@ -24,6 +24,10 @@
 - Procyon
 - CFR
 
+支持Spring的Mapping分析：
+
+![](../img/10000.png)
+
 我们使用类定制化的`JSyntaxPane`组件（非官方）来展示`Java`代码
 
 ## 如何构建

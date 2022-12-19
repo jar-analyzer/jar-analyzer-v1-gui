@@ -6,7 +6,7 @@
 
     <groupId>com.chaitin</groupId>
     <artifactId>jar-analyzer</artifactId>
-    <version>0.5-beta</version>
+    <version>0.7-beta</version>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>

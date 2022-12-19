@@ -71,4 +71,13 @@ Others:
 
 ## 0.6-beta
 
-Important: We support Spring Mapping Analyze!
+This is a special version, which support a new feature but is not stable
+
+Change:
+- Rebuild UI
+- Spring Controller and Mapping Analysis
+- New README
+
+## 0.7-beta
+
+- todo
