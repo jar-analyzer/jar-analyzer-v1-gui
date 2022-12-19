@@ -3,6 +3,9 @@ package com.chaitin.jar.analyzer.form;
 import com.chaitin.jar.analyzer.core.*;
 import com.chaitin.jar.analyzer.model.ClassObj;
 import com.chaitin.jar.analyzer.model.ResObj;
+import com.chaitin.jar.analyzer.spring.SpringController;
+import com.chaitin.jar.analyzer.spring.SpringMapping;
+import com.chaitin.jar.analyzer.spring.SpringService;
 import com.chaitin.jar.analyzer.util.CoreUtil;
 import com.chaitin.jar.analyzer.util.DirUtil;
 import com.chaitin.jar.analyzer.util.OSUtil;
@@ -70,6 +73,8 @@ public class JarAnalyzerForm {
         }
     }
 
+    public static boolean innerJars = false;
+    public static boolean springBootJar = false;
     private JButton startAnalysisButton;
     private JPanel jarAnalyzerPanel;
     private JPanel topPanel;
@@ -107,7 +112,6 @@ public class JarAnalyzerForm {
     private JLabel progressLabel;
     private JProgressBar progress;
     private JTabbedPane callPanel;
-    private JTabbedPane classInfoPanel;
     private JScrollPane subScroll;
     private JScrollPane superScroll;
     private JList<ClassObj> subList;
@@ -122,6 +126,18 @@ public class JarAnalyzerForm {
     private JLabel callSearchLabel;
     private JLabel directSearchLabel;
     private JPanel actionPanel;
+    private JButton springAnalyzerButton;
+    private JButton analyzeSpringButton;
+    private JTextField springPackageText;
+    private JLabel springPackLabel;
+    private JPanel springPanel;
+    private JScrollPane controllerPanel;
+    private JScrollPane mappingsPanel;
+    private JList<ClassObj> controllerJList;
+    private JList<ResObj> mappingJList;
+    private JCheckBox useSpringBootJarCheckBox;
+    private JCheckBox innerJarsCheckBox;
+    public static List<SpringController> controllers = new ArrayList<>();
 
     private static final DefaultListModel<ResObj> historyDataList = new DefaultListModel<>();
 
@@ -257,8 +273,12 @@ public class JarAnalyzerForm {
         ClassObj res = (ClassObj) list.getModel().getElementAt(index);
         String className = res.getClassName();
         String classPath = className.replace("/", File.separator);
-        classPath = String.format("temp%s%s.class", File.separator, classPath);
-
+        if (springBootJar) {
+            classPath = String.format("temp%sBOOT-INF%sclasses%s%s.class",
+                    File.separator, File.separator, File.separator, classPath);
+        } else {
+            classPath = String.format("temp%s%s.class", File.separator, classPath);
+        }
         ByteArrayOutputStream bao = new ByteArrayOutputStream();
         OutputStreamWriter ows = new OutputStreamWriter(bao);
         BufferedWriter writer = new BufferedWriter(ows);
@@ -353,13 +373,19 @@ public class JarAnalyzerForm {
         superList.setModel(superDataList);
     }
 
+    @SuppressWarnings("all")
     private void core(MouseEvent evt, JList<?> list) {
         int index = list.locationToIndex(evt.getPoint());
         ResObj res = (ResObj) list.getModel().getElementAt(index);
 
         String className = res.getClassName();
         String classPath = className.replace("/", File.separator);
-        classPath = String.format("temp%s%s.class", File.separator, classPath);
+        if (!springBootJar) {
+            classPath = String.format("temp%s%s.class", File.separator, classPath);
+        } else {
+            classPath = String.format("temp%sBOOT-INF%sclasses%s%s.class",
+                    File.separator, File.separator, File.separator, classPath);
+        }
 
         ByteArrayOutputStream bao = new ByteArrayOutputStream();
         OutputStreamWriter ows = new OutputStreamWriter(bao);
@@ -529,6 +555,41 @@ public class JarAnalyzerForm {
         subList.addMouseListener(new ListClassMouseAdapter());
         superList.addMouseListener(new ListClassMouseAdapter());
         historyList.addMouseListener(new ListMouseAdapter());
+        mappingJList.addMouseListener(new ListMouseAdapter());
+        controllerJList.addMouseListener(new ListClassMouseAdapter());
+
+        innerJarsCheckBox.addActionListener(e ->
+                innerJars = innerJarsCheckBox.isSelected());
+        useSpringBootJarCheckBox.addActionListener(e ->
+                springBootJar = useSpringBootJarCheckBox.isSelected());
+
+        analyzeSpringButton.addActionListener(e -> {
+            springBootJar = true;
+            useSpringBootJarCheckBox.setSelected(true);
+            String text = springPackageText.getText();
+            SpringService.start(classFileList, text, controllers, classMap, methodMap);
+
+            DefaultListModel<ResObj> mappingDataList = new DefaultListModel<>();
+            DefaultListModel<ClassObj> controllerDataList = new DefaultListModel<>();
+            for (SpringController controller : controllers) {
+                for (ClassReference.Handle c : classMap.keySet()) {
+                    if (c.equals(controller.getClassName())) {
+                        controllerDataList.addElement(
+                                new ClassObj(c.getName(), c));
+                    }
+                }
+            }
+            for (SpringMapping mapping : controllers.get(1).getMappings()) {
+                for (MethodReference.Handle m : methodMap.keySet()) {
+                    if (m.equals(mapping.getMethodName())) {
+                        mappingDataList.addElement(
+                                new ResObj(m, m.getClassReference().getName()));
+                    }
+                }
+            }
+            controllerJList.setModel(controllerDataList);
+            mappingJList.setModel(mappingDataList);
+        });
 
         chanList.addMouseListener(new MouseAdapter() {
             @Override
@@ -645,16 +706,27 @@ public class JarAnalyzerForm {
         directSearchRadioButton.setText("Direct Search");
         searchSelPanel.add(directSearchRadioButton, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         actionPanel = new JPanel();
-        actionPanel.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
+        actionPanel.setLayout(new GridLayoutManager(2, 3, new Insets(0, 0, 0, 0), -1, -1));
         actionPanel.setBackground(new Color(-528927));
         opPanel.add(actionPanel, new GridConstraints(0, 0, 3, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         actionPanel.setBorder(BorderFactory.createTitledBorder(null, "Action", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        selectJarFileButton = new JButton();
+        selectJarFileButton.setText("Select Jar File / Dir");
+        actionPanel.add(selectJarFileButton, new GridConstraints(0, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        analyzeSpringButton = new JButton();
+        analyzeSpringButton.setText("Analyze Spring");
+        actionPanel.add(analyzeSpringButton, new GridConstraints(1, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         startAnalysisButton = new JButton();
         startAnalysisButton.setText("Start Search");
-        actionPanel.add(startAnalysisButton, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        selectJarFileButton = new JButton();
-        selectJarFileButton.setText("Select Jar File");
-        actionPanel.add(selectJarFileButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        actionPanel.add(startAnalysisButton, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        useSpringBootJarCheckBox = new JCheckBox();
+        useSpringBootJarCheckBox.setBackground(new Color(-528927));
+        useSpringBootJarCheckBox.setText("Use SpringBoot Jar");
+        actionPanel.add(useSpringBootJarCheckBox, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        innerJarsCheckBox = new JCheckBox();
+        innerJarsCheckBox.setBackground(new Color(-528927));
+        innerJarsCheckBox.setText("Inner Jars");
+        actionPanel.add(innerJarsCheckBox, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         dcPanel = new JPanel();
         dcPanel.setLayout(new GridLayoutManager(1, 3, new Insets(0, 0, 0, 0), -1, -1));
         dcPanel.setBackground(new Color(-725535));
@@ -683,7 +755,7 @@ public class JarAnalyzerForm {
         editorPane = new JEditorPane();
         editorScroll.setViewportView(editorPane);
         curPanel = new JPanel();
-        curPanel.setLayout(new GridLayoutManager(1, 4, new Insets(0, 0, 0, 0), -1, -1));
+        curPanel.setLayout(new GridLayoutManager(1, 5, new Insets(0, 0, 0, 0), -1, -1));
         curPanel.setBackground(new Color(-725535));
         editorPanel.add(curPanel, new GridConstraints(3, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         curLabel = new JLabel();
@@ -694,10 +766,13 @@ public class JarAnalyzerForm {
         curPanel.add(currentLabel, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         showASMCodeButton = new JButton();
         showASMCodeButton.setText("Show ASM Code");
-        curPanel.add(showASMCodeButton, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        curPanel.add(showASMCodeButton, new GridConstraints(0, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         showByteCodeButton = new JButton();
         showByteCodeButton.setText("Show Bytecode");
-        curPanel.add(showByteCodeButton, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        curPanel.add(showByteCodeButton, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        springAnalyzerButton = new JButton();
+        springAnalyzerButton.setText("Spring Analyzer");
+        curPanel.add(springAnalyzerButton, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         callPanel = new JTabbedPane();
         callPanel.setBackground(new Color(-528927));
         callPanel.setForeground(new Color(-16777216));
@@ -714,24 +789,38 @@ public class JarAnalyzerForm {
         callScroll.setBorder(BorderFactory.createTitledBorder(null, "", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         callList = new JList();
         callScroll.setViewportView(callList);
-        historyScroll = new JScrollPane();
-        callPanel.addTab("Decompile History", historyScroll);
-        historyList = new JList();
-        historyScroll.setViewportView(historyList);
-        classInfoPanel = new JTabbedPane();
-        classInfoPanel.setBackground(new Color(-528927));
-        classInfoPanel.setForeground(new Color(-16777216));
-        editorPanel.add(classInfoPanel, new GridConstraints(1, 1, 2, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, new Dimension(200, 200), null, 0, false));
         subScroll = new JScrollPane();
         subScroll.setBackground(new Color(-528927));
-        classInfoPanel.addTab("All Subclasses", subScroll);
+        callPanel.addTab("All Subclasses", subScroll);
         subList = new JList();
         subScroll.setViewportView(subList);
         superScroll = new JScrollPane();
         superScroll.setBackground(new Color(-528927));
-        classInfoPanel.addTab("All Superclasses", superScroll);
+        callPanel.addTab("All Superclasses", superScroll);
         superList = new JList();
         superScroll.setViewportView(superList);
+        historyScroll = new JScrollPane();
+        callPanel.addTab("Decompile History", historyScroll);
+        historyList = new JList();
+        historyScroll.setViewportView(historyList);
+        springPanel = new JPanel();
+        springPanel.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
+        springPanel.setBackground(new Color(-528927));
+        editorPanel.add(springPanel, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        controllerPanel = new JScrollPane();
+        controllerPanel.setBackground(new Color(-528927));
+        springPanel.add(controllerPanel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        controllerPanel.setBorder(BorderFactory.createTitledBorder(null, "Spring Controllers", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        controllerJList = new JList();
+        final DefaultListModel defaultListModel1 = new DefaultListModel();
+        controllerJList.setModel(defaultListModel1);
+        controllerPanel.setViewportView(controllerJList);
+        mappingsPanel = new JScrollPane();
+        mappingsPanel.setBackground(new Color(-528927));
+        springPanel.add(mappingsPanel, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        mappingsPanel.setBorder(BorderFactory.createTitledBorder(null, "Spring Mappings", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        mappingJList = new JList();
+        mappingsPanel.setViewportView(mappingJList);
         authorPanel = new JPanel();
         authorPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
         authorPanel.setBackground(new Color(-725535));
@@ -740,7 +829,7 @@ public class JarAnalyzerForm {
         authorLabel.setText("Author: 4ra1n (github.com/4ra1n) from Chaitin Tech");
         authorPanel.add(authorLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_NORTH, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         configPanel = new JPanel();
-        configPanel.setLayout(new GridLayoutManager(4, 4, new Insets(0, 0, 0, 0), -1, -1));
+        configPanel.setLayout(new GridLayoutManager(5, 4, new Insets(0, 0, 0, 0), -1, -1));
         configPanel.setBackground(new Color(-725535));
         jarAnalyzerPanel.add(configPanel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         methodLabel = new JLabel();
@@ -771,6 +860,11 @@ public class JarAnalyzerForm {
         progress.setToolTipText("");
         progress.setValue(0);
         configPanel.add(progress, new GridConstraints(0, 1, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        springPackLabel = new JLabel();
+        springPackLabel.setText("   Spring Package Name:");
+        configPanel.add(springPackLabel, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        springPackageText = new JTextField();
+        configPanel.add(springPackageText, new GridConstraints(4, 1, 1, 3, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         resultPane = new JPanel();
         resultPane.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
         resultPane.setBackground(new Color(-725535));
@@ -786,8 +880,8 @@ public class JarAnalyzerForm {
         resultPane.add(chanScroll, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(600, 100), null, null, 0, false));
         chanScroll.setBorder(BorderFactory.createTitledBorder(null, "Your Chain", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         chanList = new JList();
-        final DefaultListModel defaultListModel1 = new DefaultListModel();
-        chanList.setModel(defaultListModel1);
+        final DefaultListModel defaultListModel2 = new DefaultListModel();
+        chanList.setModel(defaultListModel2);
         chanScroll.setViewportView(chanList);
         ButtonGroup buttonGroup;
         buttonGroup = new ButtonGroup();

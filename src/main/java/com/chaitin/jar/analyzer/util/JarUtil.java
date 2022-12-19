@@ -1,6 +1,7 @@
 package com.chaitin.jar.analyzer.util;
 
 import com.chaitin.jar.analyzer.core.ClassFile;
+import com.chaitin.jar.analyzer.form.JarAnalyzerForm;
 import org.apache.log4j.Logger;
 
 import java.io.InputStream;
@@ -52,7 +53,7 @@ public class JarUtil {
                     Path fullPath = tmpDir.resolve(jarEntry.getName());
                     if (!jarEntry.isDirectory()) {
                         if (!jarEntry.getName().endsWith(".class")) {
-                            if (jarEntry.getName().endsWith(".jar")) {
+                            if (jarEntry.getName().endsWith(".jar") && JarAnalyzerForm.innerJars) {
                                 Path dirName = fullPath.getParent();
                                 if (!Files.exists(dirName)) {
                                     Files.createDirectories(dirName);
