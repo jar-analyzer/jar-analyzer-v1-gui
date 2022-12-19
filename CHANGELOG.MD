@@ -68,3 +68,7 @@ New Features:
 
 Others:
 - use quilt flower 1.8.1 to support Java 8 #15 (support 8 and 11)
+
+## 0.6-beta
+
+Important: We support Spring Mapping Analyze!

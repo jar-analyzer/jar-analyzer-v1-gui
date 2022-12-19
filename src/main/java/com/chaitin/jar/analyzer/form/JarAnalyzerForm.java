@@ -2,6 +2,7 @@ package com.chaitin.jar.analyzer.form;
 
 import com.chaitin.jar.analyzer.core.*;
 import com.chaitin.jar.analyzer.model.ClassObj;
+import com.chaitin.jar.analyzer.model.MappingObj;
 import com.chaitin.jar.analyzer.model.ResObj;
 import com.chaitin.jar.analyzer.spring.SpringController;
 import com.chaitin.jar.analyzer.spring.SpringMapping;
@@ -12,6 +13,7 @@ import com.chaitin.jar.analyzer.util.OSUtil;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
+import com.strobel.core.Mapping;
 import com.strobel.decompiler.Decompiler;
 import com.strobel.decompiler.PlainTextOutput;
 import jsyntaxpane.syntaxkits.JavaSyntaxKit;
@@ -134,7 +136,7 @@ public class JarAnalyzerForm {
     private JScrollPane controllerPanel;
     private JScrollPane mappingsPanel;
     private JList<ClassObj> controllerJList;
-    private JList<ResObj> mappingJList;
+    private JList<MappingObj> mappingJList;
     private JCheckBox useSpringBootJarCheckBox;
     private JCheckBox innerJarsCheckBox;
     public static List<SpringController> controllers = new ArrayList<>();
@@ -268,6 +270,7 @@ public class JarAnalyzerForm {
 
     private static final DefaultListModel<ResObj> chainDataList = new DefaultListModel<>();
 
+    @SuppressWarnings("all")
     private void coreClass(MouseEvent evt, JList<?> list) {
         int index = list.locationToIndex(evt.getPoint());
         ClassObj res = (ClassObj) list.getModel().getElementAt(index);
@@ -555,8 +558,227 @@ public class JarAnalyzerForm {
         subList.addMouseListener(new ListClassMouseAdapter());
         superList.addMouseListener(new ListClassMouseAdapter());
         historyList.addMouseListener(new ListMouseAdapter());
-        mappingJList.addMouseListener(new ListMouseAdapter());
-        controllerJList.addMouseListener(new ListClassMouseAdapter());
+        mappingJList.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent evt) {
+                JList<?> list = (JList<?>) evt.getSource();
+                if (SwingUtilities.isRightMouseButton(evt) || evt.isControlDown()) {
+                    int index = list.locationToIndex(evt.getPoint());
+                    MappingObj res = (MappingObj) list.getModel().getElementAt(index);
+                    chainDataList.addElement(res.getResObj());
+                    chanList.setModel(chainDataList);
+                }
+            }
+
+            public void mouseClicked(MouseEvent evt) {
+                JList<?> list = (JList<?>) evt.getSource();
+                if (evt.getClickCount() == 1) {
+                    JList<?> l = (JList<?>) evt.getSource();
+                    ListModel<?> m = l.getModel();
+                    int index = l.locationToIndex(evt.getPoint());
+                    if (index > -1) {
+                        MappingObj res = (MappingObj) m.getElementAt(index);
+                        l.setToolTipText(res.getResObj().getMethod().getDescStd());
+
+                        ToolTipManager.sharedInstance().mouseMoved(
+                                new MouseEvent(l, 0, 0, 0,
+                                        evt.getX(), evt.getY(), 0, false));
+                    }
+                } else if (evt.getClickCount() == 2) {
+                    int index = list.locationToIndex(evt.getPoint());
+                    MappingObj res = (MappingObj) list.getModel().getElementAt(index);
+
+                    String className = res.getResObj().getClassName();
+                    String classPath = className.replace("/", File.separator);
+                    if (!springBootJar) {
+                        classPath = String.format("temp%s%s.class", File.separator, classPath);
+                    } else {
+                        classPath = String.format("temp%sBOOT-INF%sclasses%s%s.class",
+                                File.separator, File.separator, File.separator, classPath);
+                    }
+
+                    ByteArrayOutputStream bao = new ByteArrayOutputStream();
+                    OutputStreamWriter ows = new OutputStreamWriter(bao);
+                    BufferedWriter writer = new BufferedWriter(ows);
+
+                    String finalClassPath = classPath;
+
+                    String[] temp;
+                    if (OSUtil.isWindows()) {
+                        temp = finalClassPath.split(File.separator + File.separator);
+                    } else {
+                        temp = finalClassPath.split(File.separator);
+                    }
+                    StringBuilder sb = new StringBuilder();
+                    for (int i = 0; i < temp.length - 1; i++) {
+                        sb.append(temp[i]);
+                        sb.append(File.separator);
+                    }
+                    String javaDir = sb.toString();
+                    String tempName = temp[temp.length - 1].split("\\.class")[0];
+                    String javaPath = sb.append(tempName).append(".java").toString();
+                    Path javaPathPath = Paths.get(javaPath);
+
+                    new Thread(() -> {
+                        String total;
+                        historyDataList.addElement(res.getResObj());
+                        if (procyonRadioButton.isSelected()) {
+                            Decompiler.decompile(
+                                    finalClassPath,
+                                    new PlainTextOutput(writer));
+                            try {
+                                writer.flush();
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                            total = bao.toString();
+                            total = "// Procyon \n" + total;
+                        } else if (quiltFlowerRadioButton.isSelected()) {
+                            String[] args = new String[]{
+                                    finalClassPath,
+                                    javaDir
+                            };
+                            ConsoleDecompiler.main(args);
+                            try {
+                                total = new String(Files.readAllBytes(javaPathPath));
+                                total = "// QuiltFlower \n" + total;
+                                Files.delete(javaPathPath);
+                            } catch (Exception ignored) {
+                                total = "";
+                            }
+                        } else if (cfrRadioButton.isSelected()) {
+                            String[] args = new String[]{
+                                    finalClassPath,
+                                    "--outputpath",
+                                    "temp"
+                            };
+                            Main.main(args);
+                            try {
+                                total = new String(Files.readAllBytes(javaPathPath));
+                                Files.delete(javaPathPath);
+                            } catch (Exception ignored) {
+                                total = "";
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Error!");
+                            return;
+                        }
+                        editorPane.setText(total);
+
+                        String methodName = res.getResObj().getMethod().getName();
+                        if (methodName.equals("<init>")) {
+                            String[] c = res.getResObj().getClassName().split("/");
+                            methodName = c[c.length - 1];
+                        }
+
+                        for (int i = total.indexOf(methodName);
+                             i >= 0; i = total.indexOf(methodName, i + 1)) {
+                            if (total.charAt(i + methodName.length()) == '(') {
+                                int paramNum = Type.getMethodType(
+                                        res.getResObj().getMethod().getDesc()).getArgumentTypes().length;
+                                int curNum = 1;
+                                for (int j = i + methodName.length(); ; j++) {
+                                    if (total.charAt(j) == ')') {
+                                        if (total.charAt(j - 1) == '(') {
+                                            curNum = 0;
+                                        }
+                                        if (curNum == paramNum) {
+                                            editorPane.setCaretPosition(i);
+                                        }
+                                        break;
+                                    } else if (total.charAt(j) == ',') {
+                                        curNum++;
+                                    }
+                                }
+                            }
+                        }
+                    }).start();
+
+                    JOptionPane.showMessageDialog(null, "Decompiling...");
+
+                    DefaultListModel<ResObj> sourceDataList = new DefaultListModel<>();
+                    DefaultListModel<ResObj> callDataList = new DefaultListModel<>();
+                    DefaultListModel<ClassObj> subDataList = new DefaultListModel<>();
+                    DefaultListModel<ClassObj> superDataList = new DefaultListModel<>();
+
+                    MethodReference.Handle handle = res.getResObj().getMethod();
+                    HashSet<MethodReference.Handle> callMh = methodCalls.get(handle);
+                    for (MethodReference.Handle m : callMh) {
+                        callDataList.addElement(new ResObj(m, m.getClassReference().getName()));
+                    }
+                    for (Map.Entry<MethodReference.Handle,
+                            HashSet<MethodReference.Handle>> entry : methodCalls.entrySet()) {
+                        MethodReference.Handle mh = entry.getKey();
+                        HashSet<MethodReference.Handle> mSet = entry.getValue();
+                        for (MethodReference.Handle m : mSet) {
+                            if (m.getClassReference().getName().equals(className)) {
+                                if (m.getName().equals(res.getResObj().getMethod().getName())) {
+                                    sourceDataList.addElement(new ResObj(
+                                            mh, mh.getClassReference().getName()));
+                                }
+                            }
+                        }
+                    }
+
+                    Set<ClassReference.Handle> subClasses = inheritanceMap.getSubClasses(handle.getClassReference());
+                    if (subClasses != null && subClasses.size() != 0) {
+                        for (ClassReference.Handle c : subClasses) {
+                            ClassObj obj = new ClassObj(c.getName(), c);
+                            subDataList.addElement(obj);
+                        }
+                    }
+
+                    Set<ClassReference.Handle> superClasses = inheritanceMap.getSuperClasses(handle.getClassReference());
+                    if (superClasses != null && superClasses.size() != 0) {
+                        for (ClassReference.Handle c : superClasses) {
+                            ClassObj obj = new ClassObj(c.getName(), c);
+                            superDataList.addElement(obj);
+                        }
+                    }
+
+                    curRes = res.getResObj();
+                    currentLabel.setText(res.toString());
+                    currentLabel.setToolTipText(res.getResObj().getMethod().getDescStd());
+
+                    sourceList.setModel(sourceDataList);
+                    callList.setModel(callDataList);
+                    subList.setModel(subDataList);
+                    superList.setModel(superDataList);
+                    historyList.setModel(historyDataList);
+                }
+            }
+        });
+        controllerJList.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent evt) {
+                JList<?> list = (JList<?>) evt.getSource();
+                if (evt.getClickCount() == 2) {
+                    JList<?> l = (JList<?>) evt.getSource();
+                    ListModel<?> m = l.getModel();
+                    int index = l.locationToIndex(evt.getPoint());
+                    if (index > -1) {
+
+                        ClassObj res = (ClassObj) m.getElementAt(index);
+                        for (SpringController controller : controllers) {
+                            if (controller.getClassName().equals(res.getHandle())) {
+                                DefaultListModel<MappingObj> mappingDataList = new DefaultListModel<>();
+                                for (SpringMapping mapping : controller.getMappings()) {
+                                    for (MethodReference.Handle mh : methodMap.keySet()) {
+                                        if (mh.equals(mapping.getMethodName())) {
+                                            MappingObj mappingObj = new MappingObj();
+                                            mappingObj.setResObj(new ResObj(mh, mh.getClassReference().getName()));
+                                            mappingObj.setSpringMapping(mapping);
+                                            mappingDataList.addElement(mappingObj);
+                                        }
+                                    }
+                                }
+                                mappingJList.setModel(mappingDataList);
+                            }
+                        }
+                        coreClass(evt, list);
+                    }
+                }
+            }
+        });
 
         innerJarsCheckBox.addActionListener(e ->
                 innerJars = innerJarsCheckBox.isSelected());
@@ -569,7 +791,6 @@ public class JarAnalyzerForm {
             String text = springPackageText.getText();
             SpringService.start(classFileList, text, controllers, classMap, methodMap);
 
-            DefaultListModel<ResObj> mappingDataList = new DefaultListModel<>();
             DefaultListModel<ClassObj> controllerDataList = new DefaultListModel<>();
             for (SpringController controller : controllers) {
                 for (ClassReference.Handle c : classMap.keySet()) {
@@ -579,16 +800,7 @@ public class JarAnalyzerForm {
                     }
                 }
             }
-            for (SpringMapping mapping : controllers.get(1).getMappings()) {
-                for (MethodReference.Handle m : methodMap.keySet()) {
-                    if (m.equals(mapping.getMethodName())) {
-                        mappingDataList.addElement(
-                                new ResObj(m, m.getClassReference().getName()));
-                    }
-                }
-            }
             controllerJList.setModel(controllerDataList);
-            mappingJList.setModel(mappingDataList);
         });
 
         chanList.addMouseListener(new MouseAdapter() {

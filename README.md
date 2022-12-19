@@ -28,6 +28,10 @@ Support 3 API to decompile:
 - Procyon
 - CFR
 
+Support Spring Mappings analyze:
+
+![](img/10000.png)
+
 We use customized JSyntaxPane (not official) to show Java code.
 
 ## How to build
