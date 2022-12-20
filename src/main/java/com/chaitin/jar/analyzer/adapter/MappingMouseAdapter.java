@@ -60,9 +60,6 @@ public class MappingMouseAdapter extends MouseAdapter {
             int index = list.locationToIndex(evt.getPoint());
             MappingObj res = (MappingObj) list.getModel().getElementAt(index);
 
-            form.useSpringBootJarCheckBox.setSelected(true);
-            JarAnalyzerForm.springBootJar = true;
-
             String className = res.getResObj().getClassName();
             String classPath = className.replace("/", File.separator);
             if (!JarAnalyzerForm.springBootJar) {

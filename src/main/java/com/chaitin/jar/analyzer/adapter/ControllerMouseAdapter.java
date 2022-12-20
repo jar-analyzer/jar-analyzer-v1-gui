@@ -45,8 +45,6 @@ public class ControllerMouseAdapter extends MouseAdapter {
                         form.mappingJList.setModel(mappingDataList);
                     }
                 }
-                form.useSpringBootJarCheckBox.setSelected(true);
-                JarAnalyzerForm.springBootJar = true;
                 form.coreClass(evt, list);
             }
         }
