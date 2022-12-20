@@ -22,7 +22,15 @@ public class BytecodeForm {
 
     public BytecodeForm(String className, boolean flag) {
         className = className.replace("/", File.separator);
-        String targetPath = String.format("temp%s%s.class", File.separator, className);
+        className = className.replace(".", File.separator);
+        String targetPath;
+        if (JarAnalyzerForm.springBootJar) {
+            targetPath = String.format("temp%sBOOT-INF%sclasses%s%s.class",
+                    File.separator, File.separator, File.separator, className);
+        } else {
+            targetPath = String.format("temp%s%s.class", File.separator, className);
+        }
+
         try {
             InputStream is = Files.newInputStream(Paths.get(targetPath));
             String data = ASMPrint.getPrint(is, flag);
