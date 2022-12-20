@@ -1,11 +1,11 @@
 package com.chaitin.jar.analyzer.form;
 
+import com.chaitin.jar.analyzer.adapter.*;
 import com.chaitin.jar.analyzer.core.*;
 import com.chaitin.jar.analyzer.model.ClassObj;
 import com.chaitin.jar.analyzer.model.MappingObj;
 import com.chaitin.jar.analyzer.model.ResObj;
 import com.chaitin.jar.analyzer.spring.SpringController;
-import com.chaitin.jar.analyzer.spring.SpringMapping;
 import com.chaitin.jar.analyzer.spring.SpringService;
 import com.chaitin.jar.analyzer.util.CoreUtil;
 import com.chaitin.jar.analyzer.util.DirUtil;
@@ -23,7 +23,6 @@ import org.objectweb.asm.Type;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.*;
 import java.nio.file.Files;
@@ -33,124 +32,83 @@ import java.util.*;
 import java.util.List;
 
 public class JarAnalyzerForm {
-
-    private class ListMouseAdapter extends MouseAdapter {
-        public void mousePressed(MouseEvent evt) {
-            JList<?> list = (JList<?>) evt.getSource();
-            if (SwingUtilities.isRightMouseButton(evt) || evt.isControlDown()) {
-                int index = list.locationToIndex(evt.getPoint());
-                ResObj res = (ResObj) list.getModel().getElementAt(index);
-                chainDataList.addElement(res);
-                chanList.setModel(chainDataList);
-            }
-        }
-
-        public void mouseClicked(MouseEvent evt) {
-            JList<?> list = (JList<?>) evt.getSource();
-            if (evt.getClickCount() == 1) {
-                JList<?> l = (JList<?>) evt.getSource();
-                ListModel<?> m = l.getModel();
-                int index = l.locationToIndex(evt.getPoint());
-                if (index > -1) {
-                    ResObj res = (ResObj) m.getElementAt(index);
-                    l.setToolTipText(res.getMethod().getDescStd());
-
-                    ToolTipManager.sharedInstance().mouseMoved(
-                            new MouseEvent(l, 0, 0, 0,
-                                    evt.getX(), evt.getY(), 0, false));
-                }
-            } else if (evt.getClickCount() == 2) {
-                core(evt, list);
-            }
-        }
-    }
-
-    private class ListClassMouseAdapter extends MouseAdapter {
-        public void mouseClicked(MouseEvent evt) {
-            JList<?> list = (JList<?>) evt.getSource();
-            if (evt.getClickCount() == 2) {
-                coreClass(evt, list);
-            }
-        }
-    }
-
     public static boolean innerJars = false;
     public static boolean springBootJar = false;
-    private JButton startAnalysisButton;
-    private JPanel jarAnalyzerPanel;
-    private JPanel topPanel;
-    private JButton selectJarFileButton;
-    private JPanel editorPanel;
-    private JScrollPane editorScroll;
-    private JLabel authorLabel;
-    private JPanel authorPanel;
-    private JEditorPane editorPane;
-    private JList<ResObj> resultList;
-    private JPanel resultPane;
-    private JScrollPane resultScroll;
-    private JTextField classText;
-    private JTextField methodText;
-    private JLabel methodLabel;
-    private JLabel classLabel;
-    private JLabel jarInfoLabel;
-    private JTextField jarInfoResultText;
-    private JScrollPane sourceScroll;
-    private JList<ResObj> sourceList;
-    private JList<ResObj> callList;
-    private JScrollPane callScroll;
-    private JList<ResObj> chanList;
-    private JPanel configPanel;
-    private JScrollPane chanScroll;
-    private JTextField currentLabel;
-    private static ResObj curRes;
-    private JRadioButton procyonRadioButton;
-    private JRadioButton cfrRadioButton;
-    private JRadioButton quiltFlowerRadioButton;
-    private JPanel opPanel;
-    private JPanel dcPanel;
-    private JPanel curPanel;
-    private JLabel curLabel;
-    private JLabel progressLabel;
-    private JProgressBar progress;
-    private JTabbedPane callPanel;
-    private JScrollPane subScroll;
-    private JScrollPane superScroll;
-    private JList<ClassObj> subList;
-    private JList<ClassObj> superList;
-    private JList<ResObj> historyList;
-    private JScrollPane historyScroll;
-    private JButton showASMCodeButton;
-    private JButton showByteCodeButton;
-    private JRadioButton callSearchRadioButton;
-    private JRadioButton directSearchRadioButton;
-    private JPanel searchSelPanel;
-    private JLabel callSearchLabel;
-    private JLabel directSearchLabel;
-    private JPanel actionPanel;
-    private JButton analyzeSpringButton;
-    private JPanel springPanel;
-    private JScrollPane controllerPanel;
-    private JScrollPane mappingsPanel;
-    private JList<ClassObj> controllerJList;
-    private JList<MappingObj> mappingJList;
-    private JCheckBox useSpringBootJarCheckBox;
-    private JCheckBox innerJarsCheckBox;
+    public JButton startAnalysisButton;
+    public JPanel jarAnalyzerPanel;
+    public JPanel topPanel;
+    public JButton selectJarFileButton;
+    public JPanel editorPanel;
+    public JScrollPane editorScroll;
+    public JLabel authorLabel;
+    public JPanel authorPanel;
+    public JEditorPane editorPane;
+    public JList<ResObj> resultList;
+    public JPanel resultPane;
+    public JScrollPane resultScroll;
+    public JTextField classText;
+    public JTextField methodText;
+    public JLabel methodLabel;
+    public JLabel classLabel;
+    public JLabel jarInfoLabel;
+    public JTextField jarInfoResultText;
+    public JScrollPane sourceScroll;
+    public JList<ResObj> sourceList;
+    public JList<ResObj> callList;
+    public JScrollPane callScroll;
+    public JList<ResObj> chanList;
+    public JPanel configPanel;
+    public JScrollPane chanScroll;
+    public JTextField currentLabel;
+    public static ResObj curRes;
+    public JRadioButton procyonRadioButton;
+    public JRadioButton cfrRadioButton;
+    public JRadioButton quiltFlowerRadioButton;
+    public JPanel opPanel;
+    public JPanel dcPanel;
+    public JPanel curPanel;
+    public JLabel curLabel;
+    public JLabel progressLabel;
+    public JProgressBar progress;
+    public JTabbedPane callPanel;
+    public JScrollPane subScroll;
+    public JScrollPane superScroll;
+    public JList<ClassObj> subList;
+    public JList<ClassObj> superList;
+    public JList<ResObj> historyList;
+    public JScrollPane historyScroll;
+    public JButton showASMCodeButton;
+    public JButton showByteCodeButton;
+    public JRadioButton callSearchRadioButton;
+    public JRadioButton directSearchRadioButton;
+    public JPanel searchSelPanel;
+    public JLabel callSearchLabel;
+    public JLabel directSearchLabel;
+    public JPanel actionPanel;
+    public JButton analyzeSpringButton;
+    public JPanel springPanel;
+    public JScrollPane controllerPanel;
+    public JScrollPane mappingsPanel;
+    public JList<ClassObj> controllerJList;
+    public JList<MappingObj> mappingJList;
+    public JCheckBox useSpringBootJarCheckBox;
+    public JCheckBox innerJarsCheckBox;
     public static List<SpringController> controllers = new ArrayList<>();
 
-    private static final DefaultListModel<ResObj> historyDataList = new DefaultListModel<>();
+    public static final DefaultListModel<ResObj> historyDataList = new DefaultListModel<>();
 
     public static Set<ClassFile> classFileList = new HashSet<>();
-    private static final Set<ClassReference> discoveredClasses = new HashSet<>();
-    private static final Set<MethodReference> discoveredMethods = new HashSet<>();
-    private static final Map<ClassReference.Handle, ClassReference> classMap = new HashMap<>();
-    private static final Map<MethodReference.Handle, MethodReference> methodMap = new HashMap<>();
-    private static final HashMap<MethodReference.Handle,
+    public static final Set<ClassReference> discoveredClasses = new HashSet<>();
+    public static final Set<MethodReference> discoveredMethods = new HashSet<>();
+    public static final Map<ClassReference.Handle, ClassReference> classMap = new HashMap<>();
+    public static final Map<MethodReference.Handle, MethodReference> methodMap = new HashMap<>();
+    public static final HashMap<MethodReference.Handle,
             HashSet<MethodReference.Handle>> methodCalls = new HashMap<>();
-    private static InheritanceMap inheritanceMap;
+    public static InheritanceMap inheritanceMap;
 
-    private static int totalJars = 0;
+    public static int totalJars = 0;
 
-    private void loadJar() {
+    public void loadJar() {
         selectJarFileButton.addActionListener(e -> {
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
@@ -264,10 +222,10 @@ public class JarAnalyzerForm {
         });
     }
 
-    private static final DefaultListModel<ResObj> chainDataList = new DefaultListModel<>();
+    public static final DefaultListModel<ResObj> chainDataList = new DefaultListModel<>();
 
     @SuppressWarnings("all")
-    private void coreClass(MouseEvent evt, JList<?> list) {
+    public void coreClass(MouseEvent evt, JList<?> list) {
         int index = list.locationToIndex(evt.getPoint());
         ClassObj res = (ClassObj) list.getModel().getElementAt(index);
         String className = res.getClassName();
@@ -373,7 +331,7 @@ public class JarAnalyzerForm {
     }
 
     @SuppressWarnings("all")
-    private void core(MouseEvent evt, JList<?> list) {
+    public void core(MouseEvent evt, JList<?> list) {
         int index = list.locationToIndex(evt.getPoint());
         ResObj res = (ResObj) list.getModel().getElementAt(index);
 
@@ -548,233 +506,14 @@ public class JarAnalyzerForm {
         ToolTipManager.sharedInstance().setDismissDelay(10000);
         ToolTipManager.sharedInstance().setInitialDelay(300);
 
-        resultList.addMouseListener(new ListMouseAdapter());
-        callList.addMouseListener(new ListMouseAdapter());
-        sourceList.addMouseListener(new ListMouseAdapter());
-        subList.addMouseListener(new ListClassMouseAdapter());
-        superList.addMouseListener(new ListClassMouseAdapter());
-        historyList.addMouseListener(new ListMouseAdapter());
-        mappingJList.addMouseListener(new MouseAdapter() {
-            public void mousePressed(MouseEvent evt) {
-                JList<?> list = (JList<?>) evt.getSource();
-                if (SwingUtilities.isRightMouseButton(evt) || evt.isControlDown()) {
-                    int index = list.locationToIndex(evt.getPoint());
-                    MappingObj res = (MappingObj) list.getModel().getElementAt(index);
-                    chainDataList.addElement(res.getResObj());
-                    chanList.setModel(chainDataList);
-                }
-            }
-
-            public void mouseClicked(MouseEvent evt) {
-                JList<?> list = (JList<?>) evt.getSource();
-                if (evt.getClickCount() == 1) {
-                    JList<?> l = (JList<?>) evt.getSource();
-                    ListModel<?> m = l.getModel();
-                    int index = l.locationToIndex(evt.getPoint());
-                    if (index > -1) {
-                        MappingObj res = (MappingObj) m.getElementAt(index);
-                        l.setToolTipText(res.getResObj().getMethod().getDescStd());
-
-                        ToolTipManager.sharedInstance().mouseMoved(
-                                new MouseEvent(l, 0, 0, 0,
-                                        evt.getX(), evt.getY(), 0, false));
-                    }
-                } else if (evt.getClickCount() == 2) {
-                    int index = list.locationToIndex(evt.getPoint());
-                    MappingObj res = (MappingObj) list.getModel().getElementAt(index);
-
-                    String className = res.getResObj().getClassName();
-                    String classPath = className.replace("/", File.separator);
-                    if (!springBootJar) {
-                        classPath = String.format("temp%s%s.class", File.separator, classPath);
-                    } else {
-                        classPath = String.format("temp%sBOOT-INF%sclasses%s%s.class",
-                                File.separator, File.separator, File.separator, classPath);
-                    }
-
-                    ByteArrayOutputStream bao = new ByteArrayOutputStream();
-                    OutputStreamWriter ows = new OutputStreamWriter(bao);
-                    BufferedWriter writer = new BufferedWriter(ows);
-
-                    String finalClassPath = classPath;
-
-                    String[] temp;
-                    if (OSUtil.isWindows()) {
-                        temp = finalClassPath.split(File.separator + File.separator);
-                    } else {
-                        temp = finalClassPath.split(File.separator);
-                    }
-                    StringBuilder sb = new StringBuilder();
-                    for (int i = 0; i < temp.length - 1; i++) {
-                        sb.append(temp[i]);
-                        sb.append(File.separator);
-                    }
-                    String javaDir = sb.toString();
-                    String tempName = temp[temp.length - 1].split("\\.class")[0];
-                    String javaPath = sb.append(tempName).append(".java").toString();
-                    Path javaPathPath = Paths.get(javaPath);
-
-                    new Thread(() -> {
-                        String total;
-                        historyDataList.addElement(res.getResObj());
-                        if (procyonRadioButton.isSelected()) {
-                            Decompiler.decompile(
-                                    finalClassPath,
-                                    new PlainTextOutput(writer));
-                            try {
-                                writer.flush();
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
-                            total = bao.toString();
-                            total = "// Procyon \n" + total;
-                        } else if (quiltFlowerRadioButton.isSelected()) {
-                            String[] args = new String[]{
-                                    finalClassPath,
-                                    javaDir
-                            };
-                            ConsoleDecompiler.main(args);
-                            try {
-                                total = new String(Files.readAllBytes(javaPathPath));
-                                total = "// QuiltFlower \n" + total;
-                                Files.delete(javaPathPath);
-                            } catch (Exception ignored) {
-                                total = "";
-                            }
-                        } else if (cfrRadioButton.isSelected()) {
-                            String[] args = new String[]{
-                                    finalClassPath,
-                                    "--outputpath",
-                                    "temp"
-                            };
-                            Main.main(args);
-                            try {
-                                total = new String(Files.readAllBytes(javaPathPath));
-                                Files.delete(javaPathPath);
-                            } catch (Exception ignored) {
-                                total = "";
-                            }
-                        } else {
-                            JOptionPane.showMessageDialog(null, "Error!");
-                            return;
-                        }
-                        editorPane.setText(total);
-
-                        String methodName = res.getResObj().getMethod().getName();
-                        if (methodName.equals("<init>")) {
-                            String[] c = res.getResObj().getClassName().split("/");
-                            methodName = c[c.length - 1];
-                        }
-
-                        for (int i = total.indexOf(methodName);
-                             i >= 0; i = total.indexOf(methodName, i + 1)) {
-                            if (total.charAt(i + methodName.length()) == '(') {
-                                int paramNum = Type.getMethodType(
-                                        res.getResObj().getMethod().getDesc()).getArgumentTypes().length;
-                                int curNum = 1;
-                                for (int j = i + methodName.length(); ; j++) {
-                                    if (total.charAt(j) == ')') {
-                                        if (total.charAt(j - 1) == '(') {
-                                            curNum = 0;
-                                        }
-                                        if (curNum == paramNum) {
-                                            editorPane.setCaretPosition(i);
-                                        }
-                                        break;
-                                    } else if (total.charAt(j) == ',') {
-                                        curNum++;
-                                    }
-                                }
-                            }
-                        }
-                    }).start();
-
-                    JOptionPane.showMessageDialog(null, "Decompiling...");
-
-                    DefaultListModel<ResObj> sourceDataList = new DefaultListModel<>();
-                    DefaultListModel<ResObj> callDataList = new DefaultListModel<>();
-                    DefaultListModel<ClassObj> subDataList = new DefaultListModel<>();
-                    DefaultListModel<ClassObj> superDataList = new DefaultListModel<>();
-
-                    MethodReference.Handle handle = res.getResObj().getMethod();
-                    HashSet<MethodReference.Handle> callMh = methodCalls.get(handle);
-                    for (MethodReference.Handle m : callMh) {
-                        callDataList.addElement(new ResObj(m, m.getClassReference().getName()));
-                    }
-                    for (Map.Entry<MethodReference.Handle,
-                            HashSet<MethodReference.Handle>> entry : methodCalls.entrySet()) {
-                        MethodReference.Handle mh = entry.getKey();
-                        HashSet<MethodReference.Handle> mSet = entry.getValue();
-                        for (MethodReference.Handle m : mSet) {
-                            if (m.getClassReference().getName().equals(className)) {
-                                if (m.getName().equals(res.getResObj().getMethod().getName())) {
-                                    sourceDataList.addElement(new ResObj(
-                                            mh, mh.getClassReference().getName()));
-                                }
-                            }
-                        }
-                    }
-
-                    Set<ClassReference.Handle> subClasses = inheritanceMap.getSubClasses(handle.getClassReference());
-                    if (subClasses != null && subClasses.size() != 0) {
-                        for (ClassReference.Handle c : subClasses) {
-                            ClassObj obj = new ClassObj(c.getName(), c);
-                            subDataList.addElement(obj);
-                        }
-                    }
-
-                    Set<ClassReference.Handle> superClasses = inheritanceMap.getSuperClasses(handle.getClassReference());
-                    if (superClasses != null && superClasses.size() != 0) {
-                        for (ClassReference.Handle c : superClasses) {
-                            ClassObj obj = new ClassObj(c.getName(), c);
-                            superDataList.addElement(obj);
-                        }
-                    }
-
-                    curRes = res.getResObj();
-                    currentLabel.setText(res.toString());
-                    currentLabel.setToolTipText(res.getResObj().getMethod().getDescStd());
-
-                    sourceList.setModel(sourceDataList);
-                    callList.setModel(callDataList);
-                    subList.setModel(subDataList);
-                    superList.setModel(superDataList);
-                    historyList.setModel(historyDataList);
-                }
-            }
-        });
-        controllerJList.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent evt) {
-                JList<?> list = (JList<?>) evt.getSource();
-                if (evt.getClickCount() == 2) {
-                    JList<?> l = (JList<?>) evt.getSource();
-                    ListModel<?> m = l.getModel();
-                    int index = l.locationToIndex(evt.getPoint());
-                    if (index > -1) {
-
-                        ClassObj res = (ClassObj) m.getElementAt(index);
-                        for (SpringController controller : controllers) {
-                            if (controller.getClassName().equals(res.getHandle())) {
-                                DefaultListModel<MappingObj> mappingDataList = new DefaultListModel<>();
-                                for (SpringMapping mapping : controller.getMappings()) {
-                                    for (MethodReference.Handle mh : methodMap.keySet()) {
-                                        if (mh.equals(mapping.getMethodName())) {
-                                            MappingObj mappingObj = new MappingObj();
-                                            mappingObj.setResObj(new ResObj(mh, mh.getClassReference().getName()));
-                                            mappingObj.setSpringMapping(mapping);
-                                            mappingDataList.addElement(mappingObj);
-                                        }
-                                    }
-                                }
-                                mappingJList.setModel(mappingDataList);
-                            }
-                        }
-                        coreClass(evt, list);
-                    }
-                }
-            }
-        });
+        resultList.addMouseListener(new ListMouseAdapter(this));
+        callList.addMouseListener(new ListMouseAdapter(this));
+        sourceList.addMouseListener(new ListMouseAdapter(this));
+        subList.addMouseListener(new ListClassMouseAdapter(this));
+        superList.addMouseListener(new ListClassMouseAdapter(this));
+        historyList.addMouseListener(new ListMouseAdapter(this));
+        mappingJList.addMouseListener(new MappingMouseAdapter(this));
+        controllerJList.addMouseListener(new ControllerMouseAdapter(this));
 
         innerJarsCheckBox.addActionListener(e ->
                 innerJars = innerJarsCheckBox.isSelected());
@@ -798,38 +537,7 @@ public class JarAnalyzerForm {
             controllerJList.setModel(controllerDataList);
         });
 
-        chanList.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent evt) {
-                JList<?> list = (JList<?>) evt.getSource();
-                if (SwingUtilities.isRightMouseButton(evt) || evt.isControlDown()) {
-                    int index = list.locationToIndex(evt.getPoint());
-                    ResObj res = (ResObj) list.getModel().getElementAt(index);
-                    chainDataList.removeElement(res);
-                    chanList.setModel(chainDataList);
-                }
-            }
-
-            @Override
-            public void mouseClicked(MouseEvent evt) {
-                JList<?> list = (JList<?>) evt.getSource();
-                if (evt.getClickCount() == 1) {
-                    JList<?> l = (JList<?>) evt.getSource();
-                    ListModel<?> m = l.getModel();
-                    int index = l.locationToIndex(evt.getPoint());
-                    if (index > -1) {
-                        ResObj res = (ResObj) m.getElementAt(index);
-                        l.setToolTipText(res.getMethod().getDescStd());
-
-                        ToolTipManager.sharedInstance().mouseMoved(
-                                new MouseEvent(l, 0, 0, 0,
-                                        evt.getX(), evt.getY(), 0, false));
-                    }
-                } else if (evt.getClickCount() == 2) {
-                    core(evt, list);
-                }
-            }
-        });
+        chanList.addMouseListener(new ChanMouseAdapter(this));
 
         showByteCodeButton.addActionListener(e -> {
             if (curRes == null) {
