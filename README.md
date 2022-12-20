@@ -18,12 +18,6 @@ For detailed use of this tool, refer to Quick Start.
 
 [go to download](https://github.com/4ra1n/jar-analyzer/releases/latest)
 
-![](img/018.png)
-
-You can simply view the bytecode and ASM code.
-
-![](img/017.png)
-
 Support 3 API to decompile:
 - QuiltFlower (FernFlower)
 - Procyon
@@ -31,11 +25,17 @@ Support 3 API to decompile:
 
 Support Spring Mappings analyze:
 
-![](img/10000.png)
-
 ![](img/00001.jpg)
 
 We use customized JSyntaxPane (not official) to show Java code.
+
+Some screenshots:
+
+![](img/018.png)
+
+You can simply view the bytecode and ASM code.
+
+![](img/017.png)
 
 ## How to build
 

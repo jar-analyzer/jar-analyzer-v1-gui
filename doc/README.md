@@ -14,12 +14,6 @@
 
 [前往下载](https://github.com/4ra1n/jar-analyzer/releases/latest)
 
-![](../img/018.png)
-
-你可以很方便地查看字节码和ASM代码。
-
-![](../img/017.png)
-
 支持选择三项反编译方式：
 - QuiltFlower (FernFlower)
 - Procyon
@@ -27,11 +21,17 @@
 
 支持Spring的Mapping分析：
 
-![](../img/10000.png)
-
 ![](../img/00001.jpg)
 
 我们使用类定制化的`JSyntaxPane`组件（非官方）来展示`Java`代码
+
+一些截图：
+
+![](../img/018.png)
+
+你可以很方便地查看字节码和ASM代码。
+
+![](../img/017.png)
 
 ## 如何构建
 

@@ -80,7 +80,7 @@ Change:
 
 ## 0.7
 
-This is a bug fix version, and the code has been refactored.
+Important version.
 
 Bug:
 - [important] [bug] cannot decompile spring class sometimes #28
