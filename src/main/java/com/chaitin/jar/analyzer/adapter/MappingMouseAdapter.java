@@ -109,7 +109,7 @@ public class MappingMouseAdapter extends MouseAdapter {
                     }
                     total = bao.toString();
                     if (total == null || total.trim().equals("")) {
-                        total = "IMPORTANT: MISSING JARS (maybe: rt.jar or other dependencies?)";
+                        total = JarAnalyzerForm.tips;
                     } else {
                         total = "// Procyon \n" + total;
                     }
@@ -122,7 +122,7 @@ public class MappingMouseAdapter extends MouseAdapter {
                     try {
                         total = new String(Files.readAllBytes(javaPathPath));
                         if (total.trim().equals("")) {
-                            total = "IMPORTANT: MISSING JARS (maybe: rt.jar or other dependencies?)";
+                            total = JarAnalyzerForm.tips;
                         } else {
                             total = "// QuiltFlower \n" + total;
                             Files.delete(javaPathPath);
@@ -144,7 +144,7 @@ public class MappingMouseAdapter extends MouseAdapter {
                         total = "";
                     }
                     if (total.trim().equals("")) {
-                        total = "IMPORTANT: MISSING JARS (maybe: rt.jar or other dependencies?)";
+                        total = JarAnalyzerForm.tips;
                     }
                 } else {
                     JOptionPane.showMessageDialog(null, "Error!");

@@ -32,6 +32,7 @@ import java.util.*;
 import java.util.List;
 
 public class JarAnalyzerForm {
+    public static final String tips = "IMPORTANT: MISSING JARS (maybe: rt.jar or other dependencies?)";
     public static boolean deleteLogs = false;
     public static boolean innerJars = false;
     public static boolean springBootJar = false;
@@ -276,7 +277,7 @@ public class JarAnalyzerForm {
                 }
                 total = bao.toString();
                 if (total == null || total.trim().equals("")) {
-                    total = "IMPORTANT: MISSING JARS (maybe: rt.jar or other dependencies?)";
+                    total = tips;
                 } else {
                     total = "// Procyon \n" + total;
                 }
@@ -289,13 +290,13 @@ public class JarAnalyzerForm {
                 try {
                     total = new String(Files.readAllBytes(javaPathPath));
                     if (total.trim().equals("")) {
-                        total = "IMPORTANT: MISSING JARS (maybe: rt.jar or other dependencies?)";
+                        total = tips;
                     } else {
                         total = "// QuiltFlower \n" + total;
                         Files.delete(javaPathPath);
                     }
                 } catch (Exception ignored) {
-                    total = "IMPORTANT: MISSING JARS (maybe: rt.jar or other dependencies?)";
+                    total = tips;
                 }
             } else if (cfrRadioButton.isSelected()) {
                 String[] args = new String[]{
@@ -311,7 +312,7 @@ public class JarAnalyzerForm {
                     total = "";
                 }
                 if (total.trim().equals("")) {
-                    total = "IMPORTANT: MISSING JARS (maybe: rt.jar or other dependencies?)";
+                    total = tips;
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "Error!");
@@ -400,7 +401,7 @@ public class JarAnalyzerForm {
                 }
                 total = bao.toString();
                 if (total == null || total.trim().equals("")) {
-                    total = "IMPORTANT: MISSING JARS (maybe: rt.jar or other dependencies?)";
+                    total = tips;
                 } else {
                     total = "// Procyon \n" + total;
                 }
@@ -413,13 +414,13 @@ public class JarAnalyzerForm {
                 try {
                     total = new String(Files.readAllBytes(javaPathPath));
                     if (total.trim().equals("")) {
-                        total = "IMPORTANT: MISSING JARS (maybe: rt.jar or other dependencies?)";
+                        total = tips;
                     } else {
                         total = "// QuiltFlower \n" + total;
                         Files.delete(javaPathPath);
                     }
                 } catch (Exception ignored) {
-                    total = "IMPORTANT: MISSING JARS (maybe: rt.jar or other dependencies?)";
+                    total = tips;
                 }
             } else if (cfrRadioButton.isSelected()) {
                 String[] args = new String[]{
@@ -435,7 +436,7 @@ public class JarAnalyzerForm {
                     total = "";
                 }
                 if (total.trim().equals("")) {
-                    total = "IMPORTANT: MISSING JARS (maybe: rt.jar or other dependencies?)";
+                    total = tips;
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "Error!");
