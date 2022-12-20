@@ -89,6 +89,7 @@ Bug:
 Feature:
 - [important] [feat] support getmapping and postmapping #23
 - [important] [feat] controller without controller anno #24
+- [feat] delete logs when exit checkbox #32
 
 Others:
 - [important] [improve] code refactor #27

@@ -32,6 +32,7 @@ import java.util.*;
 import java.util.List;
 
 public class JarAnalyzerForm {
+    public static boolean deleteLogs = false;
     public static boolean innerJars = false;
     public static boolean springBootJar = false;
     public JButton startAnalysisButton;
@@ -93,6 +94,7 @@ public class JarAnalyzerForm {
     public JList<MappingObj> mappingJList;
     public JCheckBox useSpringBootJarCheckBox;
     public JCheckBox innerJarsCheckBox;
+    private JCheckBox deleteLogsWhenExitCheckBox;
     public static List<SpringController> controllers = new ArrayList<>();
 
     public static final DefaultListModel<ResObj> historyDataList = new DefaultListModel<>();
@@ -526,6 +528,10 @@ public class JarAnalyzerForm {
                 innerJars = innerJarsCheckBox.isSelected());
         useSpringBootJarCheckBox.addActionListener(e ->
                 springBootJar = useSpringBootJarCheckBox.isSelected());
+        deleteLogsWhenExitCheckBox.setSelected(true);
+        deleteLogs = true;
+        deleteLogsWhenExitCheckBox.addActionListener(e ->
+                deleteLogs = deleteLogsWhenExitCheckBox.isSelected());
 
         analyzeSpringButton.addActionListener(e -> {
             springBootJar = true;
@@ -677,7 +683,7 @@ public class JarAnalyzerForm {
         editorPane = new JEditorPane();
         editorScroll.setViewportView(editorPane);
         curPanel = new JPanel();
-        curPanel.setLayout(new GridLayoutManager(1, 4, new Insets(0, 0, 0, 0), -1, -1));
+        curPanel.setLayout(new GridLayoutManager(1, 5, new Insets(0, 0, 0, 0), -1, -1));
         curPanel.setBackground(new Color(-725535));
         editorPanel.add(curPanel, new GridConstraints(3, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         curLabel = new JLabel();
@@ -688,10 +694,14 @@ public class JarAnalyzerForm {
         curPanel.add(currentLabel, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         showASMCodeButton = new JButton();
         showASMCodeButton.setText("Show ASM Code");
-        curPanel.add(showASMCodeButton, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        curPanel.add(showASMCodeButton, new GridConstraints(0, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         showByteCodeButton = new JButton();
         showByteCodeButton.setText("Show Bytecode");
-        curPanel.add(showByteCodeButton, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        curPanel.add(showByteCodeButton, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        deleteLogsWhenExitCheckBox = new JCheckBox();
+        deleteLogsWhenExitCheckBox.setBackground(new Color(-725535));
+        deleteLogsWhenExitCheckBox.setText("Delete Logs When Exit");
+        curPanel.add(deleteLogsWhenExitCheckBox, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         callPanel = new JTabbedPane();
         callPanel.setBackground(new Color(-528927));
         callPanel.setForeground(new Color(-16777216));

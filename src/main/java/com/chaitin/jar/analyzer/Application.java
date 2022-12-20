@@ -16,17 +16,19 @@ public class Application {
             System.setErr(new PrintStream(Files.newOutputStream(errLogPath)));
 
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                try {
-                    Files.delete(errLogPath);
-                } catch (Exception ignored) {
-                }
-                try {
-                    Files.delete(outLogPath);
-                } catch (Exception ignored) {
+                if (JarAnalyzerForm.deleteLogs) {
+                    try {
+                        Files.delete(errLogPath);
+                    } catch (Exception ignored) {
+                    }
+                    try {
+                        Files.delete(outLogPath);
+                    } catch (Exception ignored) {
+                    }
                 }
             }));
             JarAnalyzerForm.start();
-        }catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
