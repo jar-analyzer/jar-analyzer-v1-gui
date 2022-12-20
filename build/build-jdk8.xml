@@ -2,8 +2,8 @@
 <launch4jConfig>
   <dontWrapJar>false</dontWrapJar>
   <headerType>gui</headerType>
-  <jar>D:\jar-analyzer\target\jar-analyzer-0.7-beta.jar</jar>
-  <outfile>D:\jar-analyzer\jar-analyzer-0.7-beta-jdk8.exe</outfile>
+  <jar>D:\jar-analyzer\target\jar-analyzer-0.7.jar</jar>
+  <outfile>D:\jar-analyzer\jar-analyzer-0.7-jdk8.exe</outfile>
   <errTitle></errTitle>
   <cmdLine></cmdLine>
   <chdir>.</chdir>
