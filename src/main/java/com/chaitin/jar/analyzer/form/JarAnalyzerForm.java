@@ -133,7 +133,6 @@ public class JarAnalyzerForm {
                     progress.setValue(20);
                     classFileList.addAll(CoreUtil.getAllClassesFromJars(jarPathList));
                     progress.setValue(50);
-                    System.out.println(classFileList.size());
                     Discovery.start(classFileList, discoveredClasses,
                             discoveredMethods, classMap, methodMap);
                     jarInfoResultText.setText(String.format(
@@ -231,8 +230,12 @@ public class JarAnalyzerForm {
         String className = res.getClassName();
         String classPath = className.replace("/", File.separator);
         if (springBootJar) {
-            classPath = String.format("temp%sBOOT-INF%sclasses%s%s.class",
-                    File.separator, File.separator, File.separator, classPath);
+            if (classPath.contains("springframework")) {
+                classPath = String.format("temp%s%s.class", File.separator, classPath);
+            } else {
+                classPath = String.format("temp%sBOOT-INF%sclasses%s%s.class",
+                        File.separator, File.separator, File.separator, classPath);
+            }
         } else {
             classPath = String.format("temp%s%s.class", File.separator, classPath);
         }
@@ -340,8 +343,12 @@ public class JarAnalyzerForm {
         if (!springBootJar) {
             classPath = String.format("temp%s%s.class", File.separator, classPath);
         } else {
-            classPath = String.format("temp%sBOOT-INF%sclasses%s%s.class",
-                    File.separator, File.separator, File.separator, classPath);
+            if (classPath.contains("springframework")) {
+                classPath = String.format("temp%s%s.class", File.separator, classPath);
+            } else {
+                classPath = String.format("temp%sBOOT-INF%sclasses%s%s.class",
+                        File.separator, File.separator, File.separator, classPath);
+            }
         }
 
         ByteArrayOutputStream bao = new ByteArrayOutputStream();

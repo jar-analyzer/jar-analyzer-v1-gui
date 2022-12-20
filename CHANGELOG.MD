@@ -81,6 +81,7 @@ Change:
 ## 0.7-beta
 
 Bug:
+- [important] [bug] cannot decompile spring class sometimes #28
 - [bug] macos tabbed panel bug #25
 
 Feature:

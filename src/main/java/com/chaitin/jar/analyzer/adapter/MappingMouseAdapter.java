@@ -65,8 +65,12 @@ public class MappingMouseAdapter extends MouseAdapter {
             if (!JarAnalyzerForm.springBootJar) {
                 classPath = String.format("temp%s%s.class", File.separator, classPath);
             } else {
-                classPath = String.format("temp%sBOOT-INF%sclasses%s%s.class",
-                        File.separator, File.separator, File.separator, classPath);
+                if (classPath.contains("springframework")){
+                    classPath = String.format("temp%s%s.class", File.separator, classPath);
+                }else{
+                    classPath = String.format("temp%sBOOT-INF%sclasses%s%s.class",
+                            File.separator, File.separator, File.separator, classPath);
+                }
             }
 
             ByteArrayOutputStream bao = new ByteArrayOutputStream();
