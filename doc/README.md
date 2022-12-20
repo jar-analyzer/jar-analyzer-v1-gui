@@ -6,6 +6,8 @@
 ![](https://img.shields.io/github/v/release/4ra1n/jar-analyzer)
 ![](https://img.shields.io/badge/Java%20Code%20Lines-2538-orange)
 
+演示教程: https://www.bilibili.com/video/BV1Pe4y1T7Ma
+
 ## 介绍
 
 一个用于分析`jar`包的GUI工具，尤其适合从事代码安全审计。可以在同时分析多个`jar`文件，可以轻易地搜索目标方法。
