@@ -536,6 +536,7 @@ public class JarAnalyzerForm {
         analyzeSpringButton.addActionListener(e -> {
             springBootJar = true;
             useSpringBootJarCheckBox.setSelected(true);
+            controllers.clear();
             SpringService.start(classFileList, controllers, classMap, methodMap);
 
             DefaultListModel<ClassObj> controllerDataList = new DefaultListModel<>();

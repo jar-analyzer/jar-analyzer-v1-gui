@@ -84,6 +84,7 @@ This is a bug fix version, and the code has been refactored.
 
 Bug:
 - [important] [bug] cannot decompile spring class sometimes #28
+- [important] [bug] spring should not contain duplicate content #31
 - [bug] macos tabbed panel bug #25
 
 Feature:
