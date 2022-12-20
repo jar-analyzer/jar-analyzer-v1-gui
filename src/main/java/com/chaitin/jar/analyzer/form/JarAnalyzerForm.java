@@ -199,6 +199,14 @@ public class JarAnalyzerForm {
                         }
                     }
                 }
+
+                if (searchList.size() == 0 || searchList.isEmpty()) {
+                    JOptionPane.showMessageDialog(null,
+                            "No results!\n" +
+                                    "1. chose Direct Search / Call Search\n" +
+                                    "2. maybe select Use SpringBoot Jar");
+                }
+
                 resultList.setModel(searchList);
             }
 

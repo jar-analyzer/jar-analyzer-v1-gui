@@ -92,6 +92,7 @@ Feature:
 - [important] [feat] prompt the user why decompilation fails #33
 - [important] [feat] support getmapping and postmapping #23
 - [important] [feat] controller without controller anno #24
+- [feat] prompt user when the search result is empty #34
 - [feat] delete logs when exit checkbox #32
 
 Others:

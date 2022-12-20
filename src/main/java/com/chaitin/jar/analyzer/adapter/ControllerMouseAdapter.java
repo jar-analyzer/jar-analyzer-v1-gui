@@ -28,7 +28,6 @@ public class ControllerMouseAdapter extends MouseAdapter {
             ListModel<?> m = l.getModel();
             int index = l.locationToIndex(evt.getPoint());
             if (index > -1) {
-
                 ClassObj res = (ClassObj) m.getElementAt(index);
                 for (SpringController controller : JarAnalyzerForm.controllers) {
                     if (controller.getClassName().equals(res.getHandle())) {
@@ -46,6 +45,8 @@ public class ControllerMouseAdapter extends MouseAdapter {
                         form.mappingJList.setModel(mappingDataList);
                     }
                 }
+                form.useSpringBootJarCheckBox.setSelected(true);
+                JarAnalyzerForm.springBootJar = true;
                 form.coreClass(evt, list);
             }
         }
