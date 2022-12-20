@@ -8,6 +8,8 @@
 
 [中文文档](doc/README.md)
 
+Guide: https://www.bilibili.com/video/BV1Pe4y1T7Ma
+
 ## Introduce
 
 A GUI project for analyzing `jar` files, especially suitable for code security analysis.
