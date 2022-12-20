@@ -78,7 +78,7 @@ Change:
 - Spring Controller and Mapping Analysis
 - New README
 
-## 0.7-beta
+## 0.7
 
 This is a bug fix version, and the code has been refactored.
 
@@ -92,6 +92,7 @@ Feature:
 - [important] [feat] prompt the user why decompilation fails #33
 - [important] [feat] support getmapping and postmapping #23
 - [important] [feat] controller without controller anno #24
+- [feat] prompt user what is inner jar and spring boot jar #35
 - [feat] prompt user when the search result is empty #34
 - [feat] delete logs when exit checkbox #32
 

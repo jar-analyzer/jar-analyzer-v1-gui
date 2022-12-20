@@ -555,10 +555,27 @@ public class JarAnalyzerForm {
         mappingJList.addMouseListener(new MappingMouseAdapter(this));
         controllerJList.addMouseListener(new ControllerMouseAdapter(this));
 
-        innerJarsCheckBox.addActionListener(e ->
-                innerJars = innerJarsCheckBox.isSelected());
-        useSpringBootJarCheckBox.addActionListener(e ->
-                springBootJar = useSpringBootJarCheckBox.isSelected());
+        innerJarsCheckBox.addActionListener(e -> {
+            innerJars = innerJarsCheckBox.isSelected();
+            if (!innerJars) {
+                return;
+            }
+            JOptionPane.showMessageDialog(null,
+                    "What is Inner Jar:\n" +
+                            "There may be many dependent jars in the jar.\n" +
+                            "If you chose to analyze these jars will be time-consuming");
+        });
+        useSpringBootJarCheckBox.addActionListener(e -> {
+            springBootJar = useSpringBootJarCheckBox.isSelected();
+            if (!springBootJar) {
+                return;
+            }
+            JOptionPane.showMessageDialog(null,
+                    "What is Use SpringBoot Jar:\n" +
+                            "The class file written by the user in SpringBoot is located in the BOOT-INF directory" +
+                            " and needs special processing. " +
+                            "If you need to analyze the Jar of SpringBoot, you need to check this item.");
+        });
         deleteLogsWhenExitCheckBox.setSelected(true);
         deleteLogs = true;
         deleteLogsWhenExitCheckBox.addActionListener(e ->
