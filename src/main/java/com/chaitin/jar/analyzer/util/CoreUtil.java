@@ -3,7 +3,6 @@ package com.chaitin.jar.analyzer.util;
 import com.chaitin.jar.analyzer.core.ClassFile;
 import org.apache.log4j.Logger;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,11 +19,9 @@ public class CoreUtil {
         logger.info("get all classes");
         Set<ClassFile> classFileSet = new HashSet<>();
         Path temp = Paths.get("temp");
-        DirUtil.removeDir(new File("temp"));
         try {
             Files.createDirectory(temp);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (IOException ignored) {
         }
         for (String jarPath : jarPathList) {
             classFileSet.addAll(JarUtil.resolveNormalJarFile(jarPath));
