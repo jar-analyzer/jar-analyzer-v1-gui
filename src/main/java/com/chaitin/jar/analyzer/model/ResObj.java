@@ -27,7 +27,7 @@ public class ResObj {
 
     @Override
     public String toString() {
-        String outputFormat = " %s \t %s \t %d";
+        String outputFormat = " %s \t %s \t params: %d";
         return String.format(outputFormat,
                 className,
                 method.getName(),

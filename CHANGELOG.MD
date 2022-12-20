@@ -95,6 +95,7 @@ Feature:
 
 Others:
 - [important] [improve] code refactor #27
+- [improve] show number should be changed to details #29
 - [improve] spring analyze use asm 9 #26
 - spring package is unnecessary (delete ui)
 - new README and screenshot
