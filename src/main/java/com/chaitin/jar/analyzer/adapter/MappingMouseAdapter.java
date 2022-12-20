@@ -65,9 +65,9 @@ public class MappingMouseAdapter extends MouseAdapter {
             if (!JarAnalyzerForm.springBootJar) {
                 classPath = String.format("temp%s%s.class", File.separator, classPath);
             } else {
-                if (classPath.contains("springframework")){
+                if (classPath.contains("springframework")) {
                     classPath = String.format("temp%s%s.class", File.separator, classPath);
-                }else{
+                } else {
                     classPath = String.format("temp%sBOOT-INF%sclasses%s%s.class",
                             File.separator, File.separator, File.separator, classPath);
                 }
@@ -108,7 +108,11 @@ public class MappingMouseAdapter extends MouseAdapter {
                         throw new RuntimeException(e);
                     }
                     total = bao.toString();
-                    total = "// Procyon \n" + total;
+                    if (total == null || total.trim().equals("")) {
+                        total = "IMPORTANT: MISSING JARS (maybe: rt.jar or other dependencies?)";
+                    } else {
+                        total = "// Procyon \n" + total;
+                    }
                 } else if (form.quiltFlowerRadioButton.isSelected()) {
                     String[] args = new String[]{
                             finalClassPath,
@@ -117,8 +121,12 @@ public class MappingMouseAdapter extends MouseAdapter {
                     ConsoleDecompiler.main(args);
                     try {
                         total = new String(Files.readAllBytes(javaPathPath));
-                        total = "// QuiltFlower \n" + total;
-                        Files.delete(javaPathPath);
+                        if (total.trim().equals("")) {
+                            total = "IMPORTANT: MISSING JARS (maybe: rt.jar or other dependencies?)";
+                        } else {
+                            total = "// QuiltFlower \n" + total;
+                            Files.delete(javaPathPath);
+                        }
                     } catch (Exception ignored) {
                         total = "";
                     }
@@ -134,6 +142,9 @@ public class MappingMouseAdapter extends MouseAdapter {
                         Files.delete(javaPathPath);
                     } catch (Exception ignored) {
                         total = "";
+                    }
+                    if (total.trim().equals("")) {
+                        total = "IMPORTANT: MISSING JARS (maybe: rt.jar or other dependencies?)";
                     }
                 } else {
                     JOptionPane.showMessageDialog(null, "Error!");

@@ -89,6 +89,7 @@ Bug:
 - [bug] macos tabbed panel bug #25
 
 Feature:
+- [important] [feat] prompt the user why decompilation fails #33
 - [important] [feat] support getmapping and postmapping #23
 - [important] [feat] controller without controller anno #24
 - [feat] delete logs when exit checkbox #32
