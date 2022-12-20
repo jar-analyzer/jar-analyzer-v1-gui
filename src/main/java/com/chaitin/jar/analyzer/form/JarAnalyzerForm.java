@@ -129,8 +129,6 @@ public class JarAnalyzerForm {
     private JPanel actionPanel;
     private JButton springAnalyzerButton;
     private JButton analyzeSpringButton;
-    private JTextField springPackageText;
-    private JLabel springPackLabel;
     private JPanel springPanel;
     private JScrollPane controllerPanel;
     private JScrollPane mappingsPanel;
@@ -787,8 +785,7 @@ public class JarAnalyzerForm {
         analyzeSpringButton.addActionListener(e -> {
             springBootJar = true;
             useSpringBootJarCheckBox.setSelected(true);
-            String text = springPackageText.getText();
-            SpringService.start(classFileList, text, controllers, classMap, methodMap);
+            SpringService.start(classFileList, controllers, classMap, methodMap);
 
             DefaultListModel<ClassObj> controllerDataList = new DefaultListModel<>();
             for (SpringController controller : controllers) {
@@ -1071,11 +1068,6 @@ public class JarAnalyzerForm {
         progress.setToolTipText("");
         progress.setValue(0);
         configPanel.add(progress, new GridConstraints(0, 1, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        springPackLabel = new JLabel();
-        springPackLabel.setText("   Spring Package Name:");
-        configPanel.add(springPackLabel, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        springPackageText = new JTextField();
-        configPanel.add(springPackageText, new GridConstraints(4, 1, 1, 3, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         resultPane = new JPanel();
         resultPane.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
         resultPane.setBackground(new Color(-725535));

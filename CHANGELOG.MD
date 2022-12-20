@@ -80,4 +80,14 @@ Change:
 
 ## 0.7-beta
 
-- todo
+Bug:
+- [bug] macos tabbed panel bug #25
+
+Feature:
+- [important] [feat] support getmapping and postmapping #23
+- [important] [feat] controller without controller anno #24
+
+Others:
+- [improve] spring analyze use asm 9 #26
+- spring package is unnecessary (delete ui)
+- new README and screenshot

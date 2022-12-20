@@ -1,6 +1,7 @@
 package com.chaitin.jar.analyzer.spring;
 
 public interface SpringConstant {
+    String SBApplication = "Lorg/springframework/boot/autoconfigure/SpringBootApplication;";
     String ControllerAnno = "Lorg/springframework/stereotype/Controller;";
     String RestControllerAnno = "Lorg/springframework/web/bind/annotation/RestController;";
     String RequestMappingAnno = "Lorg/springframework/web/bind/annotation/RequestMapping;";

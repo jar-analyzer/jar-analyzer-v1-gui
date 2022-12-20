@@ -52,7 +52,7 @@ public class SpringMethodAdapter extends MethodVisitor {
             currentMapping.setController(controller);
             currentMapping.setMethodReference(methodMap.get(currentMapping.getMethodName()));
             currentMapping.setParamMap(this.requestParam);
-            pathAnnoAdapter = new SpringPathAnnoAdapter(Opcodes.ASM6, av);
+            pathAnnoAdapter = new SpringPathAnnoAdapter(Opcodes.ASM9, av);
             av = pathAnnoAdapter;
         }
         if (descriptor.equals(SpringConstant.ResponseBodyAnno)) {
@@ -82,7 +82,7 @@ public class SpringMethodAdapter extends MethodVisitor {
     public AnnotationVisitor visitParameterAnnotation(int parameter, String descriptor, boolean visible) {
         AnnotationVisitor av = super.visitParameterAnnotation(parameter, descriptor, visible);
         if (descriptor.equals(SpringConstant.RequestParamAnno)) {
-            return new SpringAnnoAdapter(Opcodes.ASM6, av, requestParam, parameter);
+            return new SpringAnnoAdapter(Opcodes.ASM9, av, requestParam, parameter);
         }
         return av;
     }
