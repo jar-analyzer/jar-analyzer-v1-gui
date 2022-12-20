@@ -4,7 +4,7 @@
 ![](https://img.shields.io/badge/build-Java%2011-orange)
 ![](https://img.shields.io/github/downloads/4ra1n/jar-analyzer/total)
 ![](https://img.shields.io/github/v/release/4ra1n/jar-analyzer)
-![](https://img.shields.io/badge/Java%20Code%20Lines-2467-orange)
+![](https://img.shields.io/badge/Java%20Code%20Lines-2538-orange)
 
 [中文文档](doc/README.md)
 
