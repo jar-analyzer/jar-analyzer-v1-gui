@@ -32,7 +32,9 @@ import java.util.*;
 import java.util.List;
 
 public class JarAnalyzerForm {
-    public static final String tips = "IMPORTANT: MISSING JARS (maybe: rt.jar or other dependencies?)";
+    public static final String tips = "IMPORTANT: MISSING JARS \n" +
+            "1. maybe: missing rt.jar or other dependencies\n" +
+            "2. maybe: do not select Use SpringBoot Jar\n";
     public static boolean deleteLogs = false;
     public static boolean innerJars = false;
     public static boolean springBootJar = false;
