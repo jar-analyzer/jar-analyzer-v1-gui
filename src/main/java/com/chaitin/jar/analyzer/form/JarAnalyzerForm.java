@@ -296,6 +296,10 @@ public class JarAnalyzerForm {
                         finalClassPath,
                         javaDir
                 };
+                try {
+                    Files.delete(javaPathPath);
+                } catch (IOException ignored) {
+                }
                 ConsoleDecompiler.main(args);
                 try {
                     total = new String(Files.readAllBytes(javaPathPath));
@@ -314,15 +318,29 @@ public class JarAnalyzerForm {
                         "--outputpath",
                         "temp"
                 };
+                try {
+                    Files.delete(javaPathPath);
+                } catch (IOException ignored) {
+                }
                 Main.main(args);
                 try {
-                    total = new String(Files.readAllBytes(javaPathPath));
-                    Files.delete(javaPathPath);
+                    if (JarAnalyzerForm.springBootJar) {
+                        total = new String(Files.readAllBytes(
+                                Paths.get(String.format("temp%s%s", File.separator,
+                                        javaPathPath.toString().substring(22)))
+                        ));
+                    } else {
+                        total = new String(Files.readAllBytes(javaPathPath));
+                    }
                 } catch (Exception ignored) {
                     total = "";
                 }
                 if (total.trim().equals("")) {
                     total = tips;
+                }
+                try {
+                    Files.delete(javaPathPath);
+                } catch (IOException ignored) {
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "Error!");
@@ -420,6 +438,10 @@ public class JarAnalyzerForm {
                         finalClassPath,
                         javaDir
                 };
+                try {
+                    Files.delete(javaPathPath);
+                } catch (IOException ignored) {
+                }
                 ConsoleDecompiler.main(args);
                 try {
                     total = new String(Files.readAllBytes(javaPathPath));
@@ -427,10 +449,13 @@ public class JarAnalyzerForm {
                         total = tips;
                     } else {
                         total = "// QuiltFlower \n" + total;
-                        Files.delete(javaPathPath);
                     }
                 } catch (Exception ignored) {
                     total = tips;
+                }
+                try {
+                    Files.delete(javaPathPath);
+                } catch (IOException ignored) {
                 }
             } else if (cfrRadioButton.isSelected()) {
                 String[] args = new String[]{
@@ -438,15 +463,29 @@ public class JarAnalyzerForm {
                         "--outputpath",
                         "temp"
                 };
+                try {
+                    Files.delete(javaPathPath);
+                } catch (IOException ignored) {
+                }
                 Main.main(args);
                 try {
-                    total = new String(Files.readAllBytes(javaPathPath));
-                    Files.delete(javaPathPath);
+                    if (JarAnalyzerForm.springBootJar) {
+                        total = new String(Files.readAllBytes(
+                                Paths.get(String.format("temp%s%s", File.separator,
+                                        javaPathPath.toString().substring(22)))
+                        ));
+                    } else {
+                        total = new String(Files.readAllBytes(javaPathPath));
+                    }
                 } catch (Exception ignored) {
                     total = "";
                 }
                 if (total.trim().equals("")) {
                     total = tips;
+                }
+                try {
+                    Files.delete(javaPathPath);
+                } catch (IOException ignored) {
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "Error!");

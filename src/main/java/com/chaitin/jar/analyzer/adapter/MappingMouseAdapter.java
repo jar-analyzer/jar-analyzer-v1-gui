@@ -118,6 +118,10 @@ public class MappingMouseAdapter extends MouseAdapter {
                             finalClassPath,
                             javaDir
                     };
+                    try {
+                        Files.delete(javaPathPath);
+                    } catch (IOException ignored) {
+                    }
                     ConsoleDecompiler.main(args);
                     try {
                         total = new String(Files.readAllBytes(javaPathPath));
@@ -125,10 +129,13 @@ public class MappingMouseAdapter extends MouseAdapter {
                             total = JarAnalyzerForm.tips;
                         } else {
                             total = "// QuiltFlower \n" + total;
-                            Files.delete(javaPathPath);
                         }
                     } catch (Exception ignored) {
                         total = "";
+                    }
+                    try {
+                        Files.delete(javaPathPath);
+                    } catch (IOException ignored) {
                     }
                 } else if (form.cfrRadioButton.isSelected()) {
                     String[] args = new String[]{
@@ -136,15 +143,29 @@ public class MappingMouseAdapter extends MouseAdapter {
                             "--outputpath",
                             "temp"
                     };
+                    try {
+                        Files.delete(javaPathPath);
+                    } catch (IOException ignored) {
+                    }
                     Main.main(args);
                     try {
-                        total = new String(Files.readAllBytes(javaPathPath));
-                        Files.delete(javaPathPath);
+                        if (JarAnalyzerForm.springBootJar) {
+                            total = new String(Files.readAllBytes(
+                                    Paths.get(String.format("temp%s%s",File.separator,
+                                            javaPathPath.toString().substring(22)))
+                            ));
+                        }else{
+                            total = new String(Files.readAllBytes(javaPathPath));
+                        }
                     } catch (Exception ignored) {
                         total = "";
                     }
                     if (total.trim().equals("")) {
                         total = JarAnalyzerForm.tips;
+                    }
+                    try {
+                        Files.delete(javaPathPath);
+                    } catch (IOException ignored) {
                     }
                 } else {
                     JOptionPane.showMessageDialog(null, "Error!");

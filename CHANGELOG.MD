@@ -102,3 +102,8 @@ Others:
 - [improve] spring analyze use asm 9 #26
 - spring package is unnecessary (delete ui)
 - new README and screenshot
+
+## 0.8
+
+Bug:
+- [bug] CFR sometimes not work #36

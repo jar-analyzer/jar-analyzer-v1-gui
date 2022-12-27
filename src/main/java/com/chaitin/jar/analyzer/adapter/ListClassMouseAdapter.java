@@ -13,10 +13,10 @@ public class ListClassMouseAdapter extends MouseAdapter {
         this.form = form;
     }
 
-        public void mouseClicked(MouseEvent evt) {
-            JList<?> list = (JList<?>) evt.getSource();
-            if (evt.getClickCount() == 2) {
-                form.coreClass(evt, list);
-            }
+    public void mouseClicked(MouseEvent evt) {
+        JList<?> list = (JList<?>) evt.getSource();
+        if (evt.getClickCount() == 2) {
+            form.coreClass(evt, list);
         }
     }
+}
