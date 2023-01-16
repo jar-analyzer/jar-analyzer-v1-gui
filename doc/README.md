@@ -23,17 +23,9 @@ Support 3 API to decompile:
 
 Support Spring Mappings analyze:
 
-![](../img/00001.jpg)
-
 We use customized JSyntaxPane (not official) to show Java code.
 
-Some screenshots:
-
-![](../img/018.png)
-
-You can simply view the bytecode and ASM code.
-
-![](../img/017.png)
+![](../img/img.png)
 
 ## How to build
 
