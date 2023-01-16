@@ -25,17 +25,17 @@
 
 支持Spring的Mapping分析：
 
-![](../img/00001.jpg)
+![](img/00001.jpg)
 
 我们使用类定制化的`JSyntaxPane`组件（非官方）来展示`Java`代码
 
 一些截图：
 
-![](../img/018.png)
+![](img/018.png)
 
 你可以很方便地查看字节码和ASM代码。
 
-![](../img/017.png)
+![](img/017.png)
 
 ## 如何构建
 

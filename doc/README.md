@@ -23,17 +23,17 @@ Support 3 API to decompile:
 
 Support Spring Mappings analyze:
 
-![](img/00001.jpg)
+![](../img/00001.jpg)
 
 We use customized JSyntaxPane (not official) to show Java code.
 
 Some screenshots:
 
-![](img/018.png)
+![](../img/018.png)
 
 You can simply view the bytecode and ASM code.
 
-![](img/017.png)
+![](../img/017.png)
 
 ## How to build
 
