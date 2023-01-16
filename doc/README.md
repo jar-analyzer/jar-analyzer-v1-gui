@@ -6,36 +6,36 @@
 ![](https://img.shields.io/github/v/release/4ra1n/jar-analyzer)
 ![](https://img.shields.io/badge/Java%20Code%20Lines-2538-orange)
 
-演示教程: https://www.bilibili.com/video/BV1Pe4y1T7Ma
+## Introduce
 
-## 介绍
+A GUI project for analyzing `jar` files, especially suitable for code security analysis.
+Multiple `jar` files can be analyzed at the same time, and you can easily search methods in them.
+Support decompile of class files, automatically build call relationships between classes and methods,
+help experienced Java code analysts improve efficiency.
+For detailed use of this tool, refer to Quick Start.
 
-一个用于分析`jar`包的GUI工具，尤其适合从事代码安全审计。可以在同时分析多个`jar`文件，可以轻易地搜索目标方法。
-支持反编译字节码并自动构建类和方法之间的关系，帮助Java安全研究员更高效地工作。
-更多细节在 Quick Start中。
+[go to download](https://github.com/4ra1n/jar-analyzer/releases/latest)
 
-[前往下载](https://github.com/4ra1n/jar-analyzer/releases/latest)
-
-支持选择三项反编译方式：
+Support 3 API to decompile:
 - QuiltFlower (FernFlower)
 - Procyon
 - CFR
 
-支持Spring的Mapping分析：
+Support Spring Mappings analyze:
 
-![](../img/00001.jpg)
+![](img/00001.jpg)
 
-我们使用类定制化的`JSyntaxPane`组件（非官方）来展示`Java`代码
+We use customized JSyntaxPane (not official) to show Java code.
 
-一些截图：
+Some screenshots:
 
-![](../img/018.png)
+![](img/018.png)
 
-你可以很方便地查看字节码和ASM代码。
+You can simply view the bytecode and ASM code.
 
-![](../img/017.png)
+![](img/017.png)
 
-## 如何构建
+## How to build
 
 ```shell
 git clone https://github.com/4ra1n/jar-analyzer
@@ -45,58 +45,61 @@ mvn package
 
 ## Quick Start
 
-重要：请使用Java 8 - Java 17运行
+Important: Please use Java 8 - Java 17 to run this
 
-(1) 第一步：添加`jar`文件（支持单个`jar`文件和`jar`目录）
-- 点击按钮 `Select Jar File` 打开jar文件
-- 支持上传多个jar文件并且会在一起进行分析
+(1) First Step: Add Jars file. (Support jar file and jars directory)
+- Open jar file with button `Select Jar File`.
+- Support to upload multiple Jar files which will be analyzed together.
 
-请不要着急，分析jar文件需要花费少量的时间。
+Please don't worry, the loading and building will take some seconds.
 
-注意：请等到标签显示classes和methods总数时分析完成。
+Notice: please wait until you see the total number of classes and method showing on the label.
 
-(2) 第二步：输入你搜索的信息
+(2) Second Step: Input your search data.
 
-我们支持三种格式的输入：
-- `javax.naming.Context` (例如)
+We support three format input:
+- `javax.naming.Context` (For example)
 - `javax/naming/Context`
-- `Context` (会搜索所有 `*.Context` 类)
+- `Context` (Will search all `*.Context` class)
 
-我们支持两种搜索方式：
-- 直接根据类和方法名搜索
-- 根据方法调用搜索
+We support two ways:
+- directly search class and method
+- search method call
 
-方法输入只需要一个简单的名称，不需要`desc`信息。
+Method input only needs a simple name, no description.
 
-请注意：如果jar非常大，初始化会比较耗时（例如`rt.jar`会消耗10秒左右）
+Please Note: if the jar is large, the initialization will take some time (`rt.jar` cost more than 10 seconds)
 
-同时，你可以看到顶部显示已加载的类和方法数量。
+At this time, you can see the number of all the classes and methods analyzed.
 
-(3) 第三步：你可以双击进行反编译
+(3) Third Step: You can double-click to decompile the result.
 
-红色的游标将会尽可能地指向方法调用的位置，但目前不能保证所有情况。
+The red cursor will point to the corresponding method as far as possible, not all cases will be handled correctly.
 
-当反编译的过程中，方法之间的关系会被构建。
+When decompiling, the relationship between methods will be built.
 
-在面板上的任何地方都可以双击进行反编译，并构建新的方法调用关系和展示。
+Any items in the panel can be double-clicked to decompile and show its methods relation at the same time.
 
-请注意：如果你遇到无法反编译的情况，你需要加载正确的jar文件。
-例如，我无法反编译`javax.naming.Context`因为我没有加入`rt.jar`文件，如果你加入了它，就可以正常反编译了。
+Please Note: If you cannot decompile like the below screenshot, you can add the corresponding jar.
+For example, we did not add the `rt.jar` of JDK, so we cannot decompile `javax.naming.Context`.
+If you add it, you can decompile successfully.
 
-你可以使用`Ctrl+F`搜索代码和编辑
+You can press `Ctrl+F` to search string in Java code.
 
-你可以单击任何一个选项，接下来将会显示方法的详细信息。
+You can one-click to chose item, and then the item will show the method details.
 
-你可以右键将选项发送到链中。你可以把链理解为一个收藏夹或记录。在链中你同样可以双击反编译，然后展示新的方法调用关系，或单机显示详情。
-如果链中某个选项是你不想要的，可以右键把该选项从链中删除。
+You can right-click to send the item to your chain. Chain can be understood as a favorite or a record list.
+In chain list, you can also double-click to decompile then show new relations, and one-click to show details.
+If the item in chain is not what you want, you can right-click to remove it from chain.
 
-因此你可以构建出一个只属于你的调用链。
+So you can build a chain between methods for yourselves easily.
 
-`Who call target` 和 `Target call whom` 中的所有方法调用关系同样可以双击反编译，单击看详情，右键加入链。
+The relation items (`Who call target` and `Target call whom` panel) between methods can also be used in the above way.
+Click to display details, double-click to decompile then show new relations, and right-click to add to the chain.
 
-## 关于
+## About
 
-(1) 什么是方法之间的关系：
+(1) What is the relation between methods:
 
 ```java
 class Test{
@@ -114,13 +117,13 @@ class Test{
 }
 ```
 
-如果当前方法是 `b`
+If current item is method `b`
 
 Who call target: `Test` class `a` method
 
 Target call whom: `Test` class `c` method
 
-(2) 如何解决接口实现的问题：
+(2) How do we resolve implementation:
 
 ```java
 class Demo{
@@ -148,15 +151,15 @@ class Test2Impl implements Test {
 }
 ```
 
-现在我们有 `Demo.demo -> Test.test` 数据, 但实际上它是 `Demo.demo -> TestImpl.test`.
+Now we have `Demo.demo -> Test.test` data, but actually it is `Demo.demo -> TestImpl.test`.
 
-因此我们添加了新的规则： `Test.test -> Test1Impl.test` 和 `Test.test -> Test2Impl.test`.
+In this case, we added new rules: `Test.test -> Test1Impl.test` and `Test.test -> Test2Impl.test`.
 
-首先确保数据不会丢失，然后我们可以自行手动分析反编译的代码：
+Ensure no loss of results, then we can analyze it ourselves manually with automatically decompiled java code:
 - `Demo.demo -> Test.test`
 - `Test.test -> Test1Impl.test`/`Test.test -> Test2Impl.test`
 
-(3) 如何解决继承关系：
+(3) How do we resolve inheritance:
 
 ```java
 class Zoo{
@@ -186,10 +189,11 @@ class Cat extends Animal {
     }
 }
 ```
-`Zoo.run -> dog.cat` 的字节码是 `INVOKEVIRTUAL Animal.eat ()V`, 但我们只有这条规则 `Zoo.run -> Animal.eat`, 丢失了 `Zoo.run -> Dog.eat` 规则。
 
-这种情况下我们添加了新规则： `Animal.eat -> Dog.eat` 和 `Animal.eat -> Cat.eat`.
+The bytecode in `Zoo.run -> dog.cat` is `INVOKEVIRTUAL Animal.eat ()V`, we only have one rule `Zoo.run -> Animal.eat`, lost `Zoo.run -> Dog.eat` rule.
 
-首先确保数据不会丢失，然后我们可以自行手动分析反编译的代码：
+In this case, We added new rules: `Animal.eat -> Dog.eat` and `Animal.eat -> Cat.eat`.
+
+Ensure no loss of results, then we can analyze it ourselves manually with automatically decompiled java code:
 - `Zoo.run -> Animal.eat`
 - `Animal.eat -> Dog.eat`/`Animal.eat -> Cat.eat`
