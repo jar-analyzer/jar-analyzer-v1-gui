@@ -1,6 +1,7 @@
 package com.chaitin.jar.analyzer.form;
 
 import com.chaitin.jar.analyzer.adapter.*;
+import com.chaitin.jar.analyzer.asm.StringClassVisitor;
 import com.chaitin.jar.analyzer.core.*;
 import com.chaitin.jar.analyzer.model.ClassObj;
 import com.chaitin.jar.analyzer.model.MappingObj;
@@ -19,6 +20,7 @@ import jsyntaxpane.syntaxkits.JavaSyntaxKit;
 import okhttp3.*;
 import org.benf.cfr.reader.Main;
 import org.jetbrains.java.decompiler.main.decompiler.ConsoleDecompiler;
+import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Type;
 
 import javax.imageio.ImageIO;
@@ -105,6 +107,11 @@ public class JarAnalyzerForm {
     private JCheckBox deleteLogsWhenExitCheckBox;
     private JLabel searchClassLabel;
     private JLabel searchMethodLabel;
+    private JRadioButton strRadioButton;
+    private JRadioButton greatRadioButton;
+    private JTextField otherText;
+    private JLabel otherSearch;
+    private JLabel otherTip;
     public static List<SpringController> controllers = new ArrayList<>();
 
     public static final DefaultListModel<ResObj> historyDataList = new DefaultListModel<>();
@@ -237,6 +244,36 @@ public class JarAnalyzerForm {
                     }
                 }
                 resultList.setModel(searchList);
+            }
+
+            if (strRadioButton.isSelected()) {
+                List<MethodReference> mList = new ArrayList<>();
+                String search = otherText.getText();
+                if (search == null || search.trim().equals("")) {
+                    JOptionPane.showMessageDialog(this.jarAnalyzerPanel, "请输入其他搜索内容");
+                    return;
+                }
+                for (ClassFile file : classFileList) {
+                    try {
+                        StringClassVisitor dcv = new StringClassVisitor(search, mList, classMap, methodMap);
+                        ClassReader cr = new ClassReader(file.getFile());
+                        cr.accept(dcv, ClassReader.EXPAND_FRAMES);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+                if (mList.size() == 0) {
+                    JOptionPane.showMessageDialog(this.jarAnalyzerPanel, "没有搜到结果");
+                    return;
+                }
+                for (MethodReference mr : mList) {
+                    searchList.addElement(new ResObj(mr.getHandle(), mr.getClassReference().getName()));
+                }
+                resultList.setModel(searchList);
+            }
+
+            if (greatRadioButton.isSelected()) {
+
             }
         });
     }
@@ -765,6 +802,7 @@ public class JarAnalyzerForm {
             return null;
         }
     }
+
     private static JMenu createVersionMenu() {
         try {
             JMenu verMenu = new JMenu("版本");
@@ -791,6 +829,7 @@ public class JarAnalyzerForm {
                     public void onFailure(Call call, IOException e) {
                         JOptionPane.showMessageDialog(instance.jarAnalyzerPanel, e.toString());
                     }
+
                     @Override
                     public void onResponse(Call call, Response response) {
                         try {
@@ -860,14 +899,14 @@ public class JarAnalyzerForm {
         opPanel.setBackground(new Color(-12828863));
         topPanel.add(opPanel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         searchSelPanel = new JPanel();
-        searchSelPanel.setLayout(new GridLayoutManager(2, 2, new Insets(0, 0, 0, 0), -1, -1));
+        searchSelPanel.setLayout(new GridLayoutManager(2, 4, new Insets(0, 0, 0, 0), -1, -1));
         searchSelPanel.setBackground(new Color(-12828863));
         opPanel.add(searchSelPanel, new GridConstraints(0, 1, 3, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         searchSelPanel.setBorder(BorderFactory.createTitledBorder(null, "搜索选项", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         callSearchRadioButton = new JRadioButton();
         callSearchRadioButton.setBackground(new Color(-12828863));
         callSearchRadioButton.setText("搜索调用");
-        searchSelPanel.add(callSearchRadioButton, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        searchSelPanel.add(callSearchRadioButton, new GridConstraints(1, 1, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         callSearchLabel = new JLabel();
         callSearchLabel.setText("   搜索方法的调用");
         searchSelPanel.add(callSearchLabel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
@@ -877,7 +916,13 @@ public class JarAnalyzerForm {
         directSearchRadioButton = new JRadioButton();
         directSearchRadioButton.setBackground(new Color(-12828863));
         directSearchRadioButton.setText("直接搜索");
-        searchSelPanel.add(directSearchRadioButton, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        searchSelPanel.add(directSearchRadioButton, new GridConstraints(0, 1, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        strRadioButton = new JRadioButton();
+        strRadioButton.setText("字符串搜索");
+        searchSelPanel.add(strRadioButton, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        greatRadioButton = new JRadioButton();
+        greatRadioButton.setText("无脑搜索");
+        searchSelPanel.add(greatRadioButton, new GridConstraints(1, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         actionPanel = new JPanel();
         actionPanel.setLayout(new GridLayoutManager(2, 3, new Insets(0, 0, 0, 0), -1, -1));
         actionPanel.setBackground(new Color(-12828863));
@@ -1004,7 +1049,7 @@ public class JarAnalyzerForm {
         authorLabel.setText("github.com/4ra1n/jar-analyzer");
         authorPanel.add(authorLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_NORTH, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         configPanel = new JPanel();
-        configPanel.setLayout(new GridLayoutManager(4, 5, new Insets(0, 0, 0, 0), -1, -1));
+        configPanel.setLayout(new GridLayoutManager(5, 5, new Insets(0, 0, 0, 0), -1, -1));
         configPanel.setBackground(new Color(-12828863));
         jarAnalyzerPanel.add(configPanel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         methodLabel = new JLabel();
@@ -1041,6 +1086,14 @@ public class JarAnalyzerForm {
         jarInfoResultText.setEditable(false);
         jarInfoResultText.setEnabled(true);
         configPanel.add(jarInfoResultText, new GridConstraints(1, 1, 1, 4, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        otherSearch = new JLabel();
+        otherSearch.setText("   其他搜索");
+        configPanel.add(otherSearch, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        otherText = new JTextField();
+        configPanel.add(otherText, new GridConstraints(4, 1, 1, 3, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        otherTip = new JLabel();
+        otherTip.setText("选择字符串搜索和无脑搜索时输入该项（其他情况无需输入）");
+        configPanel.add(otherTip, new GridConstraints(4, 4, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         resultPane = new JPanel();
         resultPane.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
         resultPane.setBackground(new Color(-12828863));
@@ -1067,6 +1120,8 @@ public class JarAnalyzerForm {
         buttonGroup = new ButtonGroup();
         buttonGroup.add(directSearchRadioButton);
         buttonGroup.add(callSearchRadioButton);
+        buttonGroup.add(strRadioButton);
+        buttonGroup.add(greatRadioButton);
     }
 
     /**
