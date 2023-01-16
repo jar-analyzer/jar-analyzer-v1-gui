@@ -32,9 +32,9 @@ import java.util.*;
 import java.util.List;
 
 public class JarAnalyzerForm {
-    public static final String tips = "IMPORTANT: MISSING JARS \n" +
-            "1. maybe: missing rt.jar or other dependencies\n" +
-            "2. maybe: do not select Use SpringBoot Jar\n";
+    public static final String tips = "重要提示：丢失依赖 \n" +
+            "1. 也许你忘记加载rt.jar或者其他依赖jar包了\n" +
+            "2. 也许你不应该选择分析SpringBoot选项\n";
     public static boolean deleteLogs = false;
     public static boolean innerJars = false;
     public static boolean springBootJar = false;
@@ -98,6 +98,8 @@ public class JarAnalyzerForm {
     public JCheckBox useSpringBootJarCheckBox;
     public JCheckBox innerJarsCheckBox;
     private JCheckBox deleteLogsWhenExitCheckBox;
+    private JLabel searchClassLabel;
+    private JLabel searchMethodLabel;
     public static List<SpringController> controllers = new ArrayList<>();
 
     public static final DefaultListModel<ResObj> historyDataList = new DefaultListModel<>();
@@ -141,7 +143,7 @@ public class JarAnalyzerForm {
                     Discovery.start(classFileList, discoveredClasses,
                             discoveredMethods, classMap, methodMap);
                     jarInfoResultText.setText(String.format(
-                            "total jars: %d   total classes: %s   total methods: %s",
+                            "Jar包数量: %d   类的数量: %s   方法的数量: %s",
                             totalJars, discoveredClasses.size(), discoveredMethods.size()
                     ));
                     progress.setValue(80);
@@ -204,9 +206,9 @@ public class JarAnalyzerForm {
 
                 if (searchList.size() == 0 || searchList.isEmpty()) {
                     JOptionPane.showMessageDialog(null,
-                            "No results!\n" +
-                                    "1. chose Direct Search / Call Search\n" +
-                                    "2. maybe select Use SpringBoot Jar");
+                            "没有结果!\n" +
+                                    "1. 也许你选错了：直接搜索/调用搜索\n" +
+                                    "2. 也许你应该勾选分析SpringBoot");
                 }
 
                 resultList.setModel(searchList);
@@ -343,7 +345,7 @@ public class JarAnalyzerForm {
                 } catch (IOException ignored) {
                 }
             } else {
-                JOptionPane.showMessageDialog(null, "Error!");
+                JOptionPane.showMessageDialog(null, "无法反编译");
                 return;
             }
             editorPane.setText(total);
@@ -373,6 +375,8 @@ public class JarAnalyzerForm {
 
         subList.setModel(subDataList);
         superList.setModel(superDataList);
+        callList.setModel(new DefaultListModel<>());
+        sourceList.setModel(new DefaultListModel<>());
     }
 
     @SuppressWarnings("all")
@@ -488,7 +492,7 @@ public class JarAnalyzerForm {
                 } catch (IOException ignored) {
                 }
             } else {
-                JOptionPane.showMessageDialog(null, "Error!");
+                JOptionPane.showMessageDialog(null, "无法反编译");
                 return;
             }
             editorPane.setText(total);
@@ -521,8 +525,6 @@ public class JarAnalyzerForm {
                 }
             }
         }).start();
-
-        JOptionPane.showMessageDialog(null, "Decompiling...");
 
         DefaultListModel<ResObj> sourceDataList = new DefaultListModel<>();
         DefaultListModel<ResObj> callDataList = new DefaultListModel<>();
@@ -596,15 +598,23 @@ public class JarAnalyzerForm {
         mappingJList.addMouseListener(new MappingMouseAdapter(this));
         controllerJList.addMouseListener(new ControllerMouseAdapter(this));
 
+        directSearchRadioButton.addActionListener(e -> JOptionPane.showMessageDialog(null,
+                "什么是直接搜索:\n" +
+                        "直接搜索某个类的某个方法在哪里定义"));
+
+        callSearchRadioButton.addActionListener(e -> JOptionPane.showMessageDialog(null,
+                "什么是搜索调用:\n" +
+                        "搜索某个类的某个方法在哪些地方被调用"));
+
         innerJarsCheckBox.addActionListener(e -> {
             innerJars = innerJarsCheckBox.isSelected();
             if (!innerJars) {
                 return;
             }
             JOptionPane.showMessageDialog(null,
-                    "What is Inner Jar:\n" +
-                            "There may be many dependent jars in the jar.\n" +
-                            "If you chose to analyze these jars will be time-consuming");
+                    "什么是处理内部依赖Jar:\n" +
+                            "在一个Jar中也许存在很多的依赖Jar\n" +
+                            "如果你选择把这些Jar也都加入分析任务中这将会比较耗时");
         });
         useSpringBootJarCheckBox.addActionListener(e -> {
             springBootJar = useSpringBootJarCheckBox.isSelected();
@@ -612,10 +622,9 @@ public class JarAnalyzerForm {
                 return;
             }
             JOptionPane.showMessageDialog(null,
-                    "What is Use SpringBoot Jar:\n" +
-                            "The class file written by the user in SpringBoot is located in the BOOT-INF directory" +
-                            " and needs special processing. " +
-                            "If you need to analyze the Jar of SpringBoot, you need to check this item.");
+                    "什么是分析SpringBot:\n" +
+                            "在SpringBoot项目中需要分析的类位于BOOT-INF目录（不同于普通Jar）\n" +
+                            "如果你输入的是SpringBoot的Jar包那么你需要勾选此项");
         });
         deleteLogsWhenExitCheckBox.setSelected(true);
         deleteLogs = true;
@@ -644,7 +653,7 @@ public class JarAnalyzerForm {
 
         showByteCodeButton.addActionListener(e -> {
             if (curRes == null) {
-                JOptionPane.showMessageDialog(null, "Error!");
+                JOptionPane.showMessageDialog(null, "当前的方法为空");
                 return;
             }
             JFrame frame = new JFrame("Show Bytecode");
@@ -657,7 +666,7 @@ public class JarAnalyzerForm {
 
         showASMCodeButton.addActionListener(e -> {
             if (curRes == null) {
-                JOptionPane.showMessageDialog(null, "Error!");
+                JOptionPane.showMessageDialog(null, "当前的方法为空");
                 return;
             }
             JFrame frame = new JFrame("Show ASM Code");
@@ -708,48 +717,48 @@ public class JarAnalyzerForm {
         searchSelPanel.setLayout(new GridLayoutManager(2, 2, new Insets(0, 0, 0, 0), -1, -1));
         searchSelPanel.setBackground(new Color(-528927));
         opPanel.add(searchSelPanel, new GridConstraints(0, 1, 3, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        searchSelPanel.setBorder(BorderFactory.createTitledBorder(null, "Search Options", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        searchSelPanel.setBorder(BorderFactory.createTitledBorder(null, "搜索选项", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         callSearchRadioButton = new JRadioButton();
         callSearchRadioButton.setBackground(new Color(-528927));
-        callSearchRadioButton.setText("Call Search");
+        callSearchRadioButton.setText("搜索调用");
         searchSelPanel.add(callSearchRadioButton, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         callSearchLabel = new JLabel();
-        callSearchLabel.setText("   Only Search Method Call ");
+        callSearchLabel.setText("   搜索方法的调用");
         searchSelPanel.add(callSearchLabel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         directSearchLabel = new JLabel();
-        directSearchLabel.setText("   Directly Search Class And Method");
+        directSearchLabel.setText("   直接搜索类和方法");
         searchSelPanel.add(directSearchLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         directSearchRadioButton = new JRadioButton();
         directSearchRadioButton.setBackground(new Color(-528927));
-        directSearchRadioButton.setText("Direct Search");
+        directSearchRadioButton.setText("直接搜索");
         searchSelPanel.add(directSearchRadioButton, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         actionPanel = new JPanel();
         actionPanel.setLayout(new GridLayoutManager(2, 3, new Insets(0, 0, 0, 0), -1, -1));
         actionPanel.setBackground(new Color(-528927));
         opPanel.add(actionPanel, new GridConstraints(0, 0, 3, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        actionPanel.setBorder(BorderFactory.createTitledBorder(null, "Action", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        actionPanel.setBorder(BorderFactory.createTitledBorder(null, "操作", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         selectJarFileButton = new JButton();
-        selectJarFileButton.setText("Select Jar File / Dir");
+        selectJarFileButton.setText("选择Jar文件或目录");
         actionPanel.add(selectJarFileButton, new GridConstraints(0, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         analyzeSpringButton = new JButton();
-        analyzeSpringButton.setText("Analyze Spring");
+        analyzeSpringButton.setText("分析Spring框架");
         actionPanel.add(analyzeSpringButton, new GridConstraints(1, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         startAnalysisButton = new JButton();
-        startAnalysisButton.setText("Start Search");
+        startAnalysisButton.setText("开始搜索");
         actionPanel.add(startAnalysisButton, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         useSpringBootJarCheckBox = new JCheckBox();
         useSpringBootJarCheckBox.setBackground(new Color(-528927));
-        useSpringBootJarCheckBox.setText("Use SpringBoot Jar");
+        useSpringBootJarCheckBox.setText("分析SpringBoot");
         actionPanel.add(useSpringBootJarCheckBox, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         innerJarsCheckBox = new JCheckBox();
         innerJarsCheckBox.setBackground(new Color(-528927));
-        innerJarsCheckBox.setText("Inner Jars");
+        innerJarsCheckBox.setText("处理内部依赖Jar");
         actionPanel.add(innerJarsCheckBox, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         dcPanel = new JPanel();
         dcPanel.setLayout(new GridLayoutManager(1, 3, new Insets(0, 0, 0, 0), -1, -1));
         dcPanel.setBackground(new Color(-725535));
         topPanel.add(dcPanel, new GridConstraints(0, 1, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        dcPanel.setBorder(BorderFactory.createTitledBorder(null, "Decompile Options", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        dcPanel.setBorder(BorderFactory.createTitledBorder(null, "反编译组件选择", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         procyonRadioButton = new JRadioButton();
         procyonRadioButton.setBackground(new Color(-725535));
         procyonRadioButton.setText("Procyon");
@@ -769,7 +778,7 @@ public class JarAnalyzerForm {
         editorScroll = new JScrollPane();
         editorScroll.setBackground(new Color(-725535));
         editorPanel.add(editorScroll, new GridConstraints(0, 0, 3, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(600, 400), new Dimension(600, 500), null, 0, false));
-        editorScroll.setBorder(BorderFactory.createTitledBorder(null, "Decompile Java Code", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        editorScroll.setBorder(BorderFactory.createTitledBorder(null, "反编译Java代码", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         editorPane = new JEditorPane();
         editorScroll.setViewportView(editorPane);
         curPanel = new JPanel();
@@ -777,20 +786,20 @@ public class JarAnalyzerForm {
         curPanel.setBackground(new Color(-725535));
         editorPanel.add(curPanel, new GridConstraints(3, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         curLabel = new JLabel();
-        curLabel.setText("   Current:");
+        curLabel.setText("   当前类和方法");
         curPanel.add(curLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         currentLabel = new JTextField();
         currentLabel.setEditable(false);
         curPanel.add(currentLabel, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         showASMCodeButton = new JButton();
-        showASMCodeButton.setText("Show ASM Code");
+        showASMCodeButton.setText("显示方法ASM代码");
         curPanel.add(showASMCodeButton, new GridConstraints(0, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         showByteCodeButton = new JButton();
-        showByteCodeButton.setText("Show Bytecode");
+        showByteCodeButton.setText("显示方法的字节码");
         curPanel.add(showByteCodeButton, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         deleteLogsWhenExitCheckBox = new JCheckBox();
         deleteLogsWhenExitCheckBox.setBackground(new Color(-725535));
-        deleteLogsWhenExitCheckBox.setText("Delete Logs When Exit");
+        deleteLogsWhenExitCheckBox.setText("退出时删除日志信息");
         curPanel.add(deleteLogsWhenExitCheckBox, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         callPanel = new JTabbedPane();
         callPanel.setBackground(new Color(-528927));
@@ -798,28 +807,28 @@ public class JarAnalyzerForm {
         editorPanel.add(callPanel, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, new Dimension(700, -1), null, null, 0, false));
         sourceScroll = new JScrollPane();
         sourceScroll.setBackground(new Color(-725535));
-        callPanel.addTab("Who Call Target", sourceScroll);
+        callPanel.addTab("谁调用了当前方法", sourceScroll);
         sourceScroll.setBorder(BorderFactory.createTitledBorder(null, "", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         sourceList = new JList();
         sourceScroll.setViewportView(sourceList);
         callScroll = new JScrollPane();
         callScroll.setBackground(new Color(-725535));
-        callPanel.addTab("Target Call Whom", callScroll);
+        callPanel.addTab("当前方法调用了谁", callScroll);
         callScroll.setBorder(BorderFactory.createTitledBorder(null, "", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         callList = new JList();
         callScroll.setViewportView(callList);
         subScroll = new JScrollPane();
         subScroll.setBackground(new Color(-528927));
-        callPanel.addTab("All Subclasses", subScroll);
+        callPanel.addTab("当前类所有子类", subScroll);
         subList = new JList();
         subScroll.setViewportView(subList);
         superScroll = new JScrollPane();
         superScroll.setBackground(new Color(-528927));
-        callPanel.addTab("All Superclasses", superScroll);
+        callPanel.addTab("当前类所有的父类", superScroll);
         superList = new JList();
         superScroll.setViewportView(superList);
         historyScroll = new JScrollPane();
-        callPanel.addTab("Decompile History", historyScroll);
+        callPanel.addTab("反编译历史", historyScroll);
         historyList = new JList();
         historyScroll.setViewportView(historyList);
         springPanel = new JPanel();
@@ -845,31 +854,31 @@ public class JarAnalyzerForm {
         authorPanel.setBackground(new Color(-725535));
         jarAnalyzerPanel.add(authorPanel, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         authorLabel = new JLabel();
-        authorLabel.setText("Author: 4ra1n (github.com/4ra1n) from Chaitin Tech");
+        authorLabel.setText("4ra1n (github.com/4ra1n)");
         authorPanel.add(authorLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_NORTH, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         configPanel = new JPanel();
-        configPanel.setLayout(new GridLayoutManager(4, 4, new Insets(0, 0, 0, 0), -1, -1));
+        configPanel.setLayout(new GridLayoutManager(4, 5, new Insets(0, 0, 0, 0), -1, -1));
         configPanel.setBackground(new Color(-725535));
         jarAnalyzerPanel.add(configPanel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         methodLabel = new JLabel();
-        methodLabel.setText("   Input Target Method:");
+        methodLabel.setText("   输入搜索方法");
         configPanel.add(methodLabel, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         methodText = new JTextField();
         configPanel.add(methodText, new GridConstraints(3, 1, 1, 3, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         classLabel = new JLabel();
-        classLabel.setText("   Input Target Class:");
+        classLabel.setText("   输入搜索类");
         configPanel.add(classLabel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         classText = new JTextField();
         configPanel.add(classText, new GridConstraints(2, 1, 1, 3, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         jarInfoLabel = new JLabel();
-        jarInfoLabel.setText("   Jar Information:");
+        jarInfoLabel.setText("   Jar信息");
         configPanel.add(jarInfoLabel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         jarInfoResultText = new JTextField();
         jarInfoResultText.setEditable(false);
         jarInfoResultText.setEnabled(true);
-        configPanel.add(jarInfoResultText, new GridConstraints(1, 1, 1, 3, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        configPanel.add(jarInfoResultText, new GridConstraints(1, 1, 1, 4, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         progressLabel = new JLabel();
-        progressLabel.setText("   Load Jar Progress:");
+        progressLabel.setText("   分析Jar进度");
         configPanel.add(progressLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         progress = new JProgressBar();
         progress.setBackground(new Color(-725535));
@@ -878,7 +887,13 @@ public class JarAnalyzerForm {
         progress.setStringPainted(true);
         progress.setToolTipText("");
         progress.setValue(0);
-        configPanel.add(progress, new GridConstraints(0, 1, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        configPanel.add(progress, new GridConstraints(0, 1, 1, 4, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        searchClassLabel = new JLabel();
+        searchClassLabel.setText("可以输入类全名（如java.lang.Runtime）或直接输入类名（如Runtime）");
+        configPanel.add(searchClassLabel, new GridConstraints(2, 4, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        searchMethodLabel = new JLabel();
+        searchMethodLabel.setText("方法名直接输入名称即可（如exec）不需要输入描述信息");
+        configPanel.add(searchMethodLabel, new GridConstraints(3, 4, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         resultPane = new JPanel();
         resultPane.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
         resultPane.setBackground(new Color(-725535));
@@ -886,13 +901,13 @@ public class JarAnalyzerForm {
         resultScroll = new JScrollPane();
         resultScroll.setBackground(new Color(-725535));
         resultPane.add(resultScroll, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(600, 100), null, null, 0, false));
-        resultScroll.setBorder(BorderFactory.createTitledBorder(null, "Search Result", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        resultScroll.setBorder(BorderFactory.createTitledBorder(null, "搜索结果", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         resultList = new JList();
         resultScroll.setViewportView(resultList);
         chanScroll = new JScrollPane();
         chanScroll.setBackground(new Color(-725535));
         resultPane.add(chanScroll, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(600, 100), null, null, 0, false));
-        chanScroll.setBorder(BorderFactory.createTitledBorder(null, "Your Chain", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        chanScroll.setBorder(BorderFactory.createTitledBorder(null, "你的链", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         chanList = new JList();
         final DefaultListModel defaultListModel2 = new DefaultListModel();
         chanList.setModel(defaultListModel2);

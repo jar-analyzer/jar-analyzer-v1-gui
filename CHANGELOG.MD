@@ -105,5 +105,8 @@ Others:
 
 ## 0.8
 
-Bug:
-- [bug] CFR sometimes not work #36
+更新内容：
+- [important] 整体UI使用中文重构（我不觉得老外会使用） #40
+- [feat] 应该对两种搜索方式给出提示 #37
+- [bug] CFR反编译有时候不工作 #36
+- [improve] 当选择反编译类时应该清空方法调用信息 #39

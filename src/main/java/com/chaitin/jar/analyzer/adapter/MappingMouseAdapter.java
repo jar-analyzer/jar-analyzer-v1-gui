@@ -168,7 +168,7 @@ public class MappingMouseAdapter extends MouseAdapter {
                     } catch (IOException ignored) {
                     }
                 } else {
-                    JOptionPane.showMessageDialog(null, "Error!");
+                    JOptionPane.showMessageDialog(null, "无法反编译");
                     return;
                 }
                 form.editorPane.setText(total);
@@ -201,8 +201,6 @@ public class MappingMouseAdapter extends MouseAdapter {
                     }
                 }
             }).start();
-
-            JOptionPane.showMessageDialog(null, "Decompiling...");
 
             DefaultListModel<ResObj> sourceDataList = new DefaultListModel<>();
             DefaultListModel<ResObj> callDataList = new DefaultListModel<>();
