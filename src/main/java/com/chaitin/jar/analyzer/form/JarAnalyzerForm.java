@@ -16,22 +16,27 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.strobel.decompiler.Decompiler;
 import com.strobel.decompiler.PlainTextOutput;
 import jsyntaxpane.syntaxkits.JavaSyntaxKit;
+import okhttp3.*;
 import org.benf.cfr.reader.Main;
 import org.jetbrains.java.decompiler.main.decompiler.ConsoleDecompiler;
 import org.objectweb.asm.Type;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.io.*;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.List;
 
+
 public class JarAnalyzerForm {
+    private static JarAnalyzerForm instance;
     public static final String tips = "重要提示：丢失依赖 \n" +
             "1. 也许你忘记加载rt.jar或者其他依赖jar包了\n" +
             "2. 也许你不应该选择分析SpringBoot选项\n";
@@ -205,7 +210,7 @@ public class JarAnalyzerForm {
                 }
 
                 if (searchList.size() == 0 || searchList.isEmpty()) {
-                    JOptionPane.showMessageDialog(null,
+                    JOptionPane.showMessageDialog(this.jarAnalyzerPanel,
                             "没有结果!\n" +
                                     "1. 也许你选错了：直接搜索/调用搜索\n" +
                                     "2. 也许你应该勾选分析SpringBoot");
@@ -345,7 +350,7 @@ public class JarAnalyzerForm {
                 } catch (IOException ignored) {
                 }
             } else {
-                JOptionPane.showMessageDialog(null, "无法反编译");
+                JOptionPane.showMessageDialog(this.jarAnalyzerPanel, "无法反编译");
                 return;
             }
             editorPane.setText(total);
@@ -492,7 +497,7 @@ public class JarAnalyzerForm {
                 } catch (IOException ignored) {
                 }
             } else {
-                JOptionPane.showMessageDialog(null, "无法反编译");
+                JOptionPane.showMessageDialog(this.jarAnalyzerPanel, "无法反编译");
                 return;
             }
             editorPane.setText(total);
@@ -611,11 +616,11 @@ public class JarAnalyzerForm {
         mappingJList.addMouseListener(new MappingMouseAdapter(this));
         controllerJList.addMouseListener(new ControllerMouseAdapter(this));
 
-        directSearchRadioButton.addActionListener(e -> JOptionPane.showMessageDialog(null,
+        directSearchRadioButton.addActionListener(e -> JOptionPane.showMessageDialog(this.jarAnalyzerPanel,
                 "什么是直接搜索:\n" +
                         "直接搜索某个类的某个方法在哪里定义"));
 
-        callSearchRadioButton.addActionListener(e -> JOptionPane.showMessageDialog(null,
+        callSearchRadioButton.addActionListener(e -> JOptionPane.showMessageDialog(this.jarAnalyzerPanel,
                 "什么是搜索调用:\n" +
                         "搜索某个类的某个方法在哪些地方被调用"));
 
@@ -624,7 +629,7 @@ public class JarAnalyzerForm {
             if (!innerJars) {
                 return;
             }
-            JOptionPane.showMessageDialog(null,
+            JOptionPane.showMessageDialog(this.jarAnalyzerPanel,
                     "什么是处理内部依赖Jar:\n" +
                             "在一个Jar中也许存在很多的依赖Jar\n" +
                             "如果你选择把这些Jar也都加入分析任务中这将会比较耗时");
@@ -634,7 +639,7 @@ public class JarAnalyzerForm {
             if (!springBootJar) {
                 return;
             }
-            JOptionPane.showMessageDialog(null,
+            JOptionPane.showMessageDialog(this.jarAnalyzerPanel,
                     "什么是分析SpringBot:\n" +
                             "在SpringBoot项目中需要分析的类位于BOOT-INF目录（不同于普通Jar）\n" +
                             "如果你输入的是SpringBoot的Jar包那么你需要勾选此项");
@@ -666,7 +671,7 @@ public class JarAnalyzerForm {
 
         showByteCodeButton.addActionListener(e -> {
             if (curRes == null) {
-                JOptionPane.showMessageDialog(null, "当前的方法为空");
+                JOptionPane.showMessageDialog(this.jarAnalyzerPanel, "当前的方法为空");
                 return;
             }
             JFrame frame = new JFrame("Show Bytecode");
@@ -679,7 +684,7 @@ public class JarAnalyzerForm {
 
         showASMCodeButton.addActionListener(e -> {
             if (curRes == null) {
-                JOptionPane.showMessageDialog(null, "当前的方法为空");
+                JOptionPane.showMessageDialog(this.jarAnalyzerPanel, "当前的方法为空");
                 return;
             }
             JFrame frame = new JFrame("Show ASM Code");
@@ -691,11 +696,139 @@ public class JarAnalyzerForm {
         });
     }
 
+    private static JMenuBar createMenuBar() {
+        JMenuBar menuBar = new JMenuBar();
+        menuBar.add(createAboutMenu());
+        menuBar.add(createVersionMenu());
+        return menuBar;
+    }
+
+    private static JMenu createAboutMenu() {
+        try {
+            JMenu aboutMenu = new JMenu("帮助");
+            JMenuItem bugItem = new JMenuItem("报告bug");
+            InputStream is = JarAnalyzerForm.class.getClassLoader().getResourceAsStream("issue.png");
+            if (is == null) {
+                return null;
+            }
+            ImageIcon imageIcon = new ImageIcon(ImageIO.read(is));
+            bugItem.setIcon(imageIcon);
+            aboutMenu.add(bugItem);
+            bugItem.addActionListener(e -> {
+                try {
+                    Desktop desktop = Desktop.getDesktop();
+                    URI oURL = new URI("https://github.com/4ra1n/jar-analyzer/issues/new");
+                    desktop.browse(oURL);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            });
+
+            JMenuItem authorItem = new JMenuItem("项目地址");
+            is = JarAnalyzerForm.class.getClassLoader().getResourceAsStream("address.png");
+            if (is == null) {
+                return null;
+            }
+            imageIcon = new ImageIcon(ImageIO.read(is));
+            authorItem.setIcon(imageIcon);
+            aboutMenu.add(authorItem);
+            authorItem.addActionListener(e -> {
+                try {
+                    Desktop desktop = Desktop.getDesktop();
+                    URI oURL = new URI("https://github.com/4ra1n/jar-analyzer");
+                    desktop.browse(oURL);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            });
+
+            JMenuItem normalItem = new JMenuItem("常见问题");
+            is = JarAnalyzerForm.class.getClassLoader().getResourceAsStream("normal.png");
+            if (is == null) {
+                return null;
+            }
+            imageIcon = new ImageIcon(ImageIO.read(is));
+            normalItem.setIcon(imageIcon);
+            aboutMenu.add(normalItem);
+            normalItem.addActionListener(e -> {
+                try {
+                    Desktop desktop = Desktop.getDesktop();
+                    URI oURL = new URI("https://github.com/4ra1n/jar-analyzer/issues/43");
+                    desktop.browse(oURL);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            });
+
+            return aboutMenu;
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+    private static JMenu createVersionMenu() {
+        try {
+            JMenu verMenu = new JMenu("版本");
+            JMenuItem jarItem = new JMenuItem(Const.JarAnalyzerVersion);
+            InputStream is = JarAnalyzerForm.class.getClassLoader().getResourceAsStream("ver.png");
+            if (is == null) {
+                return null;
+            }
+            ImageIcon imageIcon = new ImageIcon(ImageIO.read(is));
+            jarItem.setIcon(imageIcon);
+
+            JMenuItem downItem = new JMenuItem("验证最新版");
+            downItem.setIcon(imageIcon);
+            downItem.addActionListener(e -> {
+                OkHttpClient client = new OkHttpClient();
+                Request request = new Request.Builder()
+                        .url("https://api.github.com/repos/4ra1n/jar-analyzer/releases/latest")
+                        .addHeader("Connection", "close")
+                        .build();
+
+                JOptionPane.showMessageDialog(instance.jarAnalyzerPanel, Const.GithubTip);
+                client.newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        JOptionPane.showMessageDialog(instance.jarAnalyzerPanel, e.toString());
+                    }
+                    @Override
+                    public void onResponse(Call call, Response response) {
+                        try {
+                            if (response.body() == null) {
+                                JOptionPane.showMessageDialog(instance.jarAnalyzerPanel, "网络错误");
+                            }
+                            String body = response.body().string();
+                            String ver = body.split("\"tag_name\":")[1].split(",")[0];
+                            ver = ver.substring(1, ver.length() - 1);
+
+                            String output;
+                            output = String.format("%s: %s\n%s: %s",
+                                    "您当前的版本", Const.CurVersion,
+                                    "目前最新版本", ver);
+                            JOptionPane.showMessageDialog(instance.jarAnalyzerPanel, output);
+                        } catch (Exception ex) {
+                            JOptionPane.showMessageDialog(instance.jarAnalyzerPanel, ex.toString());
+                        }
+                    }
+                });
+            });
+
+            verMenu.add(jarItem);
+            verMenu.add(downItem);
+            return verMenu;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
     public static void start() {
         FlatDarkLaf.setup();
         JFrame frame = new JFrame("Jar Analyzer");
-        frame.setContentPane(new JarAnalyzerForm().jarAnalyzerPanel);
+        instance = new JarAnalyzerForm();
+        frame.setContentPane(instance.jarAnalyzerPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setJMenuBar(createMenuBar());
         frame.pack();
         frame.setVisible(true);
     }
