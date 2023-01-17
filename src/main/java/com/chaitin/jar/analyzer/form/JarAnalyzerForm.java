@@ -845,12 +845,12 @@ public class JarAnalyzerForm {
                             classNameBuilder.append(path[i]).append("/");
                         }
                         String className = classNameBuilder.toString();
-                        className = className.substring(0, className.length() - 7);
+                        int i = className.indexOf("classes");
+                        className = className.substring(i + 8, className.length() - 7);
 
                         ClassObj obj = new ClassObj(className, new ClassReference.Handle(className));
 
                         coreClassInternal(obj);
-
                     }
                 }
             }
@@ -874,6 +874,7 @@ public class JarAnalyzerForm {
         historyList.addMouseListener(new ListMouseAdapter(this));
         mappingJList.addMouseListener(new MappingMouseAdapter(this));
         controllerJList.addMouseListener(new ControllerMouseAdapter(this));
+        allMethodList.addMouseListener(new AllMethodMouseAdapter(this));
 
         directSearchRadioButton.addActionListener(e -> JOptionPane.showMessageDialog(this.jarAnalyzerPanel,
                 "什么是直接搜索:\n" +

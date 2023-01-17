@@ -20,14 +20,25 @@ public class MethodObj {
         return this.method;
     }
 
-    private int getNumFromDesc() {
+    private String getNumFromDesc() {
         Type methodType = Type.getMethodType(this.method.getDesc());
-        return methodType.getArgumentTypes().length;
+        Type[] argTypes = methodType.getArgumentTypes();
+        StringBuilder sb = new StringBuilder();
+        sb.append("(");
+        for (int ix = 0; ix < argTypes.length; ix++) {
+            String[] temp = argTypes[ix].getClassName().split("\\.");
+            sb.append(temp[temp.length - 1]);
+            if (ix != argTypes.length - 1) {
+                sb.append(",");
+            }
+        }
+        sb.append(")");
+        return sb.toString();
     }
 
     @Override
     public String toString() {
-        String outputFormat = "%s \t params: %d";
+        String outputFormat = "%s %s";
         return String.format(outputFormat,
                 method.getName(),
                 getNumFromDesc());
