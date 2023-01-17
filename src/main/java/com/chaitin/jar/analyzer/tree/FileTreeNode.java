@@ -11,14 +11,7 @@ public class FileTreeNode {
     }
 
     public String toString() {
-        String name = file.getName();
-        if (!Constants.isWindows) {
-            return name;
-        }
-        if (name.length() == 0) {
-            return file.getPath();
-        }
-        return name;
+        return file.getName();
     }
 
     public File file;

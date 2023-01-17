@@ -57,6 +57,7 @@ public class FileTree extends JTree {
             fileTreeModel.setRoot(rootNode);
         }
     }
+
     private void populateSubTree(DefaultMutableTreeNode node) {
         Object userObject = node.getUserObject();
         if (userObject instanceof FileTreeNode) {
@@ -76,9 +77,7 @@ public class FileTree extends JTree {
                 FileTreeNode subFile = new FileTreeNode(file);
                 DefaultMutableTreeNode subNode = new DefaultMutableTreeNode(subFile);
                 if (file.isDirectory()) {
-                    if (!Constants.isOSX || !file.getName().endsWith(".app")) {
-                        subNode.add(new DefaultMutableTreeNode("fake"));
-                    }
+                    subNode.add(new DefaultMutableTreeNode("fake"));
                 }
                 node.add(subNode);
             }

@@ -6,6 +6,7 @@ import com.chaitin.jar.analyzer.asm.StringClassVisitor;
 import com.chaitin.jar.analyzer.core.*;
 import com.chaitin.jar.analyzer.model.ClassObj;
 import com.chaitin.jar.analyzer.model.MappingObj;
+import com.chaitin.jar.analyzer.model.MethodObj;
 import com.chaitin.jar.analyzer.model.ResObj;
 import com.chaitin.jar.analyzer.spring.SpringController;
 import com.chaitin.jar.analyzer.spring.SpringService;
@@ -118,16 +119,15 @@ public class JarAnalyzerForm {
     private JScrollPane treeScroll;
     private JRadioButton binaryRadioButton;
     private JRadioButton strRegexRadioButton;
-    private JList<ResObj> allMethodList;
+    public JList<MethodObj> allMethodList;
     private JPanel allMethodPanel;
     private JScrollPane allMethodScroll;
     public static List<SpringController> controllers = new ArrayList<>();
-
     public static final DefaultListModel<ResObj> historyDataList = new DefaultListModel<>();
-
     public static Set<ClassFile> classFileList = new HashSet<>();
     public static final Set<ClassReference> discoveredClasses = new HashSet<>();
     public static final Set<MethodReference> discoveredMethods = new HashSet<>();
+    public static final Map<ClassReference.Handle, List<MethodReference>> methodsInClassMap = new HashMap<>();
     public static final Map<ClassReference.Handle, ClassReference> classMap = new HashMap<>();
     public static final Map<MethodReference.Handle, MethodReference> methodMap = new HashMap<>();
     public static final HashMap<MethodReference.Handle,
@@ -165,6 +165,20 @@ public class JarAnalyzerForm {
                     progress.setValue(50);
                     Discovery.start(classFileList, discoveredClasses,
                             discoveredMethods, classMap, methodMap);
+
+                    for (MethodReference mr : discoveredMethods) {
+                        ClassReference.Handle ch = mr.getClassReference();
+                        if (methodsInClassMap.get(ch) == null) {
+                            List<MethodReference> ml = new ArrayList<>();
+                            ml.add(mr);
+                            methodsInClassMap.put(ch, ml);
+                        } else {
+                            List<MethodReference> ml = methodsInClassMap.get(ch);
+                            ml.add(mr);
+                            methodsInClassMap.put(ch, ml);
+                        }
+                    }
+
                     jarInfoResultText.setText(String.format(
                             "Jar包数量: %d   类的数量: %s   方法的数量: %s",
                             totalJars, discoveredClasses.size(), discoveredMethods.size()
@@ -410,10 +424,10 @@ public class JarAnalyzerForm {
 
     public static final DefaultListModel<ResObj> chainDataList = new DefaultListModel<>();
 
-    @SuppressWarnings("all")
     public void coreClass(MouseEvent evt, JList<?> list) {
         int index = list.locationToIndex(evt.getPoint());
         ClassObj res = (ClassObj) list.getModel().getElementAt(index);
+        coreClassInternal(res);
     }
 
     private void coreClassInternal(ClassObj res) {
@@ -529,6 +543,7 @@ public class JarAnalyzerForm {
 
         DefaultListModel<ClassObj> subDataList = new DefaultListModel<>();
         DefaultListModel<ClassObj> superDataList = new DefaultListModel<>();
+        DefaultListModel<MethodObj> allMethodsList = new DefaultListModel<>();
 
         Set<ClassReference.Handle> subClasses = inheritanceMap.getSubClasses(res.getHandle());
         if (subClasses != null && subClasses.size() != 0) {
@@ -546,12 +561,19 @@ public class JarAnalyzerForm {
             }
         }
 
+        List<MethodReference> mList = methodsInClassMap.get(res.getHandle());
+        for (MethodReference m : mList) {
+            MethodObj resObj = new MethodObj(m.getHandle(), m.getClassReference().getName());
+            allMethodsList.addElement(resObj);
+        }
+
         currentLabel.setText(res.toString());
 
         subList.setModel(subDataList);
         superList.setModel(superDataList);
         callList.setModel(new DefaultListModel<>());
         sourceList.setModel(new DefaultListModel<>());
+        allMethodList.setModel(allMethodsList);
     }
 
     @SuppressWarnings("all")
@@ -716,6 +738,7 @@ public class JarAnalyzerForm {
 
         DefaultListModel<ResObj> sourceDataList = new DefaultListModel<>();
         DefaultListModel<ResObj> callDataList = new DefaultListModel<>();
+        DefaultListModel<MethodObj> allMethodsList = new DefaultListModel<>();
         DefaultListModel<ClassObj> subDataList = new DefaultListModel<>();
         DefaultListModel<ClassObj> superDataList = new DefaultListModel<>();
 
@@ -754,6 +777,12 @@ public class JarAnalyzerForm {
             }
         }
 
+        List<MethodReference> mList = methodsInClassMap.get(handle.getClassReference());
+        for (MethodReference m : mList) {
+            MethodObj resObj = new MethodObj(m.getHandle(), m.getClassReference().getName());
+            allMethodsList.addElement(resObj);
+        }
+
         curRes = res;
         currentLabel.setText(res.toString());
         currentLabel.setToolTipText(res.getMethod().getDescStd());
@@ -762,6 +791,7 @@ public class JarAnalyzerForm {
         callList.setModel(callDataList);
         subList.setModel(subDataList);
         superList.setModel(superDataList);
+        allMethodList.setModel(allMethodsList);
         historyList.setModel(historyDataList);
     }
 

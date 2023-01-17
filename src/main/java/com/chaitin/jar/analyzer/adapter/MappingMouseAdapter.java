@@ -5,6 +5,7 @@ import com.chaitin.jar.analyzer.core.MethodReference;
 import com.chaitin.jar.analyzer.form.JarAnalyzerForm;
 import com.chaitin.jar.analyzer.model.ClassObj;
 import com.chaitin.jar.analyzer.model.MappingObj;
+import com.chaitin.jar.analyzer.model.MethodObj;
 import com.chaitin.jar.analyzer.model.ResObj;
 import com.chaitin.jar.analyzer.util.OSUtil;
 import com.strobel.decompiler.Decompiler;
@@ -21,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -219,6 +221,7 @@ public class MappingMouseAdapter extends MouseAdapter {
             DefaultListModel<ResObj> callDataList = new DefaultListModel<>();
             DefaultListModel<ClassObj> subDataList = new DefaultListModel<>();
             DefaultListModel<ClassObj> superDataList = new DefaultListModel<>();
+            DefaultListModel<MethodObj> allMethodsList = new DefaultListModel<>();
 
             MethodReference.Handle handle = res.getResObj().getMethod();
             HashSet<MethodReference.Handle> callMh = JarAnalyzerForm.methodCalls.get(handle);
@@ -255,6 +258,12 @@ public class MappingMouseAdapter extends MouseAdapter {
                 }
             }
 
+            List<MethodReference> mList = JarAnalyzerForm.methodsInClassMap.get(handle.getClassReference());
+            for (MethodReference m : mList) {
+                MethodObj resObj = new MethodObj(m.getHandle(), m.getClassReference().getName());
+                allMethodsList.addElement(resObj);
+            }
+
             JarAnalyzerForm.curRes = res.getResObj();
             form.currentLabel.setText(res.toString());
             form.currentLabel.setToolTipText(res.getResObj().getMethod().getDescStd());
@@ -263,6 +272,7 @@ public class MappingMouseAdapter extends MouseAdapter {
             form.callList.setModel(callDataList);
             form.subList.setModel(subDataList);
             form.superList.setModel(superDataList);
+            form.allMethodList.setModel(allMethodsList);
             form.historyList.setModel(JarAnalyzerForm.historyDataList);
         }
     }
