@@ -25,7 +25,7 @@ public class MappingObj {
     @Override
     public String toString() {
         String outputFormat = " method: %s \t path: %s";
-        return String.format(outputFormat,this.springMapping.getMethodName().getName(),
+        return String.format(outputFormat, this.springMapping.getMethodName().getName(),
                 this.getSpringMapping().getPath());
     }
 }

@@ -36,7 +36,7 @@ public class SpringClassVisitor extends ClassVisitor {
         Set<String> annotations = classMap.get(new ClassReference.Handle(name)).getAnnotations();
         if (annotations.contains(SpringConstant.ControllerAnno) ||
                 annotations.contains(SpringConstant.RestControllerAnno) ||
-        annotations.contains(SpringConstant.SBApplication)) {
+                annotations.contains(SpringConstant.SBApplication)) {
             this.isSpring = true;
             currentController = new SpringController();
             currentController.setClassReference(classMap.get(new ClassReference.Handle(name)));

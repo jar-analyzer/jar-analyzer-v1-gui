@@ -15,7 +15,7 @@ public class StringClassVisitor extends ClassVisitor {
     private final Map<ClassReference.Handle, ClassReference> classMap;
     private final Map<MethodReference.Handle, MethodReference> methodMap;
 
-    public StringClassVisitor(boolean flag,String searchContext,
+    public StringClassVisitor(boolean flag, String searchContext,
                               List<MethodReference> results,
                               Map<ClassReference.Handle, ClassReference> classMap,
                               Map<MethodReference.Handle, MethodReference> methodMap) {

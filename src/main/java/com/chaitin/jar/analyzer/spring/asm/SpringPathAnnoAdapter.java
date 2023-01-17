@@ -20,7 +20,7 @@ public class SpringPathAnnoAdapter extends AnnotationVisitor {
     @Override
     public AnnotationVisitor visitArray(String name) {
         AnnotationVisitor av = super.visitArray(name);
-        return new ArrayVisitor(Opcodes.ASM6, av,results);
+        return new ArrayVisitor(Opcodes.ASM6, av, results);
     }
 
     static class ArrayVisitor extends AnnotationVisitor {

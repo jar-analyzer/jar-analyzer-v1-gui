@@ -153,10 +153,10 @@ public class MappingMouseAdapter extends MouseAdapter {
                     try {
                         if (JarAnalyzerForm.springBootJar) {
                             total = new String(Files.readAllBytes(
-                                    Paths.get(String.format("temp%s%s",File.separator,
+                                    Paths.get(String.format("temp%s%s", File.separator,
                                             javaPathPath.toString().substring(22)))
                             ));
-                        }else{
+                        } else {
                             total = new String(Files.readAllBytes(javaPathPath));
                         }
                     } catch (Exception ignored) {

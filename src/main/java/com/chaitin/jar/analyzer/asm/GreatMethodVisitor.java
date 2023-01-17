@@ -31,7 +31,7 @@ public class GreatMethodVisitor extends MethodVisitor {
         this.classMap = classMap;
         this.methodMap = methodMap;
 
-        if(methodName.contains(searchContext)){
+        if (methodName.contains(searchContext)) {
             ClassReference.Handle ch = new ClassReference.Handle(this.ownerName);
             if (classMap.get(ch) != null) {
                 MethodReference m = methodMap.get(new MethodReference.Handle(ch, methodName, desc));

@@ -12,7 +12,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 
 public class ASMPrint {
-    public static String getPrint(InputStream is,boolean flag)  {
+    public static String getPrint(InputStream is, boolean flag) {
         try {
             int parsingOptions = ClassReader.SKIP_FRAMES | ClassReader.SKIP_DEBUG;
             Printer printer = flag ? new ASMifier() : new Textifier();
@@ -21,7 +21,7 @@ public class ASMPrint {
             TraceClassVisitor traceClassVisitor = new TraceClassVisitor(null, printer, printWriter);
             new ClassReader(is).accept(traceClassVisitor, parsingOptions);
             return bao.toString();
-        }catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
         return null;
