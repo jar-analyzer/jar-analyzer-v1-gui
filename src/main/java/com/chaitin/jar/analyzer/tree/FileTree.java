@@ -60,9 +60,6 @@ public class FileTree extends JTree {
     }
 
     private void initComponents() {
-        if (Constants.isWindows) {
-            fsv = FileSystemView.getFileSystemView();
-        }
         initRoot();
         setEditable(false);
     }
@@ -84,26 +81,10 @@ public class FileTree extends JTree {
 
     private void initRoot() {
         File[] roots;
-        if (Constants.isWindows) {
-            roots = fsv.getFiles(new File("temp"), showHiddenFiles);
-        } else {
-            roots = new File[]{new File("temp")};
-        }
-        if (roots == null) {
-            return;
-        }
-        if (roots.length == 1) {
-            rootNode = new DefaultMutableTreeNode(new FileTreeNode(roots[0]));
-            populateSubTree(rootNode);
-        } else if (roots.length > 1) {
-            rootNode = new DefaultMutableTreeNode("jar");
-            for (File root : roots) {
-                rootNode.add(new DefaultMutableTreeNode(root));
-            }
-        } else {
-            rootNode = new DefaultMutableTreeNode("error");
-        }
-        if(fileTreeModel != null && rootNode!=null){
+        roots = new File[]{new File("temp")};
+        rootNode = new DefaultMutableTreeNode(new FileTreeNode(roots[0]));
+        populateSubTree(rootNode);
+        if (fileTreeModel != null && rootNode != null) {
             fileTreeModel.setRoot(rootNode);
         }
     }
@@ -129,24 +110,10 @@ public class FileTree extends JTree {
         if (userObject instanceof FileTreeNode) {
             FileTreeNode fileTreeNode = (FileTreeNode) userObject;
             File[] files = fileTreeNode.file.listFiles();
-            if (Constants.isWindows) {
-                Arrays.sort(Objects.requireNonNull(files), (f1, f2) -> {
-                    boolean f1IsDir = f1.isDirectory();
-                    boolean f2IsDir = f2.isDirectory();
-                    if (f1IsDir == f2IsDir) {
-                        return f1.compareTo(f2);
-                    }
-                    if (f1IsDir) {
-                        return -1;
-                    }
-                    return 1;
-                });
-            } else {
-                if(files==null){
-                    return;
-                }
-                Arrays.sort(Objects.requireNonNull(files));
+            if (files == null) {
+                return;
             }
+            Arrays.sort(Objects.requireNonNull(files));
             for (File file : files) {
                 if (file.isFile() && !showFiles) {
                     continue;
@@ -218,7 +185,6 @@ public class FileTree extends JTree {
 
     protected DefaultMutableTreeNode rootNode;
     protected DefaultTreeModel fileTreeModel;
-    protected FileSystemView fsv;
     protected boolean showHiddenFiles;
     protected boolean showFiles;
     protected boolean allowDelete;
