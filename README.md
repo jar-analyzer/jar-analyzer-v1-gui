@@ -4,11 +4,9 @@
 ![](https://img.shields.io/badge/build-Java%2011-orange)
 ![](https://img.shields.io/github/downloads/4ra1n/jar-analyzer/total)
 ![](https://img.shields.io/github/v/release/4ra1n/jar-analyzer)
-![](https://img.shields.io/badge/Java%20Code%20Lines-2538-orange)
+![](https://img.shields.io/badge/Java%20Code%20Lines-3127-orange)
 
 [English Doc](doc/README.md)
-
-演示教程: https://www.bilibili.com/video/BV1Pe4y1T7Ma
 
 ## 介绍
 

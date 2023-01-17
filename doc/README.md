@@ -4,7 +4,7 @@
 ![](https://img.shields.io/badge/build-Java%2011-orange)
 ![](https://img.shields.io/github/downloads/4ra1n/jar-analyzer/total)
 ![](https://img.shields.io/github/v/release/4ra1n/jar-analyzer)
-![](https://img.shields.io/badge/Java%20Code%20Lines-2538-orange)
+![](https://img.shields.io/badge/Java%20Code%20Lines-3127-orange)
 
 ## Introduce
 
@@ -26,6 +26,10 @@ Support Spring Mappings analyze:
 We use customized JSyntaxPane (not official) to show Java code.
 
 ![](../img/img.png)
+
+Search string (Analyze constant pool related instructions to achieve precise positioning)
+
+![](../img/str.png)
 
 ## How to build
 
