@@ -6,11 +6,11 @@
 
     <groupId>com.chaitin</groupId>
     <artifactId>jar-analyzer</artifactId>
-    <version>0.7</version>
+    <version>0.8</version>
 
     <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -46,8 +46,7 @@
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
-            <!-- 为了JDK版本适配所以不升级 -->
-            <version>3.14.9</version>
+            <version>4.10.0</version>
         </dependency>
         <dependency>
             <groupId>com.intellij</groupId>
@@ -72,7 +71,7 @@
         <dependency>
             <groupId>org.quiltmc</groupId>
             <artifactId>quiltflower</artifactId>
-            <version>1.8.1</version>
+            <version>1.9.0</version>
         </dependency>
         <dependency>
             <groupId>com.chaitin.jar</groupId>

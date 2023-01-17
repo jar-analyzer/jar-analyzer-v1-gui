@@ -856,11 +856,13 @@ public class JarAnalyzerForm {
                 JOptionPane.showMessageDialog(instance.jarAnalyzerPanel, Const.GithubTip);
                 client.newCall(request).enqueue(new Callback() {
                     @Override
+                    @SuppressWarnings("all")
                     public void onFailure(Call call, IOException e) {
                         JOptionPane.showMessageDialog(instance.jarAnalyzerPanel, e.toString());
                     }
 
                     @Override
+                    @SuppressWarnings("all")
                     public void onResponse(Call call, Response response) {
                         try {
                             if (response.body() == null) {
@@ -1002,6 +1004,7 @@ public class JarAnalyzerForm {
         editorScroll.setBorder(BorderFactory.createTitledBorder(null, "反编译Java代码", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         editorPane = new JEditorPane();
         editorPane.setBackground(new Color(-1));
+        editorPane.setEditable(false);
         editorScroll.setViewportView(editorPane);
         curPanel = new JPanel();
         curPanel.setLayout(new GridLayoutManager(1, 5, new Insets(0, 0, 0, 0), -1, -1));
@@ -1146,7 +1149,7 @@ public class JarAnalyzerForm {
         treePanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
         jarAnalyzerPanel.add(treePanel, new GridConstraints(0, 0, 4, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         treeScroll = new JScrollPane();
-        treePanel.add(treeScroll, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(200, -1), null, null, 0, false));
+        treePanel.add(treeScroll, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(300, -1), null, null, 0, false));
         trees = new FileTree();
         treeScroll.setViewportView(trees);
         ButtonGroup buttonGroup;
