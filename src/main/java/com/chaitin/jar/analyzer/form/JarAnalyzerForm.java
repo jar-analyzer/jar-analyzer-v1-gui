@@ -19,6 +19,7 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.strobel.decompiler.Decompiler;
 import com.strobel.decompiler.PlainTextOutput;
+import jsyntaxpane.DefaultSyntaxKit;
 import jsyntaxpane.syntaxkits.JavaSyntaxKit;
 import okhttp3.*;
 import org.benf.cfr.reader.Main;
@@ -35,6 +36,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.*;
+import java.lang.reflect.Field;
 import java.net.URI;
 import java.nio.file.*;
 import java.util.*;
@@ -43,9 +45,9 @@ import java.util.List;
 
 public class JarAnalyzerForm {
     private static JarAnalyzerForm instance;
-    public static final String tips = "重要提示：丢失依赖 \n" +
-            "1. 也许你忘记加载rt.jar或者其他依赖jar包了\n" +
-            "2. 也许你不应该选择分析SpringBoot选项\n";
+    public static final String tips = "IMPORTANT: DECOMPILE FAIL \n" +
+            "1. MAYBE MISSING DEPENDENCIES (such as rj.jar)\n" +
+            "2. WHETHER YOU SHOULD CHOOSE SpringBoot OPTION\n";
     public static boolean deleteLogs = false;
     public static boolean innerJars = false;
     public static boolean springBootJar = false;
@@ -860,7 +862,20 @@ public class JarAnalyzerForm {
         quiltFlowerRadioButton.setSelected(true);
         callSearchRadioButton.setSelected(true);
 
-        editorPane.setEditorKit(new JavaSyntaxKit());
+        try {
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            Font font = Font.createFont(Font.TRUETYPE_FONT, Objects.requireNonNull(
+                    JarAnalyzerForm.class.getClassLoader()
+                            .getResourceAsStream("font.ttf"))).deriveFont(12f);
+            ge.registerFont(font);
+            JavaSyntaxKit kit = new JavaSyntaxKit();
+            Field field = DefaultSyntaxKit.class.getDeclaredField("DEFAULT_FONT");
+            field.setAccessible(true);
+            field.set(kit, font);
+            editorPane.setEditorKit(kit);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         loadJar();
 
         ToolTipManager.sharedInstance().setDismissDelay(10000);
