@@ -1,6 +1,7 @@
 package com.chaitin.jar.analyzer.form;
 
 import com.chaitin.jar.analyzer.adapter.*;
+import com.chaitin.jar.analyzer.asm.GreatClassVisitor;
 import com.chaitin.jar.analyzer.asm.StringClassVisitor;
 import com.chaitin.jar.analyzer.core.*;
 import com.chaitin.jar.analyzer.model.ClassObj;
@@ -275,7 +276,10 @@ public class JarAnalyzerForm {
                     resultList.setModel(null);
                     return;
                 }
-                for (MethodReference mr : mList) {
+
+                Set<MethodReference> mSet = new HashSet<>(mList);
+
+                for (MethodReference mr : mSet) {
                     searchList.addElement(new ResObj(mr.getHandle(), mr.getClassReference().getName()));
                 }
                 resultList.setModel(searchList);
@@ -303,7 +307,10 @@ public class JarAnalyzerForm {
                     resultList.setModel(null);
                     return;
                 }
-                for (MethodReference mr : mList) {
+
+                Set<MethodReference> mSet = new HashSet<>(mList);
+
+                for (MethodReference mr : mSet) {
                     searchList.addElement(new ResObj(mr.getHandle(), mr.getClassReference().getName()));
                 }
                 resultList.setModel(searchList);
@@ -366,7 +373,33 @@ public class JarAnalyzerForm {
             }
 
             if (greatRadioButton.isSelected()) {
+                List<MethodReference> mList = new ArrayList<>();
+                String search = otherText.getText();
+                if (search == null || search.trim().equals("")) {
+                    JOptionPane.showMessageDialog(this.jarAnalyzerPanel, "请输入其他搜索内容");
+                    return;
+                }
+                for (ClassFile file : classFileList) {
+                    try {
+                        GreatClassVisitor dcv = new GreatClassVisitor(search, mList, classMap, methodMap);
+                        ClassReader cr = new ClassReader(file.getFile());
+                        cr.accept(dcv, ClassReader.EXPAND_FRAMES);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+                if (mList.size() == 0) {
+                    JOptionPane.showMessageDialog(this.jarAnalyzerPanel, "没有搜到结果");
+                    resultList.setModel(null);
+                    return;
+                }
 
+                Set<MethodReference> mSet = new HashSet<>(mList);
+
+                for (MethodReference mr : mSet) {
+                    searchList.addElement(new ResObj(mr.getHandle(), mr.getClassReference().getName()));
+                }
+                resultList.setModel(searchList);
             }
 
         });
