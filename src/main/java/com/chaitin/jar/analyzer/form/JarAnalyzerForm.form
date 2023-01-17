@@ -3,7 +3,7 @@
   <grid id="27dc6" binding="jarAnalyzerPanel" layout-manager="GridLayoutManager" row-count="5" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
-      <xy x="20" y="20" width="1482" height="1078"/>
+      <xy x="20" y="20" width="1532" height="1078"/>
     </constraints>
     <properties>
       <background color="-12828863"/>
@@ -42,32 +42,16 @@
                 <children>
                   <component id="fc124" class="javax.swing.JRadioButton" binding="callSearchRadioButton" default-binding="true">
                     <constraints>
-                      <grid row="1" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                      <grid row="1" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
                       <background color="-12828863"/>
                       <text value="搜索调用"/>
                     </properties>
                   </component>
-                  <component id="dff0d" class="javax.swing.JLabel" binding="callSearchLabel">
-                    <constraints>
-                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties>
-                      <text value="   搜索方法的调用"/>
-                    </properties>
-                  </component>
-                  <component id="15fe0" class="javax.swing.JLabel" binding="directSearchLabel">
-                    <constraints>
-                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties>
-                      <text value="   直接搜索类和方法"/>
-                    </properties>
-                  </component>
                   <component id="548e6" class="javax.swing.JRadioButton" binding="directSearchRadioButton" default-binding="true">
                     <constraints>
-                      <grid row="0" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                      <grid row="0" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
                       <background color="-12828863"/>
@@ -76,18 +60,34 @@
                   </component>
                   <component id="7202c" class="javax.swing.JRadioButton" binding="strRadioButton">
                     <constraints>
-                      <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                      <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
-                      <text value="字符串搜索"/>
+                      <text value="字符串包含搜索"/>
                     </properties>
                   </component>
                   <component id="fa5cc" class="javax.swing.JRadioButton" binding="greatRadioButton">
                     <constraints>
-                      <grid row="1" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                      <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
                       <text value="无脑搜索"/>
+                    </properties>
+                  </component>
+                  <component id="69338" class="javax.swing.JRadioButton" binding="binaryRadioButton">
+                    <constraints>
+                      <grid row="1" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="二进制搜索"/>
+                    </properties>
+                  </component>
+                  <component id="9ae8c" class="javax.swing.JRadioButton" binding="strRegexRadioButton">
+                    <constraints>
+                      <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="字符串正则搜索"/>
                     </properties>
                   </component>
                 </children>
@@ -638,6 +638,8 @@
       <member id="fc124"/>
       <member id="7202c"/>
       <member id="fa5cc"/>
+      <member id="69338"/>
+      <member id="9ae8c"/>
     </group>
   </buttonGroups>
 </form>

@@ -95,8 +95,6 @@ public class JarAnalyzerForm {
     public JRadioButton callSearchRadioButton;
     public JRadioButton directSearchRadioButton;
     public JPanel searchSelPanel;
-    public JLabel callSearchLabel;
-    public JLabel directSearchLabel;
     public JPanel actionPanel;
     public JButton analyzeSpringButton;
     public JPanel springPanel;
@@ -117,6 +115,8 @@ public class JarAnalyzerForm {
     private JPanel treePanel;
     private FileTree trees;
     private JScrollPane treeScroll;
+    private JRadioButton binaryRadioButton;
+    private JRadioButton strRegexRadioButton;
     public static List<SpringController> controllers = new ArrayList<>();
 
     public static final DefaultListModel<ResObj> historyDataList = new DefaultListModel<>();
@@ -938,23 +938,23 @@ public class JarAnalyzerForm {
         callSearchRadioButton = new JRadioButton();
         callSearchRadioButton.setBackground(new Color(-12828863));
         callSearchRadioButton.setText("搜索调用");
-        searchSelPanel.add(callSearchRadioButton, new GridConstraints(1, 1, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        callSearchLabel = new JLabel();
-        callSearchLabel.setText("   搜索方法的调用");
-        searchSelPanel.add(callSearchLabel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        directSearchLabel = new JLabel();
-        directSearchLabel.setText("   直接搜索类和方法");
-        searchSelPanel.add(directSearchLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        searchSelPanel.add(callSearchRadioButton, new GridConstraints(1, 0, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         directSearchRadioButton = new JRadioButton();
         directSearchRadioButton.setBackground(new Color(-12828863));
         directSearchRadioButton.setText("直接搜索");
-        searchSelPanel.add(directSearchRadioButton, new GridConstraints(0, 1, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        searchSelPanel.add(directSearchRadioButton, new GridConstraints(0, 0, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         strRadioButton = new JRadioButton();
-        strRadioButton.setText("字符串搜索");
-        searchSelPanel.add(strRadioButton, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        strRadioButton.setText("字符串包含搜索");
+        searchSelPanel.add(strRadioButton, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         greatRadioButton = new JRadioButton();
         greatRadioButton.setText("无脑搜索");
-        searchSelPanel.add(greatRadioButton, new GridConstraints(1, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        searchSelPanel.add(greatRadioButton, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        binaryRadioButton = new JRadioButton();
+        binaryRadioButton.setText("二进制搜索");
+        searchSelPanel.add(binaryRadioButton, new GridConstraints(1, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        strRegexRadioButton = new JRadioButton();
+        strRegexRadioButton.setText("字符串正则搜索");
+        searchSelPanel.add(strRegexRadioButton, new GridConstraints(1, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         actionPanel = new JPanel();
         actionPanel.setLayout(new GridLayoutManager(2, 3, new Insets(0, 0, 0, 0), -1, -1));
         actionPanel.setBackground(new Color(-12828863));
@@ -1162,6 +1162,8 @@ public class JarAnalyzerForm {
         buttonGroup.add(callSearchRadioButton);
         buttonGroup.add(strRadioButton);
         buttonGroup.add(greatRadioButton);
+        buttonGroup.add(binaryRadioButton);
+        buttonGroup.add(strRegexRadioButton);
     }
 
     /**
