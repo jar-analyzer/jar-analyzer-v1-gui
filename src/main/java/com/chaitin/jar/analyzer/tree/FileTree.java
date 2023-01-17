@@ -3,7 +3,6 @@ package com.chaitin.jar.analyzer.tree;
 import javax.swing.*;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
-import javax.swing.filechooser.FileSystemView;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
@@ -11,7 +10,6 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Objects;
 
-@SuppressWarnings("unused")
 public class FileTree extends JTree {
     public FileTree() {
         try {
@@ -23,40 +21,11 @@ public class FileTree extends JTree {
 
     public void refresh() {
         fileTreeModel = (DefaultTreeModel) treeModel;
-        showHiddenFiles = false;
+        showHiddenFiles = true;
         showFiles = true;
-        navigateOSXApps = false;
         initComponents();
         initListeners();
         repaint();
-    }
-
-    public DefaultTreeModel getFileTreeModel() {
-        return fileTreeModel;
-    }
-
-    public File getSelectedFile() {
-        TreePath treePath = getSelectionPath();
-        if (treePath == null) {
-            return null;
-        }
-        DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) treePath.getLastPathComponent();
-        FileTreeNode fileTreeNode = (FileTreeNode) treeNode.getUserObject();
-        return fileTreeNode.file;
-    }
-
-    public File[] getSelectedFiles() {
-        TreePath[] treePaths = getSelectionPaths();
-        if (treePaths == null) {
-            return null;
-        }
-        File[] files = new File[treePaths.length];
-        for (int i = 0; i < treePaths.length; i++) {
-            DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) treePaths[i].getLastPathComponent();
-            FileTreeNode fileTreeNode = (FileTreeNode) treeNode.getUserObject();
-            files[i] = fileTreeNode.file;
-        }
-        return files;
     }
 
     private void initComponents() {
@@ -88,23 +57,6 @@ public class FileTree extends JTree {
             fileTreeModel.setRoot(rootNode);
         }
     }
-
-    public boolean isDeleteEnabled() {
-        return allowDelete;
-    }
-
-    public boolean isNavigateOSXApps() {
-        return navigateOSXApps;
-    }
-
-    public boolean isShowFiles() {
-        return showFiles;
-    }
-
-    public boolean isShowHiddenFiles() {
-        return showHiddenFiles;
-    }
-
     private void populateSubTree(DefaultMutableTreeNode node) {
         Object userObject = node.getUserObject();
         if (userObject instanceof FileTreeNode) {
@@ -124,7 +76,7 @@ public class FileTree extends JTree {
                 FileTreeNode subFile = new FileTreeNode(file);
                 DefaultMutableTreeNode subNode = new DefaultMutableTreeNode(subFile);
                 if (file.isDirectory()) {
-                    if (!Constants.isOSX || navigateOSXApps || !file.getName().endsWith(".app")) {
+                    if (!Constants.isOSX || !file.getName().endsWith(".app")) {
                         subNode.add(new DefaultMutableTreeNode("fake"));
                     }
                 }
@@ -133,60 +85,8 @@ public class FileTree extends JTree {
         }
     }
 
-    public void setCurrentFile(File currFile) {
-        if (currFile == null || !currFile.exists()) {
-            return;
-        }
-        String path = currFile.getPath();
-        String[] pathParts;
-        if (Constants.isWindows) {
-            pathParts = path.split("\\\\");
-        } else {
-            pathParts = path.split(File.separator);
-        }
-        DefaultMutableTreeNode currNode = rootNode;
-        for (String part : pathParts) {
-            int childCount = currNode.getChildCount();
-            for (int i = 0; i < childCount; i++) {
-                DefaultMutableTreeNode childNode = (DefaultMutableTreeNode) currNode.getChildAt(i);
-                FileTreeNode fileTreeNode = (FileTreeNode) childNode.getUserObject();
-                if (fileTreeNode.file.getName().equals(part)) {
-                    TreePath treePath = new TreePath(childNode.getPath());
-                    expandPath(treePath);
-                    selectionModel.setSelectionPath(treePath);
-                    currNode = childNode;
-                    break;
-                }
-            }
-        }
-    }
-
-    public void setDeleteEnabled(boolean allowDelete) {
-        this.allowDelete = allowDelete;
-    }
-
-    public void setShowFiles(boolean showFiles) {
-        if (this.showFiles != showFiles) {
-            this.showFiles = showFiles;
-            initRoot();
-        }
-    }
-
-    public void setShowHiddenFiles(boolean showHiddenFiles) {
-        if (showHiddenFiles != this.showHiddenFiles) {
-            this.showHiddenFiles = showHiddenFiles;
-            initRoot();
-        }
-    }
-
-    public void setNavigateOSXApps(boolean navigateOSXApps) {
-        this.navigateOSXApps = navigateOSXApps;
-    }
-
     protected DefaultMutableTreeNode rootNode;
     protected DefaultTreeModel fileTreeModel;
     protected boolean showHiddenFiles;
     protected boolean showFiles;
-    protected boolean allowDelete;
-    protected boolean navigateOSXApps;
 }
