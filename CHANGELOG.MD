@@ -112,6 +112,9 @@ Others:
 更新内容：
 - [important] 整体UI使用中文重构（我不觉得老外会使用） #40
 - [important] 重写代码面板实现类似IDEA的效果 #49
+- [important] 实现正则和包含搜索字符串的功能 #50
+- [important] 实现直接从jar包搜索二进制的功能 #51
+- [important] 实现无脑搜索（类/方法/字段/常量 任何地方） #52
 - [important] 增加搜索字符串常量的功能 #47
 - [important] 使用黑色主题完全重构UI #42
 - [important] [bug] 优化方法位置精确定位的算法 #41

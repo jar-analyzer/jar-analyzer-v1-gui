@@ -129,7 +129,7 @@ public class JarAnalyzerForm {
     public static final HashMap<MethodReference.Handle,
             HashSet<MethodReference.Handle>> methodCalls = new HashMap<>();
     public static InheritanceMap inheritanceMap;
-
+    private static final List<String> jarPathList = new ArrayList<>();
     public static int totalJars = 0;
 
     public void loadJar() {
@@ -143,7 +143,6 @@ public class JarAnalyzerForm {
                 totalJars++;
                 progress.setValue(0);
                 new Thread(() -> {
-                    List<String> jarPathList = new ArrayList<>();
                     if (Files.isDirectory(Paths.get(absPath))) {
                         List<String> data = DirUtil.GetFiles(absPath);
                         for (String d : data) {
@@ -273,6 +272,7 @@ public class JarAnalyzerForm {
                 }
                 if (mList.size() == 0) {
                     JOptionPane.showMessageDialog(this.jarAnalyzerPanel, "没有搜到结果");
+                    resultList.setModel(null);
                     return;
                 }
                 for (MethodReference mr : mList) {
@@ -300,6 +300,7 @@ public class JarAnalyzerForm {
                 }
                 if (mList.size() == 0) {
                     JOptionPane.showMessageDialog(this.jarAnalyzerPanel, "没有搜到结果");
+                    resultList.setModel(null);
                     return;
                 }
                 for (MethodReference mr : mList) {
@@ -308,9 +309,66 @@ public class JarAnalyzerForm {
                 resultList.setModel(searchList);
             }
 
+            if (binaryRadioButton.isSelected()) {
+
+                String search = otherText.getText();
+                if (search == null || search.trim().equals("")) {
+                    JOptionPane.showMessageDialog(this.jarAnalyzerPanel, "请输入其他搜索内容");
+                    return;
+                }
+
+                for (String jarPath : jarPathList) {
+                    try {
+                        Path path = Paths.get(jarPath);
+                        if (Files.size(path) > 1024 * 1024 * 50) {
+                            FileInputStream fis = new FileInputStream(path.toFile());
+                            byte[] searchContext = search.getBytes();
+                            byte[] data = new byte[16384];
+                            while (fis.read(data, 0, data.length) != -1) {
+                                for (int i = 0; i < data.length - searchContext.length + 1; ++i) {
+                                    boolean found = true;
+                                    for (int j = 0; j < searchContext.length; ++j) {
+                                        if (data[i + j] != searchContext[j]) {
+                                            found = false;
+                                            break;
+                                        }
+                                    }
+                                    if (found) {
+                                        fis.close();
+                                        JOptionPane.showMessageDialog(this.jarAnalyzerPanel, "搜索到此字符串");
+                                        return;
+                                    }
+                                }
+                            }
+                            fis.close();
+                        } else {
+                            byte[] searchContext = search.getBytes();
+                            byte[] data = Files.readAllBytes(path);
+                            for (int i = 0; i < data.length - searchContext.length + 1; ++i) {
+                                boolean found = true;
+                                for (int j = 0; j < searchContext.length; ++j) {
+                                    if (data[i + j] != searchContext[j]) {
+                                        found = false;
+                                        break;
+                                    }
+                                }
+                                if (found) {
+                                    JOptionPane.showMessageDialog(this.jarAnalyzerPanel, "搜索到此字符串");
+                                    return;
+                                }
+                            }
+                        }
+                        JOptionPane.showMessageDialog(this.jarAnalyzerPanel, "找不到");
+                        return;
+                    } catch (Exception ignored) {
+                    }
+                }
+            }
+
             if (greatRadioButton.isSelected()) {
 
             }
+
         });
     }
 
