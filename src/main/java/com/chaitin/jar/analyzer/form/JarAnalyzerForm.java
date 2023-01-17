@@ -263,7 +263,35 @@ public class JarAnalyzerForm {
                 }
                 for (ClassFile file : classFileList) {
                     try {
-                        StringClassVisitor dcv = new StringClassVisitor(search, mList, classMap, methodMap);
+                        StringClassVisitor dcv = new StringClassVisitor(true,
+                                search, mList, classMap, methodMap);
+                        ClassReader cr = new ClassReader(file.getFile());
+                        cr.accept(dcv, ClassReader.EXPAND_FRAMES);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+                if (mList.size() == 0) {
+                    JOptionPane.showMessageDialog(this.jarAnalyzerPanel, "没有搜到结果");
+                    return;
+                }
+                for (MethodReference mr : mList) {
+                    searchList.addElement(new ResObj(mr.getHandle(), mr.getClassReference().getName()));
+                }
+                resultList.setModel(searchList);
+            }
+
+            if (strRegexRadioButton.isSelected()) {
+                List<MethodReference> mList = new ArrayList<>();
+                String search = otherText.getText();
+                if (search == null || search.trim().equals("")) {
+                    JOptionPane.showMessageDialog(this.jarAnalyzerPanel, "请输入其他搜索内容");
+                    return;
+                }
+                for (ClassFile file : classFileList) {
+                    try {
+                        StringClassVisitor dcv = new StringClassVisitor(false,
+                                search, mList, classMap, methodMap);
                         ClassReader cr = new ClassReader(file.getFile());
                         cr.accept(dcv, ClassReader.EXPAND_FRAMES);
                     } catch (Exception ex) {

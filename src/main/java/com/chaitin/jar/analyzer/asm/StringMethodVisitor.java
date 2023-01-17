@@ -6,8 +6,10 @@ import org.objectweb.asm.MethodVisitor;
 
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class StringMethodVisitor extends MethodVisitor {
+    private final boolean flag;
     private final String searchContext;
     private final String ownerName;
     private final String methodName;
@@ -17,7 +19,7 @@ public class StringMethodVisitor extends MethodVisitor {
     private final Map<MethodReference.Handle, MethodReference> methodMap;
 
     public StringMethodVisitor(int api, MethodVisitor methodVisitor, String searchContext,
-                               String owner, String methodName, String desc,
+                               boolean flag, String owner, String methodName, String desc,
                                List<MethodReference> results,
                                Map<ClassReference.Handle, ClassReference> classMap,
                                Map<MethodReference.Handle, MethodReference> methodMap) {
@@ -29,18 +31,31 @@ public class StringMethodVisitor extends MethodVisitor {
         this.results = results;
         this.classMap = classMap;
         this.methodMap = methodMap;
+        this.flag = flag;
     }
 
     @Override
     public void visitLdcInsn(Object o) {
         if (o instanceof String) {
-            if (((String) o).contains(searchContext)) {
-                ClassReference.Handle ch = new ClassReference.Handle(ownerName);
-                if (classMap.get(ch) != null) {
-                    MethodReference m = methodMap.get(new MethodReference.Handle(ch, methodName, methodDesc));
-                    if (m != null) {
-                        results.add(m);
-                    }
+
+            MethodReference mr = null;
+            ClassReference.Handle ch = new ClassReference.Handle(ownerName);
+            if (classMap.get(ch) != null) {
+                MethodReference m = methodMap.get(new MethodReference.Handle(ch, methodName, methodDesc));
+                if (m != null) {
+                    mr = m;
+                }
+            }
+
+            if (flag && ((String) o).contains(searchContext)) {
+                if (mr != null) {
+                    results.add(mr);
+                }
+            }
+            if (!flag) {
+                boolean matches = Pattern.matches(searchContext, (String) o);
+                if (matches && mr != null) {
+                    results.add(mr);
                 }
             }
         }

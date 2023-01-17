@@ -29,7 +29,7 @@ We use customized JSyntaxPane (not official) to show Java code.
 
 Search string (Analyze constant pool related instructions to achieve precise positioning)
 
-![](../img/str.png)
+![](../img/spring.png)
 
 ## How to build
 
