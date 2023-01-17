@@ -8,6 +8,7 @@ import com.chaitin.jar.analyzer.model.MappingObj;
 import com.chaitin.jar.analyzer.model.ResObj;
 import com.chaitin.jar.analyzer.spring.SpringController;
 import com.chaitin.jar.analyzer.spring.SpringService;
+import com.chaitin.jar.analyzer.tree.FileTree;
 import com.chaitin.jar.analyzer.util.CoreUtil;
 import com.chaitin.jar.analyzer.util.DirUtil;
 import com.chaitin.jar.analyzer.util.OSUtil;
@@ -26,13 +27,14 @@ import org.objectweb.asm.Type;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import javax.swing.tree.TreePath;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.*;
 import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.*;
 import java.util.List;
 
@@ -112,6 +114,9 @@ public class JarAnalyzerForm {
     private JTextField otherText;
     private JLabel otherSearch;
     private JLabel otherTip;
+    private JPanel treePanel;
+    private FileTree trees;
+    private JScrollPane treeScroll;
     public static List<SpringController> controllers = new ArrayList<>();
 
     public static final DefaultListModel<ResObj> historyDataList = new DefaultListModel<>();
@@ -151,6 +156,9 @@ public class JarAnalyzerForm {
                     }
                     progress.setValue(20);
                     classFileList.addAll(CoreUtil.getAllClassesFromJars(jarPathList));
+
+                    refreshTree();
+
                     progress.setValue(50);
                     Discovery.start(classFileList, discoveredClasses,
                             discoveredMethods, classMap, methodMap);
@@ -632,8 +640,30 @@ public class JarAnalyzerForm {
         historyList.setModel(historyDataList);
     }
 
+    private void refreshTree() {
+        try {
+            trees.refresh();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
     public JarAnalyzerForm() {
         DirUtil.removeDir(new File("temp"));
+
+        refreshTree();
+        MouseListener ml = new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                int selRow = trees.getRowForLocation(e.getX(), e.getY());
+                TreePath selPath = trees.getPathForLocation(e.getX(), e.getY());
+                if (selRow != -1) {
+                    if (e.getClickCount() == 2) {
+                        System.out.println(selPath);
+                    }
+                }
+            }
+        };
+        trees.addMouseListener(ml);
 
         quiltFlowerRadioButton.setSelected(true);
         callSearchRadioButton.setSelected(true);
@@ -888,12 +918,12 @@ public class JarAnalyzerForm {
      */
     private void $$$setupUI$$$() {
         jarAnalyzerPanel = new JPanel();
-        jarAnalyzerPanel.setLayout(new GridLayoutManager(5, 1, new Insets(0, 0, 0, 0), -1, -1));
+        jarAnalyzerPanel.setLayout(new GridLayoutManager(5, 2, new Insets(0, 0, 0, 0), -1, -1));
         jarAnalyzerPanel.setBackground(new Color(-12828863));
         topPanel = new JPanel();
         topPanel.setLayout(new GridLayoutManager(1, 3, new Insets(0, 0, 0, 0), -1, -1));
         topPanel.setBackground(new Color(-12828863));
-        jarAnalyzerPanel.add(topPanel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        jarAnalyzerPanel.add(topPanel, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         opPanel = new JPanel();
         opPanel.setLayout(new GridLayoutManager(3, 2, new Insets(0, 0, 0, 0), -1, -1));
         opPanel.setBackground(new Color(-12828863));
@@ -965,7 +995,7 @@ public class JarAnalyzerForm {
         editorPanel = new JPanel();
         editorPanel.setLayout(new GridLayoutManager(4, 2, new Insets(0, 0, 0, 0), -1, -1));
         editorPanel.setBackground(new Color(-12828863));
-        jarAnalyzerPanel.add(editorPanel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        jarAnalyzerPanel.add(editorPanel, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         editorScroll = new JScrollPane();
         editorScroll.setBackground(new Color(-12828863));
         editorPanel.add(editorScroll, new GridConstraints(0, 0, 3, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(600, 400), new Dimension(600, 500), null, 0, false));
@@ -996,7 +1026,7 @@ public class JarAnalyzerForm {
         callPanel = new JTabbedPane();
         callPanel.setBackground(new Color(-9408398));
         callPanel.setForeground(new Color(-16777216));
-        editorPanel.add(callPanel, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, new Dimension(700, -1), null, null, 0, false));
+        editorPanel.add(callPanel, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, new Dimension(600, -1), null, null, 0, false));
         sourceScroll = new JScrollPane();
         sourceScroll.setBackground(new Color(-12828863));
         callPanel.addTab("谁调用了当前方法", sourceScroll);
@@ -1016,11 +1046,11 @@ public class JarAnalyzerForm {
         subScroll.setViewportView(subList);
         superScroll = new JScrollPane();
         superScroll.setBackground(new Color(-12828863));
-        callPanel.addTab("当前类所有的父类", superScroll);
+        callPanel.addTab("当前类所有父类", superScroll);
         superList = new JList();
         superScroll.setViewportView(superList);
         historyScroll = new JScrollPane();
-        callPanel.addTab("反编译历史", historyScroll);
+        callPanel.addTab("历史", historyScroll);
         historyList = new JList();
         historyScroll.setViewportView(historyList);
         springPanel = new JPanel();
@@ -1044,14 +1074,14 @@ public class JarAnalyzerForm {
         authorPanel = new JPanel();
         authorPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
         authorPanel.setBackground(new Color(-12828863));
-        jarAnalyzerPanel.add(authorPanel, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        jarAnalyzerPanel.add(authorPanel, new GridConstraints(4, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         authorLabel = new JLabel();
         authorLabel.setText("github.com/4ra1n/jar-analyzer");
         authorPanel.add(authorLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_NORTH, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         configPanel = new JPanel();
         configPanel.setLayout(new GridLayoutManager(5, 5, new Insets(0, 0, 0, 0), -1, -1));
         configPanel.setBackground(new Color(-12828863));
-        jarAnalyzerPanel.add(configPanel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        jarAnalyzerPanel.add(configPanel, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         methodLabel = new JLabel();
         methodLabel.setText("   输入搜索方法");
         configPanel.add(methodLabel, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
@@ -1097,7 +1127,7 @@ public class JarAnalyzerForm {
         resultPane = new JPanel();
         resultPane.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
         resultPane.setBackground(new Color(-12828863));
-        jarAnalyzerPanel.add(resultPane, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        jarAnalyzerPanel.add(resultPane, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         resultScroll = new JScrollPane();
         resultScroll.setBackground(new Color(-12828863));
         resultPane.add(resultScroll, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(600, 100), null, null, 0, false));
@@ -1106,12 +1136,19 @@ public class JarAnalyzerForm {
         resultScroll.setViewportView(resultList);
         chanScroll = new JScrollPane();
         chanScroll.setBackground(new Color(-12828863));
-        resultPane.add(chanScroll, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(600, 100), null, null, 0, false));
+        resultPane.add(chanScroll, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(500, 100), null, null, 0, false));
         chanScroll.setBorder(BorderFactory.createTitledBorder(null, "你的链", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         chanList = new JList();
         final DefaultListModel defaultListModel2 = new DefaultListModel();
         chanList.setModel(defaultListModel2);
         chanScroll.setViewportView(chanList);
+        treePanel = new JPanel();
+        treePanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        jarAnalyzerPanel.add(treePanel, new GridConstraints(0, 0, 4, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        treeScroll = new JScrollPane();
+        treePanel.add(treeScroll, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(200, -1), null, null, 0, false));
+        trees = new FileTree();
+        treeScroll.setViewportView(trees);
         ButtonGroup buttonGroup;
         buttonGroup = new ButtonGroup();
         buttonGroup.add(procyonRadioButton);
