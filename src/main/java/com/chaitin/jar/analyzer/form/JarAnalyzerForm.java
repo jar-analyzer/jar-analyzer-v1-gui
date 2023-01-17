@@ -411,6 +411,9 @@ public class JarAnalyzerForm {
     public void coreClass(MouseEvent evt, JList<?> list) {
         int index = list.locationToIndex(evt.getPoint());
         ClassObj res = (ClassObj) list.getModel().getElementAt(index);
+    }
+
+    private void coreClassInternal(ClassObj res) {
         String className = res.getClassName();
         String classPath = className.replace("/", File.separator);
         if (springBootJar) {
@@ -777,7 +780,44 @@ public class JarAnalyzerForm {
                 TreePath selPath = trees.getPathForLocation(e.getX(), e.getY());
                 if (selRow != -1) {
                     if (e.getClickCount() == 2) {
-                        System.out.println(selPath);
+                        if (selPath == null) {
+                            JOptionPane.showMessageDialog(jarAnalyzerPanel, "选择错误");
+                            return;
+                        }
+
+                        String sel = selPath.toString();
+                        sel = sel.substring(1, sel.length() - 1);
+                        String[] selArray = sel.split(",");
+                        List<String> pathList = new ArrayList<>();
+                        for (String s : selArray) {
+                            s = s.trim();
+                            pathList.add(s);
+                        }
+
+                        String[] path = pathList.toArray(new String[0]);
+                        String filePath = String.join(File.separator, path);
+
+                        if (!filePath.endsWith(".class")) {
+                            return;
+                        }
+
+                        Path thePath = Paths.get(filePath);
+                        if (!Files.exists(thePath)) {
+                            JOptionPane.showMessageDialog(jarAnalyzerPanel, "文件不存在");
+                            return;
+                        }
+
+                        StringBuilder classNameBuilder = new StringBuilder();
+                        for (int i = 1; i < path.length; i++) {
+                            classNameBuilder.append(path[i]).append("/");
+                        }
+                        String className = classNameBuilder.toString();
+                        className = className.substring(0, className.length() - 7);
+
+                        ClassObj obj = new ClassObj(className, new ClassReference.Handle(className));
+
+                        coreClassInternal(obj);
+
                     }
                 }
             }
