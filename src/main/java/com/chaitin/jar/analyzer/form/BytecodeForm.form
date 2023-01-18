@@ -17,13 +17,9 @@
         <properties/>
         <border type="none"/>
         <children>
-          <component id="1e3b5" class="javax.swing.JTextArea" binding="byteText">
+          <component id="8f9e5" class="javax.swing.JEditorPane" binding="editPanel">
             <constraints/>
-            <properties>
-              <background color="-12828863"/>
-              <font size="16" style="0"/>
-              <foreground color="-13247"/>
-            </properties>
+            <properties/>
           </component>
         </children>
       </scrollpane>

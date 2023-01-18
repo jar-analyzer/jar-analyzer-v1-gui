@@ -3,24 +3,24 @@ package com.chaitin.jar.analyzer.form;
 import com.chaitin.jar.analyzer.asm.ASMPrint;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
+import jsyntaxpane.syntaxkits.JavaSyntaxKit;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
-import javax.swing.plaf.FontUIResource;
-import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Locale;
 
 public class BytecodeForm {
     public JPanel parentPanel;
     private JScrollPane scroll;
-    private JTextArea byteText;
+    private JEditorPane editPanel;
 
     public BytecodeForm(String className, boolean flag) {
+        editPanel.setEditorKit(new JavaSyntaxKit());
+
         className = className.replace("/", File.separator);
         className = className.replace(".", File.separator);
         String targetPath;
@@ -34,8 +34,8 @@ public class BytecodeForm {
         try {
             InputStream is = Files.newInputStream(Paths.get(targetPath));
             String data = ASMPrint.getPrint(is, flag);
-            byteText.setText(data);
-            byteText.setCaretPosition(0);
+            editPanel.setText(data);
+            editPanel.setCaretPosition(0);
         } catch (Exception ignored) {
         }
     }
@@ -60,34 +60,8 @@ public class BytecodeForm {
         parentPanel.setBorder(BorderFactory.createTitledBorder(null, "Show Bytecode", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         scroll = new JScrollPane();
         parentPanel.add(scroll, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(800, 800), null, 0, false));
-        byteText = new JTextArea();
-        byteText.setBackground(new Color(-12828863));
-        Font byteTextFont = this.$$$getFont$$$(null, Font.PLAIN, 16, byteText.getFont());
-        if (byteTextFont != null) byteText.setFont(byteTextFont);
-        byteText.setForeground(new Color(-13247));
-        scroll.setViewportView(byteText);
-    }
-
-    /**
-     * @noinspection ALL
-     */
-    private Font $$$getFont$$$(String fontName, int style, int size, Font currentFont) {
-        if (currentFont == null) return null;
-        String resultName;
-        if (fontName == null) {
-            resultName = currentFont.getName();
-        } else {
-            Font testFont = new Font(fontName, Font.PLAIN, 10);
-            if (testFont.canDisplay('a') && testFont.canDisplay('1')) {
-                resultName = fontName;
-            } else {
-                resultName = currentFont.getName();
-            }
-        }
-        Font font = new Font(resultName, style >= 0 ? style : currentFont.getStyle(), size >= 0 ? size : currentFont.getSize());
-        boolean isMac = System.getProperty("os.name", "").toLowerCase(Locale.ENGLISH).startsWith("mac");
-        Font fontWithFallback = isMac ? new Font(font.getFamily(), font.getStyle(), font.getSize()) : new StyleContext().getFont(font.getFamily(), font.getStyle(), font.getSize());
-        return fontWithFallback instanceof FontUIResource ? fontWithFallback : new FontUIResource(fontWithFallback);
+        editPanel = new JEditorPane();
+        scroll.setViewportView(editPanel);
     }
 
     /**
@@ -96,5 +70,4 @@ public class BytecodeForm {
     public JComponent $$$getRootComponent$$$() {
         return parentPanel;
     }
-
 }

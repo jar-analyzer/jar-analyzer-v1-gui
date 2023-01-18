@@ -574,9 +574,26 @@ public class JarAnalyzerForm {
         }
 
         List<MethodReference> mList = methodsInClassMap.get(res.getHandle());
+
+        Map<String, MethodObj> tempResults = new LinkedHashMap<>();
+
         for (MethodReference m : mList) {
             MethodObj resObj = new MethodObj(m.getHandle(), m.getClassReference().getName());
-            allMethodsList.addElement(resObj);
+            tempResults.put(resObj.toString(), resObj);
+        }
+
+        List<String> keySet = new ArrayList<>(tempResults.keySet());
+        Collections.sort(keySet);
+
+        for (String s : keySet) {
+            MethodObj obj = tempResults.get(s);
+            if (obj.getMethod().getName().startsWith("lambda$")) {
+                continue;
+            }
+            if (obj.getMethod().getName().equals("<clinit>")) {
+                continue;
+            }
+            allMethodsList.addElement(tempResults.get(s));
         }
 
         currentLabel.setText(res.toString());
@@ -763,9 +780,26 @@ public class JarAnalyzerForm {
         }
 
         List<MethodReference> mList = methodsInClassMap.get(handle.getClassReference());
+
+        Map<String, MethodObj> tempResults = new LinkedHashMap<>();
+
         for (MethodReference m : mList) {
             MethodObj resObj = new MethodObj(m.getHandle(), m.getClassReference().getName());
-            allMethodsList.addElement(resObj);
+            tempResults.put(resObj.toString(), resObj);
+        }
+
+        List<String> keySet = new ArrayList<>(tempResults.keySet());
+        Collections.sort(keySet);
+
+        for (String s : keySet) {
+            MethodObj obj = tempResults.get(s);
+            if (obj.getMethod().getName().startsWith("lambda$")) {
+                continue;
+            }
+            if (obj.getMethod().getName().equals("<clinit>")) {
+                continue;
+            }
+            allMethodsList.addElement(tempResults.get(s));
         }
 
         curRes = res;

@@ -20,10 +20,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class AllMethodMouseAdapter extends MouseAdapter {
     private final JarAnalyzerForm form;
@@ -232,9 +229,26 @@ public class AllMethodMouseAdapter extends MouseAdapter {
             }
 
             List<MethodReference> mList = JarAnalyzerForm.methodsInClassMap.get(handle.getClassReference());
+
+            Map<String, MethodObj> tempResults = new LinkedHashMap<>();
+
             for (MethodReference m : mList) {
                 MethodObj resObj = new MethodObj(m.getHandle(), m.getClassReference().getName());
-                allMethodsList.addElement(resObj);
+                tempResults.put(resObj.toString(), resObj);
+            }
+
+            List<String> keySet = new ArrayList<>(tempResults.keySet());
+            Collections.sort(keySet);
+
+            for (String s : keySet) {
+                MethodObj obj = tempResults.get(s);
+                if(obj.getMethod().getName().startsWith("lambda$")){
+                    continue;
+                }
+                if(obj.getMethod().getName().equals("<clinit>")){
+                    continue;
+                }
+                allMethodsList.addElement(tempResults.get(s));
             }
 
             JarAnalyzerForm.curRes = new ResObj(res.getMethod(), res.getClassName());
