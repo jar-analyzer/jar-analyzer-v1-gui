@@ -122,6 +122,9 @@ public class JarAnalyzerForm {
     public JList<MethodObj> allMethodList;
     private JPanel allMethodPanel;
     private JScrollPane allMethodScroll;
+    private JButton commonButton;
+    private JPanel commonPanel;
+    private JLabel commonLabel;
     public static List<SpringController> controllers = new ArrayList<>();
     public static final DefaultListModel<ResObj> historyDataList = new DefaultListModel<>();
     public static Set<ClassFile> classFileList = new HashSet<>();
@@ -1013,6 +1016,13 @@ public class JarAnalyzerForm {
             frame.setVisible(true);
         });
 
+        commonButton.addActionListener(e -> {
+            JFrame frame = new JFrame("Common");
+            frame.setContentPane(new CommonForm(instance).commonPanel);
+            frame.pack();
+            frame.setVisible(true);
+        });
+
         showASMCodeButton.addActionListener(e -> {
             if (curRes == null) {
                 JOptionPane.showMessageDialog(this.jarAnalyzerPanel, "当前的方法为空");
@@ -1345,7 +1355,7 @@ public class JarAnalyzerForm {
         authorLabel.setText("github.com/4ra1n/jar-analyzer");
         authorPanel.add(authorLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_NORTH, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         configPanel = new JPanel();
-        configPanel.setLayout(new GridLayoutManager(5, 5, new Insets(0, 0, 0, 5), -1, -1));
+        configPanel.setLayout(new GridLayoutManager(5, 7, new Insets(0, 0, 0, 5), -1, -1));
         configPanel.setBackground(new Color(-12828863));
         jarAnalyzerPanel.add(configPanel, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         methodLabel = new JLabel();
@@ -1371,17 +1381,17 @@ public class JarAnalyzerForm {
         progress.setStringPainted(true);
         progress.setToolTipText("");
         progress.setValue(0);
-        configPanel.add(progress, new GridConstraints(0, 1, 1, 4, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        configPanel.add(progress, new GridConstraints(0, 1, 1, 6, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         searchClassLabel = new JLabel();
         searchClassLabel.setText("可以输入类全名（如java.lang.Runtime）或直接输入类名（如Runtime）");
-        configPanel.add(searchClassLabel, new GridConstraints(2, 4, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        configPanel.add(searchClassLabel, new GridConstraints(2, 4, 1, 3, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         searchMethodLabel = new JLabel();
         searchMethodLabel.setText("方法名直接输入名称即可（如exec）不需要输入描述信息");
-        configPanel.add(searchMethodLabel, new GridConstraints(3, 4, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        configPanel.add(searchMethodLabel, new GridConstraints(3, 4, 1, 3, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         jarInfoResultText = new JTextField();
         jarInfoResultText.setEditable(false);
         jarInfoResultText.setEnabled(true);
-        configPanel.add(jarInfoResultText, new GridConstraints(1, 1, 1, 4, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        configPanel.add(jarInfoResultText, new GridConstraints(1, 1, 1, 3, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         otherSearch = new JLabel();
         otherSearch.setText("   其他搜索");
         configPanel.add(otherSearch, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
@@ -1389,7 +1399,16 @@ public class JarAnalyzerForm {
         configPanel.add(otherText, new GridConstraints(4, 1, 1, 3, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         otherTip = new JLabel();
         otherTip.setText("选择字符串搜索和无脑搜索时输入该项（其他情况无需输入）");
-        configPanel.add(otherTip, new GridConstraints(4, 4, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        configPanel.add(otherTip, new GridConstraints(4, 4, 1, 3, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        commonPanel = new JPanel();
+        commonPanel.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 5), -1, -1));
+        configPanel.add(commonPanel, new GridConstraints(1, 4, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        commonLabel = new JLabel();
+        commonLabel.setText("保存了一些常见的搜索内容（一键设置）");
+        commonPanel.add(commonLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        commonButton = new JButton();
+        commonButton.setText("常见搜索");
+        commonPanel.add(commonButton, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         resultPane = new JPanel();
         resultPane.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 5), -1, -1));
         resultPane.setBackground(new Color(-12828863));
@@ -1443,4 +1462,5 @@ public class JarAnalyzerForm {
     public JComponent $$$getRootComponent$$$() {
         return jarAnalyzerPanel;
     }
+
 }

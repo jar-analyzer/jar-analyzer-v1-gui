@@ -119,6 +119,7 @@ Others:
 - [important] 实现无脑搜索（类/方法/字段/常量 任何地方） #52
 - [important] 增加搜索字符串常量的功能 #47
 - [important] 使用黑色主题完全重构UI #42
+- [important] 增加一个常见搜索面板允许直接设置搜索内容 #60
 - [important] 自动处理普通JAR/SpringBoot JAR/WAR区别 #59
 - [important] [bug] 优化方法位置精确定位的算法 #41
 - [feat] 支持分析war包 #58
