@@ -14,6 +14,8 @@
 
 [前往下载](https://github.com/4ra1n/jar-analyzer/releases/latest)
 
+可以精确定位方法的位置（左侧灰色游标高亮显示）
+
 ![](img/001.png)
 
 可以直接定位字符串（分析常量池相关指令实现精确定位）
