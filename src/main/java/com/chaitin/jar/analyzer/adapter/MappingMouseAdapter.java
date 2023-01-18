@@ -157,7 +157,7 @@ public class MappingMouseAdapter extends MouseAdapter {
                                     Paths.get(String.format("temp%s%s", File.separator,
                                             javaPathPath.toString().substring(22)))
                             ));
-                        }else if(finalClassPath.contains("WEB-INF")){
+                        } else if (finalClassPath.contains("WEB-INF")) {
                             total = new String(Files.readAllBytes(
                                     Paths.get(String.format("temp%s%s", File.separator,
                                             javaPathPath.toString().substring(21)))
