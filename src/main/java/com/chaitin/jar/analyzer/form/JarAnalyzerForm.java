@@ -4,6 +4,7 @@ import com.chaitin.jar.analyzer.adapter.*;
 import com.chaitin.jar.analyzer.asm.GreatClassVisitor;
 import com.chaitin.jar.analyzer.asm.StringClassVisitor;
 import com.chaitin.jar.analyzer.core.*;
+import com.chaitin.jar.analyzer.laf.JarAnalyzerLaf;
 import com.chaitin.jar.analyzer.model.ClassObj;
 import com.chaitin.jar.analyzer.model.MappingObj;
 import com.chaitin.jar.analyzer.model.MethodObj;
@@ -14,7 +15,6 @@ import com.chaitin.jar.analyzer.tree.FileTree;
 import com.chaitin.jar.analyzer.util.CoreUtil;
 import com.chaitin.jar.analyzer.util.DirUtil;
 import com.chaitin.jar.analyzer.util.OSUtil;
-import com.formdev.flatlaf.FlatDarkLaf;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.strobel.decompiler.Decompiler;
@@ -137,6 +137,16 @@ public class JarAnalyzerForm {
     public static InheritanceMap inheritanceMap;
     private static final List<String> jarPathList = new ArrayList<>();
     public static int totalJars = 0;
+
+    private static ImageIcon classIcon;
+
+    static {
+        try {
+            classIcon = new ImageIcon(ImageIO.read(
+                    Objects.requireNonNull(FileTree.class.getClassLoader().getResourceAsStream("class.png"))));
+        } catch (Exception ignored) {
+        }
+    }
 
     public void loadJar() {
         selectJarFileButton.addActionListener(e -> {
@@ -812,8 +822,6 @@ public class JarAnalyzerForm {
 
     public JarAnalyzerForm() {
         DirUtil.removeDir(new File("temp"));
-
-        refreshTree();
         MouseListener ml = new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
                 int selRow = trees.getRowForLocation(e.getX(), e.getY());
@@ -1112,7 +1120,10 @@ public class JarAnalyzerForm {
     }
 
     public static void start() {
-        FlatDarkLaf.setup();
+        UIManager.put("TabbedPane.showTabSeparators", true);
+        UIManager.put("Tree.leafIcon", classIcon);
+        UIManager.put("Tree.showDefaultIcons", true);
+        JarAnalyzerLaf.setup();
         JFrame frame = new JFrame("Jar Analyzer");
         instance = new JarAnalyzerForm();
         frame.setContentPane(instance.jarAnalyzerPanel);

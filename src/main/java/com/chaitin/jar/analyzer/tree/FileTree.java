@@ -11,15 +11,19 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class FileTree extends JTree {
+    protected DefaultMutableTreeNode rootNode;
+    protected DefaultTreeModel fileTreeModel;
+    protected boolean showHiddenFiles;
+    protected boolean showFiles;
+    private final DefaultTreeModel savedModel;
+
     public FileTree() {
-        try {
-            refresh();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        savedModel = (DefaultTreeModel) this.getModel();
+        setModel(null);
     }
 
     public void refresh() {
+        setModel(savedModel);
         fileTreeModel = (DefaultTreeModel) treeModel;
         showHiddenFiles = true;
         showFiles = true;
@@ -83,9 +87,4 @@ public class FileTree extends JTree {
             }
         }
     }
-
-    protected DefaultMutableTreeNode rootNode;
-    protected DefaultTreeModel fileTreeModel;
-    protected boolean showHiddenFiles;
-    protected boolean showFiles;
 }
