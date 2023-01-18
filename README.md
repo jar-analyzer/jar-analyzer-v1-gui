@@ -3,7 +3,7 @@
 ![](https://img.shields.io/badge/build-Java%2011-orange)
 ![](https://img.shields.io/github/downloads/4ra1n/jar-analyzer/total)
 ![](https://img.shields.io/github/v/release/4ra1n/jar-analyzer)
-![](https://img.shields.io/badge/Java%20Code%20Lines-3505-orange)
+![](https://img.shields.io/badge/Java%20Code%20Lines-3805-orange)
 
 ## 介绍
 
@@ -13,6 +13,20 @@
 支持反编译字节码并自动构建类和方法之间的关系，帮助Java安全研究员更高效地工作。
 
 [前往下载](https://github.com/4ra1n/jar-analyzer/releases/latest)
+
+![](img/001.png)
+
+可以直接定位字符串（分析常量池相关指令实现精确定位）
+
+![](img/003.png)
+
+可以直接查看字节码
+
+![](img/002.png)
+
+可以直接分析`Spring`框架编写的项目
+
+![](img/005.png)
 
 支持六种搜索方式：
 - 直接根据类和方法名搜索（搜索定义）
@@ -30,20 +44,6 @@
 使用类定制化的`JSyntaxPane`组件（非官方）来展示`Java`代码
 
 （在该库`https://code.google.com/archive/p/jsyntaxpane`的基础上加了很多黑科技）
-
-![](img/001.png)
-
-可以直接定位字符串（分析常量池相关指令实现精确定位）
-
-![](img/003.png)
-
-可以直接查看字节码
-
-![](img/002.png)
-
-可以直接分析`Spring`框架编写的项目
-
-![](img/005.png)
 
 ## Quick Start
 
