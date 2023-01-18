@@ -126,15 +126,6 @@
                       <text value="开始搜索"/>
                     </properties>
                   </component>
-                  <component id="3e45f" class="javax.swing.JCheckBox" binding="useSpringBootJarCheckBox" default-binding="true">
-                    <constraints>
-                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties>
-                      <background color="-12828863"/>
-                      <text value="分析SpringBoot"/>
-                    </properties>
-                  </component>
                   <component id="45440" class="javax.swing.JCheckBox" binding="innerJarsCheckBox" default-binding="true">
                     <constraints>
                       <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>

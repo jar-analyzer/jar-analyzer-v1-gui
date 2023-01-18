@@ -59,15 +59,19 @@ public class AllMethodMouseAdapter extends MouseAdapter {
             MethodObj res = (MethodObj) list.getModel().getElementAt(index);
 
             String className = res.getClassName();
-            String classPath = className.replace("/", File.separator);
-            if (!JarAnalyzerForm.springBootJar) {
-                classPath = String.format("temp%s%s.class", File.separator, classPath);
-            } else {
-                if (classPath.contains("springframework")) {
-                    classPath = String.format("temp%s%s.class", File.separator, classPath);
-                } else {
-                    classPath = String.format("temp%sBOOT-INF%sclasses%s%s.class",
-                            File.separator, File.separator, File.separator, classPath);
+            String tempPath = className.replace("/", File.separator);
+            String classPath;
+            classPath = String.format("temp%s%s.class", File.separator, tempPath);
+            if (!Files.exists(Paths.get(classPath))) {
+                classPath = String.format("temp%sBOOT-INF%sclasses%s%s.class",
+                        File.separator, File.separator, File.separator, tempPath);
+                if (!Files.exists(Paths.get(classPath))) {
+                    classPath = String.format("temp%sWEB-INF%sclasses%s%s.class",
+                            File.separator, File.separator, File.separator, tempPath);
+                    if (!Files.exists(Paths.get(classPath))) {
+                        JOptionPane.showMessageDialog(form.jarAnalyzerPanel, "缺少依赖");
+                        return;
+                    }
                 }
             }
 
@@ -148,10 +152,15 @@ public class AllMethodMouseAdapter extends MouseAdapter {
                     }
                     Main.main(args);
                     try {
-                        if (JarAnalyzerForm.springBootJar) {
+                        if (finalClassPath.contains("BOOT-INF")) {
                             total = new String(Files.readAllBytes(
                                     Paths.get(String.format("temp%s%s", File.separator,
                                             javaPathPath.toString().substring(22)))
+                            ));
+                        }else if(finalClassPath.contains("WEB-INF")){
+                            total = new String(Files.readAllBytes(
+                                    Paths.get(String.format("temp%s%s", File.separator,
+                                            javaPathPath.toString().substring(21)))
                             ));
                         } else {
                             total = new String(Files.readAllBytes(javaPathPath));
@@ -242,10 +251,10 @@ public class AllMethodMouseAdapter extends MouseAdapter {
 
             for (String s : keySet) {
                 MethodObj obj = tempResults.get(s);
-                if(obj.getMethod().getName().startsWith("lambda$")){
+                if (obj.getMethod().getName().startsWith("lambda$")) {
                     continue;
                 }
-                if(obj.getMethod().getName().equals("<clinit>")){
+                if (obj.getMethod().getName().equals("<clinit>")) {
                     continue;
                 }
                 allMethodsList.addElement(tempResults.get(s));

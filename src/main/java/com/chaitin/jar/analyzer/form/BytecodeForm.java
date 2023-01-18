@@ -23,14 +23,18 @@ public class BytecodeForm {
 
         className = className.replace("/", File.separator);
         className = className.replace(".", File.separator);
-        String targetPath;
-        if (JarAnalyzerForm.springBootJar) {
+        String targetPath = String.format("temp%s%s.class", File.separator, className);
+        if (!Files.exists(Paths.get(targetPath))) {
             targetPath = String.format("temp%sBOOT-INF%sclasses%s%s.class",
                     File.separator, File.separator, File.separator, className);
-        } else {
-            targetPath = String.format("temp%s%s.class", File.separator, className);
+            if (!Files.exists(Paths.get(targetPath))) {
+                targetPath = String.format("temp%sWEB-INF%sclasses%s%s.class",
+                        File.separator, File.separator, File.separator, className);
+                if (!Files.exists(Paths.get(targetPath))) {
+                    return;
+                }
+            }
         }
-
         try {
             InputStream is = Files.newInputStream(Paths.get(targetPath));
             String data = ASMPrint.getPrint(is, flag);

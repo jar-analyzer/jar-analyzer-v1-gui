@@ -45,7 +45,8 @@ public class JarUtil {
                 classFile.jarName = "class";
                 classFileSet.add(classFile);
             }
-            if (jarPathStr.toLowerCase(Locale.ROOT).endsWith(".jar")) {
+            if (jarPathStr.toLowerCase(Locale.ROOT).endsWith(".jar") ||
+                    jarPathStr.toLowerCase(Locale.ROOT).endsWith(".war")) {
                 InputStream is = Files.newInputStream(jarPath);
                 JarInputStream jarInputStream = new JarInputStream(is);
                 JarEntry jarEntry;

@@ -50,7 +50,6 @@ public class JarAnalyzerForm {
             "2. WHETHER YOU SHOULD CHOOSE SpringBoot OPTION\n";
     public static boolean deleteLogs = false;
     public static boolean innerJars = false;
-    public static boolean springBootJar = false;
     public JButton startAnalysisButton;
     public JPanel jarAnalyzerPanel;
     public JPanel topPanel;
@@ -162,7 +161,7 @@ public class JarAnalyzerForm {
                     if (Files.isDirectory(Paths.get(absPath))) {
                         List<String> data = DirUtil.GetFiles(absPath);
                         for (String d : data) {
-                            if (d.endsWith(".jar")) {
+                            if (d.endsWith(".jar") || d.endsWith(".war")) {
                                 jarPathList.add(d);
                             }
                         }
@@ -444,16 +443,20 @@ public class JarAnalyzerForm {
 
     private void coreClassInternal(ClassObj res) {
         String className = res.getClassName();
-        String classPath = className.replace("/", File.separator);
-        if (springBootJar) {
-            if (classPath.contains("springframework")) {
-                classPath = String.format("temp%s%s.class", File.separator, classPath);
-            } else {
-                classPath = String.format("temp%sBOOT-INF%sclasses%s%s.class",
-                        File.separator, File.separator, File.separator, classPath);
+        String tempPath = className.replace("/", File.separator);
+        String classPath;
+        classPath = String.format("temp%s%s.class", File.separator, tempPath);
+        if (!Files.exists(Paths.get(classPath))) {
+            classPath = String.format("temp%sBOOT-INF%sclasses%s%s.class",
+                    File.separator, File.separator, File.separator, tempPath);
+            if (!Files.exists(Paths.get(classPath))) {
+                classPath = String.format("temp%sWEB-INF%sclasses%s%s.class",
+                        File.separator, File.separator, File.separator, tempPath);
+                if (!Files.exists(Paths.get(classPath))) {
+                    JOptionPane.showMessageDialog(jarAnalyzerPanel, "缺少依赖");
+                    return;
+                }
             }
-        } else {
-            classPath = String.format("temp%s%s.class", File.separator, classPath);
         }
         ByteArrayOutputStream bao = new ByteArrayOutputStream();
         OutputStreamWriter ows = new OutputStreamWriter(bao);
@@ -527,10 +530,15 @@ public class JarAnalyzerForm {
                 }
                 Main.main(args);
                 try {
-                    if (JarAnalyzerForm.springBootJar) {
+                    if (finalClassPath.contains("BOOT-INF")) {
                         total = new String(Files.readAllBytes(
                                 Paths.get(String.format("temp%s%s", File.separator,
                                         javaPathPath.toString().substring(22)))
+                        ));
+                    } else if (finalClassPath.contains("WEB-INF")) {
+                        total = new String(Files.readAllBytes(
+                                Paths.get(String.format("temp%s%s", File.separator,
+                                        javaPathPath.toString().substring(21)))
                         ));
                     } else {
                         total = new String(Files.readAllBytes(javaPathPath));
@@ -611,15 +619,19 @@ public class JarAnalyzerForm {
         ResObj res = (ResObj) list.getModel().getElementAt(index);
 
         String className = res.getClassName();
-        String classPath = className.replace("/", File.separator);
-        if (!springBootJar) {
-            classPath = String.format("temp%s%s.class", File.separator, classPath);
-        } else {
-            if (classPath.contains("springframework")) {
-                classPath = String.format("temp%s%s.class", File.separator, classPath);
-            } else {
-                classPath = String.format("temp%sBOOT-INF%sclasses%s%s.class",
-                        File.separator, File.separator, File.separator, classPath);
+        String tempPath = className.replace("/", File.separator);
+        String classPath;
+        classPath = String.format("temp%s%s.class", File.separator, tempPath);
+        if (!Files.exists(Paths.get(classPath))) {
+            classPath = String.format("temp%sBOOT-INF%sclasses%s%s.class",
+                    File.separator, File.separator, File.separator, tempPath);
+            if (!Files.exists(Paths.get(classPath))) {
+                classPath = String.format("temp%sWEB-INF%sclasses%s%s.class",
+                        File.separator, File.separator, File.separator, tempPath);
+                if (!Files.exists(Paths.get(classPath))) {
+                    JOptionPane.showMessageDialog(jarAnalyzerPanel, "缺少依赖");
+                    return;
+                }
             }
         }
 
@@ -699,10 +711,15 @@ public class JarAnalyzerForm {
                 }
                 Main.main(args);
                 try {
-                    if (JarAnalyzerForm.springBootJar) {
+                    if (finalClassPath.contains("BOOT-INF")) {
                         total = new String(Files.readAllBytes(
                                 Paths.get(String.format("temp%s%s", File.separator,
                                         javaPathPath.toString().substring(22)))
+                        ));
+                    } else if (finalClassPath.contains("WEB-INF")) {
+                        total = new String(Files.readAllBytes(
+                                Paths.get(String.format("temp%s%s", File.separator,
+                                        javaPathPath.toString().substring(21)))
                         ));
                     } else {
                         total = new String(Files.readAllBytes(javaPathPath));
@@ -896,7 +913,7 @@ public class JarAnalyzerForm {
                         String className = classNameBuilder.toString();
                         int i = className.indexOf("classes");
 
-                        if (className.contains("BOOT-INF")) {
+                        if (className.contains("BOOT-INF") || className.contains("WEB-INF")) {
                             className = className.substring(i + 8, className.length() - 7);
                         } else {
                             className = className.substring(0, className.length() - 7);
@@ -961,23 +978,12 @@ public class JarAnalyzerForm {
                             "在一个Jar中也许存在很多的依赖Jar\n" +
                             "如果你选择把这些Jar也都加入分析任务中这将会比较耗时");
         });
-        useSpringBootJarCheckBox.addActionListener(e -> {
-            springBootJar = useSpringBootJarCheckBox.isSelected();
-            if (!springBootJar) {
-                return;
-            }
-            JOptionPane.showMessageDialog(this.jarAnalyzerPanel,
-                    "什么是分析SpringBot:\n" +
-                            "在SpringBoot项目中需要分析的类位于BOOT-INF目录（不同于普通Jar）\n" +
-                            "如果你输入的是SpringBoot的Jar包那么你需要勾选此项");
-        });
         deleteLogsWhenExitCheckBox.setSelected(true);
         deleteLogs = true;
         deleteLogsWhenExitCheckBox.addActionListener(e ->
                 deleteLogs = deleteLogsWhenExitCheckBox.isSelected());
 
         analyzeSpringButton.addActionListener(e -> {
-            springBootJar = true;
             useSpringBootJarCheckBox.setSelected(true);
             controllers.clear();
             SpringService.start(classFileList, controllers, classMap, methodMap);
@@ -1232,10 +1238,6 @@ public class JarAnalyzerForm {
         startAnalysisButton = new JButton();
         startAnalysisButton.setText("开始搜索");
         actionPanel.add(startAnalysisButton, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        useSpringBootJarCheckBox = new JCheckBox();
-        useSpringBootJarCheckBox.setBackground(new Color(-12828863));
-        useSpringBootJarCheckBox.setText("分析SpringBoot");
-        actionPanel.add(useSpringBootJarCheckBox, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         innerJarsCheckBox = new JCheckBox();
         innerJarsCheckBox.setBackground(new Color(-12828863));
         innerJarsCheckBox.setText("处理内部依赖Jar");
