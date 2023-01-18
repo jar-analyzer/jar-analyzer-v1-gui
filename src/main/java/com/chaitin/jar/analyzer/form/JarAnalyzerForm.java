@@ -257,7 +257,7 @@ public class JarAnalyzerForm {
                 if (searchList.size() == 0 || searchList.isEmpty()) {
                     JOptionPane.showMessageDialog(this.jarAnalyzerPanel,
                             "没有结果!\n" +
-                                    "1. 也许你选错了：直接搜索/调用搜索\n" +
+                                    "1. 也许你选错了搜索方式\n" +
                                     "2. 也许你应该勾选分析SpringBoot");
                 }
 
@@ -969,6 +969,12 @@ public class JarAnalyzerForm {
         callSearchRadioButton.addActionListener(e -> JOptionPane.showMessageDialog(this.jarAnalyzerPanel,
                 "什么是搜索调用:\n" +
                         "搜索某个类的某个方法在哪些地方被调用"));
+        binaryRadioButton.addActionListener(e -> JOptionPane.showMessageDialog(this.jarAnalyzerPanel,
+                "什么是二进制搜索:\n" +
+                        "不返回具体信息而是告诉你Jar包是否包含指定字符串"));
+        greatRadioButton.addActionListener(e -> JOptionPane.showMessageDialog(this.jarAnalyzerPanel,
+                "什么是无脑搜索:\n" +
+                        "任何地方（参数名/属性/方法名/字符串/等）只要包含指定字符串即可"));
 
         innerJarsCheckBox.addActionListener(e -> {
             innerJars = innerJarsCheckBox.isSelected();
