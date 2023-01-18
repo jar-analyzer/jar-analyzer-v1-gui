@@ -2,8 +2,8 @@
 <launch4jConfig>
   <dontWrapJar>false</dontWrapJar>
   <headerType>gui</headerType>
-  <jar>D:\jar-analyzer\target\jar-analyzer-0.7.jar</jar>
-  <outfile>D:\jar-analyzer\jar-analyzer-0.7-jdk11.exe</outfile>
+  <jar>D:\jar-analyzer\target\jar-analyzer-0.8.jar</jar>
+  <outfile>D:\jar-analyzer\jar-analyzer-0.8.exe</outfile>
   <errTitle></errTitle>
   <cmdLine></cmdLine>
   <chdir>.</chdir>
@@ -15,11 +15,11 @@
   <manifest></manifest>
   <icon>D:\jar-analyzer\build\jar-analyzer.ico</icon>
   <jre>
-    <path>%JAVA_HOME%;%PATH%</path>
+    <path>jre/bin</path>
     <requiresJdk>false</requiresJdk>
     <requires64Bit>false</requires64Bit>
-    <minVersion>11</minVersion>
-    <maxVersion>17</maxVersion>
+    <minVersion></minVersion>
+    <maxVersion></maxVersion>
     <opt>--add-opens=java.desktop/sun.awt.shell=ALL-UNNAMED</opt>
   </jre>
 </launch4jConfig>
