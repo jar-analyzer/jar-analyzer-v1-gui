@@ -142,7 +142,9 @@
           <grid id="f56c6" binding="dcPanel" layout-manager="GridLayoutManager" row-count="1" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="5"/>
             <constraints>
-              <grid row="0" column="1" row-span="1" col-span="2" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <grid row="0" column="1" row-span="1" col-span="2" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                <maximum-size width="400" height="-1"/>
+              </grid>
             </constraints>
             <properties>
               <background color="-12828863"/>
@@ -173,7 +175,7 @@
                 </constraints>
                 <properties>
                   <background color="-12828863"/>
-                  <text value="QuiltFlower"/>
+                  <text value="QuiltFlower（推荐）"/>
                 </properties>
               </component>
             </children>

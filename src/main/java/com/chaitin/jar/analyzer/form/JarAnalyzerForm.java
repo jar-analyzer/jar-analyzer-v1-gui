@@ -105,7 +105,6 @@ public class JarAnalyzerForm {
     public JScrollPane mappingsPanel;
     public JList<ClassObj> controllerJList;
     public JList<MappingObj> mappingJList;
-    public JCheckBox useSpringBootJarCheckBox;
     public JCheckBox innerJarsCheckBox;
     private JCheckBox deleteLogsWhenExitCheckBox;
     private JLabel searchClassLabel;
@@ -984,7 +983,6 @@ public class JarAnalyzerForm {
                 deleteLogs = deleteLogsWhenExitCheckBox.isSelected());
 
         analyzeSpringButton.addActionListener(e -> {
-            useSpringBootJarCheckBox.setSelected(true);
             controllers.clear();
             SpringService.start(classFileList, controllers, classMap, methodMap);
 
@@ -1245,7 +1243,7 @@ public class JarAnalyzerForm {
         dcPanel = new JPanel();
         dcPanel.setLayout(new GridLayoutManager(1, 3, new Insets(0, 0, 0, 5), -1, -1));
         dcPanel.setBackground(new Color(-12828863));
-        topPanel.add(dcPanel, new GridConstraints(0, 1, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        topPanel.add(dcPanel, new GridConstraints(0, 1, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, new Dimension(400, -1), 0, false));
         dcPanel.setBorder(BorderFactory.createTitledBorder(null, "反编译组件选择", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         procyonRadioButton = new JRadioButton();
         procyonRadioButton.setBackground(new Color(-12828863));
@@ -1257,7 +1255,7 @@ public class JarAnalyzerForm {
         dcPanel.add(cfrRadioButton, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         quiltFlowerRadioButton = new JRadioButton();
         quiltFlowerRadioButton.setBackground(new Color(-12828863));
-        quiltFlowerRadioButton.setText("QuiltFlower");
+        quiltFlowerRadioButton.setText("QuiltFlower（推荐）");
         dcPanel.add(quiltFlowerRadioButton, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         editorPanel = new JPanel();
         editorPanel.setLayout(new GridLayoutManager(4, 2, new Insets(0, 0, 0, 5), -1, -1));
@@ -1445,5 +1443,4 @@ public class JarAnalyzerForm {
     public JComponent $$$getRootComponent$$$() {
         return jarAnalyzerPanel;
     }
-
 }

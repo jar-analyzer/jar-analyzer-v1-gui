@@ -179,6 +179,7 @@ public class MappingMouseAdapter extends MouseAdapter {
                     JOptionPane.showMessageDialog(null, "无法反编译");
                     return;
                 }
+                total = total.replace("\r\n", "\n");
                 form.editorPane.setText(total);
 
                 // 目标方法名是构造
@@ -189,38 +190,10 @@ public class MappingMouseAdapter extends MouseAdapter {
                     methodName = c[c.length - 1];
                 }
 
-                // 以第一处方法名索引开始搜索
-                for (int i = total.indexOf(methodName);
-                    // 循环找直到找不到为止
-                     i >= 0; i = total.indexOf(methodName, i + 1)) {
-                    // 如果方法名上一位是空格且下一位是(字符
-                    // 认为找到的方法的定义
-                    if (total.charAt(i - 1) == ' ' &&
-                            total.charAt(i + methodName.length()) == '(') {
-                        // 得到方法参数数量
-                        int paramNum = Type.getMethodType(
-                                res.getResObj().getMethod().getDesc()).getArgumentTypes().length;
-                        int curNum = 1;
-                        for (int j = i + methodName.length() + 1; ; j++) {
-                            // 遇到结尾
-                            if (total.charAt(j) == ')') {
-                                // 参数为0个的情况
-                                if (total.charAt(j - 1) == '(') {
-                                    curNum = 0;
-                                }
-                                // 参数匹配认为找到了
-                                if (curNum == paramNum) {
-                                    form.editorPane.setCaretPosition(i);
-                                    break;
-                                }
-                                break;
-                            } else if (total.charAt(j) == ',') {
-                                // 已遍历参数数量+1
-                                curNum++;
-                            }
-                        }
-                    }
-                }
+                int paramNum = Type.getMethodType(
+                        res.getResObj().getMethod().getDesc()).getArgumentTypes().length;
+                int pos = form.find(total, methodName, paramNum);
+                form.editorPane.setCaretPosition(pos + 1);
             }).start();
 
             DefaultListModel<ResObj> sourceDataList = new DefaultListModel<>();
