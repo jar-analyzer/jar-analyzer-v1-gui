@@ -258,7 +258,7 @@ public class JarAnalyzerForm {
                     JOptionPane.showMessageDialog(this.jarAnalyzerPanel,
                             "没有结果!\n" +
                                     "1. 也许你选错了搜索方式\n" +
-                                    "2. 也许你应该勾选分析SpringBoot");
+                                    "2. 检查你输入的信息");
                 }
 
                 resultList.setModel(searchList);
