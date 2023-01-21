@@ -19,7 +19,7 @@
     <requiresJdk>false</requiresJdk>
     <requires64Bit>false</requires64Bit>
     <minVersion>11</minVersion>
-    <maxVersion>17</maxVersion>
+    <maxVersion>11</maxVersion>
     <opt>--add-opens=java.desktop/sun.awt.shell=ALL-UNNAMED</opt>
   </jre>
 </launch4jConfig>

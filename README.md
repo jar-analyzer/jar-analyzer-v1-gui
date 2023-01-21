@@ -53,9 +53,9 @@
 
 ## Quick Start
 
-重要：请使用Java 11 - Java 16运行 （已提供内置`JRE`的`EXE`版本）
+重要：请使用 Java 11 运行 （已提供内置`JRE`的`EXE`版本）
 
-（测试在`Java 8`中可能有奇怪的`BUG`为了稳妥选择`Java 11`）
+（测试在`Java 16/17`中可能有奇怪的`BUG`为了稳妥选择`Java 11`）
 
 (1) 第一步：添加`jar`文件（支持单个`jar`文件和`jar`目录）
 - 点击按钮 `Select Jar File` 打开jar文件
