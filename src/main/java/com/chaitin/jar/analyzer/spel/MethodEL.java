@@ -3,6 +3,7 @@ package com.chaitin.jar.analyzer.spel;
 import java.util.HashMap;
 import java.util.Map;
 
+@SuppressWarnings("unused")
 public class MethodEL {
     private String classNameContains;
     private Map<Integer, String> paramTypes;
@@ -60,43 +61,37 @@ public class MethodEL {
         isStatic = aStatic;
     }
 
-    public MethodEL (){
+    public MethodEL() {
         this.paramTypes = new HashMap<>();
     }
 
     // -------------------- EL -------------------- //
 
-    @SuppressWarnings("unused")
     public MethodEL nameContains(String str) {
         this.nameContains = str;
         return this;
     }
 
-    @SuppressWarnings("unused")
     public MethodEL classNameContains(String str) {
         this.classNameContains = str;
         return this;
     }
 
-    @SuppressWarnings("unused")
     public MethodEL returnType(String str) {
         this.returnType = str;
         return this;
     }
 
-    @SuppressWarnings("unused")
     public MethodEL paramTypeMap(int index, String type) {
         this.paramTypes.put(index, type);
         return this;
     }
 
-    @SuppressWarnings("unused")
     public MethodEL paramsNum(int i) {
         this.paramsNum = i;
         return this;
     }
 
-    @SuppressWarnings("unused")
     public MethodEL isStatic(boolean flag) {
         this.isStatic = flag;
         return this;

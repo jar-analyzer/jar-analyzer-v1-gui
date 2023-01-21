@@ -50,8 +50,7 @@ import java.util.List;
 public class JarAnalyzerForm {
     private static JarAnalyzerForm instance;
     public static final String tips = "IMPORTANT: DECOMPILE FAIL \n" +
-            "1. MAYBE MISSING DEPENDENCIES (such as rj.jar)\n" +
-            "2. WHETHER YOU SHOULD CHOOSE SpringBoot OPTION\n";
+            "MAYBE MISSING DEPENDENCIES (such as rj.jar)";
     public static boolean deleteLogs = false;
     public static boolean innerJars = false;
     public JButton startAnalysisButton;
