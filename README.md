@@ -53,7 +53,7 @@
 
 ## Quick Start
 
-重要：请使用Java 11 - Java 17运行 （已提供内置`JRE`的`EXE`版本）
+重要：请使用Java 11 - Java 16运行 （已提供内置`JRE`的`EXE`版本）
 
 （测试在`Java 8`中可能有奇怪的`BUG`为了稳妥选择`Java 11`）
 
