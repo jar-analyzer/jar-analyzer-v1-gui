@@ -32,6 +32,10 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.tree.TreePath;
 import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDropEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -150,6 +154,62 @@ public class JarAnalyzerForm {
         }
     }
 
+    private void loadJarInternal(String absPath) {
+        totalJars++;
+        progress.setValue(0);
+        new Thread(() -> {
+            if (Files.isDirectory(Paths.get(absPath))) {
+                List<String> data = DirUtil.GetFiles(absPath);
+                for (String d : data) {
+                    if (d.endsWith(".jar") || d.endsWith(".war")) {
+                        jarPathList.add(d);
+                    }
+                }
+            } else {
+                jarPathList.add(absPath);
+            }
+            progress.setValue(20);
+            classFileList.addAll(CoreUtil.getAllClassesFromJars(jarPathList));
+
+            refreshTree();
+
+            progress.setValue(50);
+            Discovery.start(classFileList, discoveredClasses,
+                    discoveredMethods, classMap, methodMap);
+
+            for (MethodReference mr : discoveredMethods) {
+                ClassReference.Handle ch = mr.getClassReference();
+                if (methodsInClassMap.get(ch) == null) {
+                    List<MethodReference> ml = new ArrayList<>();
+                    ml.add(mr);
+                    methodsInClassMap.put(ch, ml);
+                } else {
+                    List<MethodReference> ml = methodsInClassMap.get(ch);
+                    ml.add(mr);
+                    methodsInClassMap.put(ch, ml);
+                }
+            }
+
+            jarInfoResultText.setText(String.format(
+                    "Jar包数量: %d   类的数量: %s   方法的数量: %s",
+                    totalJars, discoveredClasses.size(), discoveredMethods.size()
+            ));
+            progress.setValue(80);
+            MethodCall.start(classFileList, methodCalls);
+            inheritanceMap = Inheritance.derive(classMap);
+            Map<MethodReference.Handle, Set<MethodReference.Handle>> implMap =
+                    Inheritance.getAllMethodImplementations(inheritanceMap, methodMap);
+            for (Map.Entry<MethodReference.Handle, Set<MethodReference.Handle>> entry :
+                    implMap.entrySet()) {
+                MethodReference.Handle k = entry.getKey();
+                Set<MethodReference.Handle> v = entry.getValue();
+                HashSet<MethodReference.Handle> calls = methodCalls.get(k);
+                calls.addAll(v);
+            }
+            progress.setValue(100);
+        }).start();
+    }
+
     public void loadJar() {
         selectJarFileButton.addActionListener(e -> {
             JFileChooser fileChooser = new JFileChooser();
@@ -158,59 +218,7 @@ public class JarAnalyzerForm {
             if (option == JFileChooser.APPROVE_OPTION) {
                 File file = fileChooser.getSelectedFile();
                 String absPath = file.getAbsolutePath();
-                totalJars++;
-                progress.setValue(0);
-                new Thread(() -> {
-                    if (Files.isDirectory(Paths.get(absPath))) {
-                        List<String> data = DirUtil.GetFiles(absPath);
-                        for (String d : data) {
-                            if (d.endsWith(".jar") || d.endsWith(".war")) {
-                                jarPathList.add(d);
-                            }
-                        }
-                    } else {
-                        jarPathList.add(absPath);
-                    }
-                    progress.setValue(20);
-                    classFileList.addAll(CoreUtil.getAllClassesFromJars(jarPathList));
-
-                    refreshTree();
-
-                    progress.setValue(50);
-                    Discovery.start(classFileList, discoveredClasses,
-                            discoveredMethods, classMap, methodMap);
-
-                    for (MethodReference mr : discoveredMethods) {
-                        ClassReference.Handle ch = mr.getClassReference();
-                        if (methodsInClassMap.get(ch) == null) {
-                            List<MethodReference> ml = new ArrayList<>();
-                            ml.add(mr);
-                            methodsInClassMap.put(ch, ml);
-                        } else {
-                            List<MethodReference> ml = methodsInClassMap.get(ch);
-                            ml.add(mr);
-                            methodsInClassMap.put(ch, ml);
-                        }
-                    }
-
-                    jarInfoResultText.setText(String.format(
-                            "Jar包数量: %d   类的数量: %s   方法的数量: %s",
-                            totalJars, discoveredClasses.size(), discoveredMethods.size()
-                    ));
-                    progress.setValue(80);
-                    MethodCall.start(classFileList, methodCalls);
-                    inheritanceMap = Inheritance.derive(classMap);
-                    Map<MethodReference.Handle, Set<MethodReference.Handle>> implMap =
-                            Inheritance.getAllMethodImplementations(inheritanceMap, methodMap);
-                    for (Map.Entry<MethodReference.Handle, Set<MethodReference.Handle>> entry :
-                            implMap.entrySet()) {
-                        MethodReference.Handle k = entry.getKey();
-                        Set<MethodReference.Handle> v = entry.getValue();
-                        HashSet<MethodReference.Handle> calls = methodCalls.get(k);
-                        calls.addAll(v);
-                    }
-                    progress.setValue(100);
-                }).start();
+                loadJarInternal(absPath);
             }
         });
 
@@ -874,7 +882,34 @@ public class JarAnalyzerForm {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public JarAnalyzerForm() {
+        DropTarget dt = new DropTarget() {
+            public synchronized void drop(DropTargetDropEvent evt) {
+                try {
+                    evt.acceptDrop(DnDConstants.ACTION_COPY);
+                    Object obj = evt.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
+                    List<File> droppedFiles = (List<File>) obj;
+                    if (droppedFiles.size() == 0) {
+                        return;
+                    }
+                    for (File f : droppedFiles) {
+                        if (!f.getAbsolutePath().endsWith(".jar")) {
+                            if (!f.getAbsolutePath().endsWith(".war")) {
+                                continue;
+                            }
+                        }
+                        String absPath = f.getAbsolutePath();
+                        loadJarInternal(absPath);
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        };
+
+        jarAnalyzerPanel.setDropTarget(dt);
+
         DirUtil.removeDir(new File("temp"));
         MouseListener ml = new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
