@@ -10,10 +10,12 @@ public class Test {
         MethodEL m = new MethodEL();
         ExpressionParser parser = new SpelExpressionParser();
 
-        String  spel1 = "#method.nameContains('test')" +
-                        ".classNameContains('test')"+
-                        ".returnContains('int')"+
-                        ".paramsNum(3)";
+        String  spel1 = "#method.nameContains(\"rce\")\n" +
+                ".classNameContains(\"RCE\")\n" +
+                ".returnType(\"java.lang.String\")\n" +
+                ".paramTypeMap(0,\"java.lang.String\")\n" +
+                ".paramsNum(1)\n" +
+                ".isStatic(false)";
 
         Expression exp = parser.parseExpression(spel1);
         StandardEvaluationContext ctx = new StandardEvaluationContext();

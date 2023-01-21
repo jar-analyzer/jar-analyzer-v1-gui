@@ -47,6 +47,10 @@
 
 （在该库`https://code.google.com/archive/p/jsyntaxpane`的基础上加了很多黑科技）
 
+新功能：目前正在开发表达式搜索功能
+
+![](img/007.png)
+
 ## Quick Start
 
 重要：请使用Java 11 - Java 17运行 （已提供内置`JRE`的`EXE`版本）

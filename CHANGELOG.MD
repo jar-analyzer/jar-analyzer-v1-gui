@@ -136,4 +136,5 @@ Others:
 ## 0.9
 
 更新内容：
+- [important] 表达式搜索 #62
 - [important] 支持拖入Jar文件加载 #61

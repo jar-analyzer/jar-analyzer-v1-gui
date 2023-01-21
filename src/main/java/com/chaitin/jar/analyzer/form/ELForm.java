@@ -1,8 +1,13 @@
 package com.chaitin.jar.analyzer.form;
 
+import com.chaitin.jar.analyzer.core.ClassReference;
+import com.chaitin.jar.analyzer.core.MethodReference;
+import com.chaitin.jar.analyzer.model.ResObj;
+import com.chaitin.jar.analyzer.spel.MethodEL;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import jsyntaxpane.syntaxkits.JavaSyntaxKit;
+import org.objectweb.asm.Type;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
@@ -10,6 +15,7 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Map;
 
 public class ELForm {
     public JPanel elPanel;
@@ -39,14 +45,70 @@ public class ELForm {
             ExpressionParser parser = new SpelExpressionParser();
             String spel = elEditor.getText();
 
-            if (spel.contains("Runtime") || spel.contains("Process")) {
-                JOptionPane.showMessageDialog(this.elEditor, "你在干什么？");
+            Object value;
+            try {
+                MethodEL m = new MethodEL();
+                Expression exp = parser.parseExpression(spel);
+                StandardEvaluationContext ctx = new StandardEvaluationContext();
+                ctx.setVariable("method", m);
+                value = exp.getValue(ctx);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this.elEditor, "语法错误");
                 return;
             }
 
-            Expression exp = parser.parseExpression(spel);
-            StandardEvaluationContext ctx = new StandardEvaluationContext();
-            exp.getValue(ctx);
+            if (value instanceof MethodEL) {
+                MethodEL condition = (MethodEL) value;
+
+                DefaultListModel<ResObj> searchList = new DefaultListModel<>();
+
+                for (Map.Entry<MethodReference.Handle, MethodReference> entry :
+                        JarAnalyzerForm.methodMap.entrySet()) {
+                    ClassReference.Handle ch = entry.getValue().getClassReference();
+                    MethodReference mr = entry.getValue();
+                    String classCon = condition.getClassNameContains();
+                    String mnCon = condition.getNameContains();
+                    String retCon = condition.getReturnType();
+                    Map<Integer, String> paramMap = condition.getParamTypes();
+                    int i = condition.getParamsNum();
+                    boolean f = condition.isStatic();
+
+                    int paramNum = Type.getMethodType(mr.getDesc()).getArgumentTypes().length;
+                    String ret = Type.getReturnType(mr.getDesc()).getClassName();
+
+                    boolean aa = ch.getName().contains(classCon);
+                    boolean ab = mr.getName().contains(mnCon);
+                    boolean ac = (i == paramNum);
+                    boolean ad = ret.equals(retCon);
+                    boolean ae = (mr.isStatic() == f);
+                    boolean af = true;
+                    Type[] argTypes = Type.getArgumentTypes(mr.getDesc());
+                    for (int ix = 0; ix < argTypes.length; ix++) {
+                        String temp = paramMap.get(ix);
+                        if (temp == null) {
+                            continue;
+                        }
+                        if (!paramMap.get(ix).equals(argTypes[ix].getClassName())) {
+                            af = false;
+                            break;
+                        }
+                    }
+
+                    if (aa && ab && ac && ad && ae && af) {
+                        searchList.addElement(new ResObj(mr.getHandle(), ch.getName()));
+                    }
+                }
+
+                if (searchList.size() == 0) {
+                    JOptionPane.showMessageDialog(this.elEditor, "没有找到结果");
+                } else {
+                    JOptionPane.showMessageDialog(this.elEditor, "搜索成功");
+                }
+
+                instance.resultList.setModel(searchList);
+            } else {
+                JOptionPane.showMessageDialog(this.elEditor, "错误的表达式");
+            }
         });
     }
 
