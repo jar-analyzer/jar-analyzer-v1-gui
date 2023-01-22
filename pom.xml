@@ -80,8 +80,8 @@
             <version>1.8.1</version>
         </dependency>
         <dependency>
-            <groupId>com.chaitin.jar</groupId>
-            <artifactId>jar-analyzer</artifactId>
+            <groupId>lib</groupId>
+            <artifactId>jsyntaxpane</artifactId>
             <version>1.0.0</version>
         </dependency>
     </dependencies>
@@ -99,8 +99,8 @@
                         </goals>
                         <configuration>
                             <file>lib/syntax-panel.jar</file>
-                            <groupId>com.chaitin.jar</groupId>
-                            <artifactId>jar-analyzer</artifactId>
+                            <groupId>lib</groupId>
+                            <artifactId>jsyntaxpane</artifactId>
                             <version>1.0.0</version>
                             <packaging>jar</packaging>
                         </configuration>
