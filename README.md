@@ -1,9 +1,9 @@
 # Jar Analyzer
 ![](https://img.shields.io/badge/build-passing-brightgreen)
-![](https://img.shields.io/badge/build-Java%2011-orange)
+![](https://img.shields.io/badge/build-Java%208-orange)
 ![](https://img.shields.io/github/downloads/4ra1n/jar-analyzer/total)
 ![](https://img.shields.io/github/v/release/4ra1n/jar-analyzer)
-![](https://img.shields.io/badge/Java%20Code%20Lines-4071-orange)
+![](https://img.shields.io/badge/Java%20Code%20Lines-4142-orange)
 
 ## 介绍
 
@@ -32,6 +32,18 @@
 
 ![](img/005.png)
 
+目前正在开发表达式搜索功能（0.9版本支持一些简单的语法）
+
+```java
+#method
+    .nameContains("方法名包含什么")
+    .classNameContains("该方法类名包含什么")
+    .returnType("方法返回值类型")
+    .paramTypeMap(参数索引,参数索引类型)
+    .paramsNum(参数个数)
+    .isStatic(是否静态)
+```
+
 支持六种搜索方式：
 - 直接根据类和方法名搜索（搜索定义）
 - 根据方法调用搜索（该方法在哪里被调用）
@@ -49,15 +61,13 @@
 
 （在该库`https://code.google.com/archive/p/jsyntaxpane`的基础上加了很多黑科技）
 
-新功能：目前正在开发表达式搜索功能
-
 ![](img/007.png)
 
 ## Quick Start
 
-重要：请使用 Java 11/12/13/14 运行 （已提供内置`JRE`的`EXE`版本）
+重要：请使用`Java 8+`运行（推荐11并已提供内置`Java 11 JRE`的`EXE`版本）
 
-（测试在`Java 15/16/17/19`中有奇怪的`BUG`为了稳妥选择`Java 11/12/13/14`）
+（在`Java 11`中使用了一种更好的字体，其他版本使用默认字体）
 
 (1) 第一步：添加`jar`文件（支持单个`jar`文件和`jar`目录）
 - 点击按钮 `Select Jar File` 打开jar文件
