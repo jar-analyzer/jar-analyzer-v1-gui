@@ -9,8 +9,8 @@
     <version>0.9</version>
 
     <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -76,7 +76,8 @@
         <dependency>
             <groupId>org.quiltmc</groupId>
             <artifactId>quiltflower</artifactId>
-            <version>1.9.0</version>
+            <!-- 适配Java8 -->
+            <version>1.8.1</version>
         </dependency>
         <dependency>
             <groupId>com.chaitin.jar</groupId>

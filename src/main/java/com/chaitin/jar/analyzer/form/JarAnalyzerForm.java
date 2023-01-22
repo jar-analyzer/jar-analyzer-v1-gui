@@ -14,6 +14,7 @@ import com.chaitin.jar.analyzer.spring.SpringService;
 import com.chaitin.jar.analyzer.tree.FileTree;
 import com.chaitin.jar.analyzer.util.CoreUtil;
 import com.chaitin.jar.analyzer.util.DirUtil;
+import com.chaitin.jar.analyzer.util.JavaVerUtil;
 import com.chaitin.jar.analyzer.util.OSUtil;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
@@ -969,16 +970,21 @@ public class JarAnalyzerForm {
         callSearchRadioButton.setSelected(true);
 
         try {
-            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            Font font = Font.createFont(Font.TRUETYPE_FONT, Objects.requireNonNull(
-                    JarAnalyzerForm.class.getClassLoader()
-                            .getResourceAsStream("font.ttf"))).deriveFont(12f);
-            ge.registerFont(font);
-            JavaSyntaxKit kit = new JavaSyntaxKit();
-            Field field = DefaultSyntaxKit.class.getDeclaredField("DEFAULT_FONT");
-            field.setAccessible(true);
-            field.set(kit, font);
-            editorPane.setEditorKit(kit);
+            if (JavaVerUtil.isJ11to14()) {
+                GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+                Font font = Font.createFont(Font.TRUETYPE_FONT, Objects.requireNonNull(
+                        JarAnalyzerForm.class.getClassLoader()
+                                .getResourceAsStream("font.ttf"))).deriveFont(12f);
+                ge.registerFont(font);
+                JavaSyntaxKit kit = new JavaSyntaxKit();
+                Field field = DefaultSyntaxKit.class.getDeclaredField("DEFAULT_FONT");
+                field.setAccessible(true);
+                field.set(kit, font);
+                editorPane.setEditorKit(kit);
+            } else {
+                JavaSyntaxKit kit = new JavaSyntaxKit();
+                editorPane.setEditorKit(kit);
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
