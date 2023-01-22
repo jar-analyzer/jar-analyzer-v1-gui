@@ -135,6 +135,36 @@ Others:
 
 ## 0.9
 
+小更新，修改并重新编译某些依赖库代码以支持`Java 8- Java 19`所有版本
+
+加入了简单的表达式搜素（beta）功能：
+
+```java
+#method
+    .nameContains("方法名包含什么")
+    .classNameContains("该方法类名包含什么")
+    .returnType("方法返回值类型")
+    .paramTypeMap(参数索引,参数索引类型)
+    .paramsNum(参数个数)
+    .isStatic(是否静态)
+```
+
+示例：
+
+```java
+#method
+    .nameContains("rce")
+    .classNameContains("RCE")
+    .returnType("java.lang.String")
+    .paramTypeMap(0,"java.lang.String")
+    .paramsNum(1)
+    .isStatic(false)
+```
+
+![](img/007.png)
+
 更新内容：
-- [important] 表达式搜索 #62
+- [important] 适配JDK8-JDK19所有版本 #63
+- [important] 解决在非JDK11-14中字体的BUG #64
 - [important] 支持拖入Jar文件加载 #61
+- [important] 表达式搜索 #62
