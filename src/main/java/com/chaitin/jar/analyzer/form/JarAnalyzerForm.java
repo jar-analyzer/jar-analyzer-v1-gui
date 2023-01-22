@@ -851,8 +851,14 @@ public class JarAnalyzerForm {
             // 认为找到的方法的定义
             if (total.charAt(i - 1) == ' ' &&
                     total.charAt(i + methodName.length()) == '(') {
+                // 前第二位是空格这是方法调用
+                if (i - 2 > 0 && total.charAt(i - 2) == ' ') {
+                    continue;
+                }
                 int curNum = 1;
+                List<Character> temp = new ArrayList<>();
                 for (int j = i + methodName.length() + 1; ; j++) {
+                    temp.add(total.charAt(j));
                     // 遇到结尾
                     if (total.charAt(j) == ')') {
                         // 参数为0个的情况
@@ -862,6 +868,28 @@ public class JarAnalyzerForm {
                         // 参数匹配认为找到了
                         if (curNum == paramNum) {
                             return i;
+                        } else {
+                            if (paramNum > curNum) {
+                                int atNum = 0;
+                                int rightNum = -1;
+                                for (Character character : temp) {
+                                    if (character == '@') {
+                                        atNum++;
+                                    }
+                                    if (character == ')') {
+                                        rightNum++;
+                                    }
+                                }
+                                if (atNum == 0) {
+                                    break;
+                                } else {
+                                    if (rightNum == atNum) {
+                                        return i;
+                                    } else if (atNum > rightNum) {
+                                        continue;
+                                    }
+                                }
+                            }
                         }
                         break;
                     } else if (total.charAt(j) == ',') {

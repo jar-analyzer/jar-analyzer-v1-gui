@@ -18,8 +18,7 @@
     <path>%JAVA_HOME%;%PATH%</path>
     <requiresJdk>false</requiresJdk>
     <requires64Bit>false</requires64Bit>
-    <minVersion>11</minVersion>
-    <maxVersion>14</maxVersion>
-    <opt>--add-opens=java.desktop/sun.awt.shell=ALL-UNNAMED</opt>
+    <minVersion>1.8</minVersion>
+    <maxVersion>19</maxVersion>
   </jre>
 </launch4jConfig>

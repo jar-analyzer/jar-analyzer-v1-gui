@@ -137,7 +137,7 @@ Others:
 
 小更新，修改并重新编译某些依赖库代码以支持`Java 8- Java 19`所有版本
 
-加入了简单的表达式搜素（beta）功能：
+加入了简单的表达式搜索（beta）功能：
 
 ```java
 #method
@@ -168,3 +168,5 @@ Others:
 - [important] 解决在非JDK11-14中字体的BUG #64
 - [important] 支持拖入Jar文件加载 #61
 - [important] 表达式搜索 #62
+- [important] 方法精确定位算法优化 #65
+- [improve] 方法定位算法优化 #65

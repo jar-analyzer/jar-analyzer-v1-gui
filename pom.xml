@@ -16,8 +16,8 @@
 
     <repositories>
         <repository>
-            <id>local</id>
-            <name>local</name>
+            <id>my-local-lib</id>
+            <name>my-local-lib</name>
             <url>file://${basedir}/lib</url>
         </repository>
         <repository>
@@ -91,6 +91,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-install-plugin</artifactId>
+                <version>3.1.0</version>
                 <executions>
                     <execution>
                         <phase>initialize</phase>
