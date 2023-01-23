@@ -144,9 +144,9 @@ Others:
     .nameContains("方法名包含什么")
     .classNameContains("该方法类名包含什么")
     .returnType("方法返回值类型")
-    .paramTypeMap(参数索引,参数索引类型)
-    .paramsNum(参数个数)
-    .isStatic(是否静态)
+    .paramTypeMap(参数索引 (int),"参数索引类型")
+    .paramsNum(参数个数 (int))
+    .isStatic(是否静态 (boolean))
 ```
 
 示例：
@@ -169,7 +169,13 @@ Others:
 - [important] 支持拖入Jar文件加载 #61
 - [important] 表达式搜索 #62
 - [important] 方法精确定位算法优化 #65
-- [improve] 方法定位算法优化 #65
+
+虽然现在支持了其他的`Java`版本，但还是建议使用`Java 11`
+
+下载说明：
+- `jar-analyzer-*.jar` 使用 `java -jar` 启动（使用`Java 8`以上启动，支持 `Windows/Mac/Linux`）
+- `jar-analyzer-*-system-jre.exe` 使用系统`Java 8`以上启动（`Windows`）
+- `jar-analyzer-*-jre-exe.zip` 内置`Java 11 JRE`和 `exe` 版本（`Windows`）
 
 ## 1.0
 

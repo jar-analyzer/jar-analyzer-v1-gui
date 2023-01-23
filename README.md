@@ -24,25 +24,23 @@
 
 ![](img/003.png)
 
-可以直接查看字节码
-
-![](img/002.png)
-
 可以直接分析`Spring`框架编写的项目
 
 ![](img/005.png)
 
-目前正在开发表达式搜索功能（0.9版本支持一些简单的语法）
+加入了简单的表达式搜索（beta）功能
 
 ```java
 #method
     .nameContains("方法名包含什么")
     .classNameContains("该方法类名包含什么")
     .returnType("方法返回值类型")
-    .paramTypeMap(参数索引,参数索引类型)
-    .paramsNum(参数个数)
-    .isStatic(是否静态)
+    .paramTypeMap(参数索引 (int),"参数索引类型")
+    .paramsNum(参数个数 (int))
+    .isStatic(是否静态 (boolean))
 ```
+
+![](img/007.png)
 
 支持六种搜索方式：
 - 直接根据类和方法名搜索（搜索定义）
@@ -60,8 +58,6 @@
 使用类定制化的`JSyntaxPane`组件（非官方）来展示`Java`代码
 
 （在该库`https://code.google.com/archive/p/jsyntaxpane`的基础上加了很多黑科技）
-
-![](img/007.png)
 
 ## Quick Start
 
@@ -114,6 +110,10 @@
 因此你可以构建出一个只属于你的调用链
 
 `谁调用了当前方法` 和 `当前方法调用了谁` 中的所有方法调用关系同样可以双击反编译，单击看详情，右键加入链
+
+可以一键查看当前类字节码
+
+![](img/002.png)
 
 ## 关于
 
