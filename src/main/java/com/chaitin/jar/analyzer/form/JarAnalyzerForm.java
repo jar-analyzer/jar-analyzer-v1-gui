@@ -882,7 +882,7 @@ public class JarAnalyzerForm {
         }
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("all")
     public JarAnalyzerForm() {
         DropTarget dt = new DropTarget() {
             public synchronized void drop(DropTargetDropEvent evt) {
@@ -1089,6 +1089,49 @@ public class JarAnalyzerForm {
             frame.pack();
             frame.setVisible(true);
         });
+
+        new Thread(() -> {
+            OkHttpClient client = new OkHttpClient();
+            Request request = new Request.Builder()
+                    .url("https://api.github.com/repos/4ra1n/jar-analyzer/releases/latest")
+                    .addHeader("Connection", "close")
+                    .build();
+
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    // ignored
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) {
+                    try {
+                        if (response.body() == null) {
+                            return;
+                        }
+                        String body = response.body().string();
+                        String ver = body.split("\"tag_name\":")[1].split(",")[0];
+                        ver = ver.substring(1, ver.length() - 1);
+
+                        if (!ver.equals(Const.CurVersion)) {
+                            String output;
+                            output = String.format("新版本！\n%s: %s\n%s: %s\n%s",
+                                    "您当前的版本", Const.CurVersion,
+                                    "目前最新版本", ver,
+                                    "https://github.com/4ra1n/jar-analyzer/releases/latest");
+                            JOptionPane.showMessageDialog(instance.jarAnalyzerPanel, output);
+
+                        }
+                    } catch (Exception ignored) {
+                    }
+                }
+            });
+        }).start();
     }
 
     private static JMenuBar createMenuBar() {
