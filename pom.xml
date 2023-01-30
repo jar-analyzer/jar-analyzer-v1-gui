@@ -6,7 +6,7 @@
 
     <groupId>com.chaitin</groupId>
     <artifactId>jar-analyzer</artifactId>
-    <version>0.9</version>
+    <version>1.0</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -16,8 +16,8 @@
 
     <repositories>
         <repository>
-            <id>local</id>
-            <name>local</name>
+            <id>my-local-lib</id>
+            <name>my-local-lib</name>
             <url>file://${basedir}/lib</url>
         </repository>
         <repository>
@@ -80,8 +80,8 @@
             <version>1.8.1</version>
         </dependency>
         <dependency>
-            <groupId>com.chaitin.jar</groupId>
-            <artifactId>jar-analyzer</artifactId>
+            <groupId>lib</groupId>
+            <artifactId>jsyntaxpane</artifactId>
             <version>1.0.0</version>
         </dependency>
     </dependencies>
@@ -91,6 +91,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-install-plugin</artifactId>
+                <version>3.1.0</version>
                 <executions>
                     <execution>
                         <phase>initialize</phase>
@@ -99,8 +100,8 @@
                         </goals>
                         <configuration>
                             <file>lib/syntax-panel.jar</file>
-                            <groupId>com.chaitin.jar</groupId>
-                            <artifactId>jar-analyzer</artifactId>
+                            <groupId>lib</groupId>
+                            <artifactId>jsyntaxpane</artifactId>
                             <version>1.0.0</version>
                             <packaging>jar</packaging>
                         </configuration>

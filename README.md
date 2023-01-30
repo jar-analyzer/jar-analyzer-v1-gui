@@ -1,9 +1,9 @@
 # Jar Analyzer
 ![](https://img.shields.io/badge/build-passing-brightgreen)
-![](https://img.shields.io/badge/build-Java%2011-orange)
+![](https://img.shields.io/badge/build-Java%208-orange)
 ![](https://img.shields.io/github/downloads/4ra1n/jar-analyzer/total)
 ![](https://img.shields.io/github/v/release/4ra1n/jar-analyzer)
-![](https://img.shields.io/badge/Java%20Code%20Lines-4071-orange)
+![](https://img.shields.io/badge/Java%20Code%20Lines-4142-orange)
 
 ## 介绍
 
@@ -24,13 +24,23 @@
 
 ![](img/003.png)
 
-可以直接查看字节码
-
-![](img/002.png)
-
 可以直接分析`Spring`框架编写的项目
 
 ![](img/005.png)
+
+加入了简单的表达式搜索（beta）功能
+
+```java
+#method
+    .nameContains("方法名包含什么")
+    .classNameContains("该方法类名包含什么")
+    .returnType("方法返回值类型")
+    .paramTypeMap(参数索引 (int),"参数索引类型")
+    .paramsNum(参数个数 (int))
+    .isStatic(是否静态 (boolean))
+```
+
+![](img/007.png)
 
 支持六种搜索方式：
 - 直接根据类和方法名搜索（搜索定义）
@@ -49,15 +59,11 @@
 
 （在该库`https://code.google.com/archive/p/jsyntaxpane`的基础上加了很多黑科技）
 
-新功能：目前正在开发表达式搜索功能
-
-![](img/007.png)
-
 ## Quick Start
 
-重要：请使用 Java 11/12/13/14 运行 （已提供内置`JRE`的`EXE`版本）
+重要：请使用`Java 8+`运行（推荐11并已提供内置`Java 11 JRE`的`EXE`版本）
 
-（测试在`Java 15/16/17/19`中有奇怪的`BUG`为了稳妥选择`Java 11/12/13/14`）
+（在`Java 11`中使用了一种更好的字体，其他版本使用默认字体）
 
 (1) 第一步：添加`jar`文件（支持单个`jar`文件和`jar`目录）
 - 点击按钮 `Select Jar File` 打开jar文件
@@ -104,6 +110,10 @@
 因此你可以构建出一个只属于你的调用链
 
 `谁调用了当前方法` 和 `当前方法调用了谁` 中的所有方法调用关系同样可以双击反编译，单击看详情，右键加入链
+
+可以一键查看当前类字节码
+
+![](img/002.png)
 
 ## 关于
 

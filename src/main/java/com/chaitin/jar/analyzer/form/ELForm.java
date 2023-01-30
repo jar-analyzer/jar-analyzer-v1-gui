@@ -66,20 +66,20 @@ public class ELForm {
                         JarAnalyzerForm.methodMap.entrySet()) {
                     ClassReference.Handle ch = entry.getValue().getClassReference();
                     MethodReference mr = entry.getValue();
+
                     String classCon = condition.getClassNameContains();
                     String mnCon = condition.getNameContains();
                     String retCon = condition.getReturnType();
                     Map<Integer, String> paramMap = condition.getParamTypes();
                     int i = condition.getParamsNum();
                     boolean f = condition.isStatic();
-
                     int paramNum = Type.getMethodType(mr.getDesc()).getArgumentTypes().length;
                     String ret = Type.getReturnType(mr.getDesc()).getClassName();
 
-                    boolean aa = ch.getName().contains(classCon);
-                    boolean ab = mr.getName().contains(mnCon);
-                    boolean ac = (i == paramNum);
-                    boolean ad = ret.equals(retCon);
+                    boolean aa = classCon == null || ch.getName().contains(classCon);
+                    boolean ab = mnCon == null || mr.getName().contains(mnCon);
+                    boolean ac = i == -1 || i == paramNum;
+                    boolean ad = retCon == null || ret.equals(retCon);
                     boolean ae = (mr.isStatic() == f);
                     boolean af = true;
                     Type[] argTypes = Type.getArgumentTypes(mr.getDesc());

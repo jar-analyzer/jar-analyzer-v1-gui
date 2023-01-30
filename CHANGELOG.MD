@@ -135,6 +135,48 @@ Others:
 
 ## 0.9
 
+优化方法定位算法，修改并重新编译某些依赖库代码以支持`Java 8 - Java 19`所有版本
+
+加入了简单的表达式搜索（beta）功能：
+
+```java
+#method
+    .nameContains("方法名包含什么")
+    .classNameContains("该方法类名包含什么")
+    .returnType("方法返回值类型")
+    .paramTypeMap(参数索引 (int),"参数索引类型")
+    .paramsNum(参数个数 (int))
+    .isStatic(是否静态 (boolean))
+```
+
+示例：
+
+```java
+#method
+    .nameContains("rce")
+    .classNameContains("RCE")
+    .returnType("java.lang.String")
+    .paramTypeMap(0,"java.lang.String")
+    .paramsNum(1)
+    .isStatic(false)
+```
+
+![](img/007.png)
+
 更新内容：
-- [important] 表达式搜索 #62
+- [important] 适配JDK8-JDK19所有版本 #63
+- [important] 解决在非JDK11-14中字体的BUG #64
 - [important] 支持拖入Jar文件加载 #61
+- [important] 表达式搜索 #62
+- [important] 方法精确定位算法优化 #65
+
+虽然现在支持了其他的`Java`版本，但还是建议使用`Java 11`
+
+下载说明：
+- `jar-analyzer-*.jar` 使用 `java -jar` 启动（使用`Java 8`以上启动，支持 `Windows/Mac/Linux`）
+- `jar-analyzer-*-system-jre.exe` 使用系统`Java 8`以上启动（`Windows`）
+- `jar-analyzer-*-jre-exe.zip` 内置`Java 11 JRE`和 `exe` 版本（`Windows`）
+
+## 1.0
+
+todo

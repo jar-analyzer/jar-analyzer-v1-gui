@@ -51,6 +51,7 @@ public class JavaVerUtil {
     public static boolean isJ19() {
         return javaVersion.startsWith("19.");
     }
+
     public static boolean isJ11to14() {
         return isJ11() || isJ12() || isJ13() || isJ14();
     }

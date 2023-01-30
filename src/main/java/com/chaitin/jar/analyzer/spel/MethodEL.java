@@ -63,6 +63,7 @@ public class MethodEL {
 
     public MethodEL() {
         this.paramTypes = new HashMap<>();
+        this.paramsNum = -1;
     }
 
     // -------------------- EL -------------------- //
