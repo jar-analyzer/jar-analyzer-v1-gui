@@ -4,10 +4,10 @@ import com.chaitin.jar.analyzer.core.ClassReference;
 import com.chaitin.jar.analyzer.core.MethodReference;
 import com.chaitin.jar.analyzer.model.ResObj;
 import com.chaitin.jar.analyzer.spel.MethodEL;
+import com.chaitin.jar.analyzer.spel.MethodELProcessor;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import jsyntaxpane.syntaxkits.JavaSyntaxKit;
-import org.objectweb.asm.Type;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
@@ -67,36 +67,8 @@ public class ELForm {
                     ClassReference.Handle ch = entry.getValue().getClassReference();
                     MethodReference mr = entry.getValue();
 
-                    String classCon = condition.getClassNameContains();
-                    String mnCon = condition.getNameContains();
-                    String retCon = condition.getReturnType();
-                    Map<Integer, String> paramMap = condition.getParamTypes();
-                    int i = condition.getParamsNum();
-                    boolean f = condition.isStatic();
-                    int paramNum = Type.getMethodType(mr.getDesc()).getArgumentTypes().length;
-                    String ret = Type.getReturnType(mr.getDesc()).getClassName();
-
-                    boolean aa = classCon == null || ch.getName().contains(classCon);
-                    boolean ab = mnCon == null || mr.getName().contains(mnCon);
-                    boolean ac = i == -1 || i == paramNum;
-                    boolean ad = retCon == null || ret.equals(retCon);
-                    boolean ae = (mr.isStatic() == f);
-                    boolean af = true;
-                    Type[] argTypes = Type.getArgumentTypes(mr.getDesc());
-                    for (int ix = 0; ix < argTypes.length; ix++) {
-                        String temp = paramMap.get(ix);
-                        if (temp == null) {
-                            continue;
-                        }
-                        if (!paramMap.get(ix).equals(argTypes[ix].getClassName())) {
-                            af = false;
-                            break;
-                        }
-                    }
-
-                    if (aa && ab && ac && ad && ae && af) {
-                        searchList.addElement(new ResObj(mr.getHandle(), ch.getName()));
-                    }
+                    MethodELProcessor processor = new MethodELProcessor(ch, mr, searchList, condition);
+                    processor.process();
                 }
 
                 if (searchList.size() == 0) {

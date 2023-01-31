@@ -9,8 +9,8 @@ public class MethodEL {
     private Map<Integer, String> paramTypes;
     private String nameContains;
     private String returnType;
-    private int paramsNum;
-    boolean isStatic;
+    private Integer paramsNum;
+    private Boolean isStatic;
 
     // -------------------- GETTER/SETTER -------------------- //
     public String getClassNameContains() {
@@ -45,7 +45,7 @@ public class MethodEL {
         this.returnType = returnType;
     }
 
-    public int getParamsNum() {
+    public Integer getParamsNum() {
         return paramsNum;
     }
 
@@ -53,7 +53,7 @@ public class MethodEL {
         this.paramsNum = paramsNum;
     }
 
-    public boolean isStatic() {
+    public Boolean isStatic() {
         return isStatic;
     }
 
@@ -63,7 +63,8 @@ public class MethodEL {
 
     public MethodEL() {
         this.paramTypes = new HashMap<>();
-        this.paramsNum = -1;
+        this.paramsNum = null;
+        this.isStatic = null;
     }
 
     // -------------------- EL -------------------- //

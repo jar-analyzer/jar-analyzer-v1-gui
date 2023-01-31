@@ -179,4 +179,10 @@ Others:
 
 ## 1.0
 
-todo
+更新内容：
+- [bug] 表达式搜索存在漏报 #67
+
+下载说明：
+- `jar-analyzer-*.jar` 使用 `java -jar` 启动（使用`Java 8`以上启动，支持 `Windows/Mac/Linux`）
+- `jar-analyzer-*-system-jre.exe` 使用系统`Java 8`以上启动（`Windows`）
+- `jar-analyzer-*-jre-exe.zip` 内置`Java 11 JRE`和 `exe` 版本（`Windows`）
