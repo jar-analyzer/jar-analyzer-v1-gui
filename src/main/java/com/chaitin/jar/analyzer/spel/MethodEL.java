@@ -8,11 +8,59 @@ public class MethodEL {
     private String classNameContains;
     private Map<Integer, String> paramTypes;
     private String nameContains;
+    private String startWith;
+    private String endWith;
     private String returnType;
+    private String isSubClassOf;
+    private String isSuperClassOf;
     private Integer paramsNum;
     private Boolean isStatic;
 
     // -------------------- GETTER/SETTER -------------------- //
+    public String getStartWith() {
+        return startWith;
+    }
+
+    public void setStartWith(String startWith) {
+        this.startWith = startWith;
+    }
+
+    public String getEndWith() {
+        return endWith;
+    }
+
+    public void setEndWith(String endWith) {
+        this.endWith = endWith;
+    }
+
+    public String getIsSubClassOf() {
+        return isSubClassOf;
+    }
+
+    public void setIsSubClassOf(String isSubClassOf) {
+        this.isSubClassOf = isSubClassOf;
+    }
+
+    public String getIsSuperClassOf() {
+        return isSuperClassOf;
+    }
+
+    public void setIsSuperClassOf(String isSuperClassOf) {
+        this.isSuperClassOf = isSuperClassOf;
+    }
+
+    public void setParamsNum(Integer paramsNum) {
+        this.paramsNum = paramsNum;
+    }
+
+    public Boolean getStatic() {
+        return isStatic;
+    }
+
+    public void setStatic(Boolean aStatic) {
+        isStatic = aStatic;
+    }
+
     public String getClassNameContains() {
         return classNameContains;
     }
@@ -74,6 +122,16 @@ public class MethodEL {
         return this;
     }
 
+    public MethodEL startWith(String str) {
+        this.startWith = str;
+        return this;
+    }
+
+    public MethodEL endWith(String str) {
+        this.endWith = str;
+        return this;
+    }
+
     public MethodEL classNameContains(String str) {
         this.classNameContains = str;
         return this;
@@ -96,6 +154,16 @@ public class MethodEL {
 
     public MethodEL isStatic(boolean flag) {
         this.isStatic = flag;
+        return this;
+    }
+
+    public MethodEL isSubClassOf(String s) {
+        this.isSubClassOf = s;
+        return this;
+    }
+
+    public MethodEL isSuperClassOf(String s) {
+        this.isSuperClassOf = s;
         return this;
     }
 }

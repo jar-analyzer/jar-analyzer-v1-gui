@@ -180,7 +180,9 @@ Others:
 ## 1.0
 
 更新内容：
-- [bug] 表达式搜索存在漏报 #67
+- [important] [bug] 表达式搜索存在漏报 #67
+- [important] [feat] 表达式搜索支持子类父类递归分析 #68
+- [feat] 表达式支持方法前后缀 #69
 
 下载说明：
 - `jar-analyzer-*.jar` 使用 `java -jar` 启动（使用`Java 8`以上启动，支持 `Windows/Mac/Linux`）
