@@ -300,6 +300,15 @@ public class JarAnalyzerForm {
                     JOptionPane.showMessageDialog(this.jarAnalyzerPanel, "请输入其他搜索内容");
                     return;
                 }
+                if (search.startsWith("'") && search.endsWith("'")) {
+                    search = search.substring(1, search.length() - 1);
+                }
+                if (search.startsWith("\"") && search.endsWith("\"")) {
+                    search = search.substring(1, search.length() - 1);
+                }
+                if (search.startsWith("`") && search.endsWith("`")) {
+                    search = search.substring(1, search.length() - 1);
+                }
                 for (ClassFile file : classFileList) {
                     try {
                         StringClassVisitor dcv = new StringClassVisitor(true,
@@ -330,6 +339,15 @@ public class JarAnalyzerForm {
                 if (search == null || search.trim().equals("")) {
                     JOptionPane.showMessageDialog(this.jarAnalyzerPanel, "请输入其他搜索内容");
                     return;
+                }
+                if (search.startsWith("'") && search.endsWith("'")) {
+                    search = search.substring(1, search.length() - 1);
+                }
+                if (search.startsWith("\"") && search.endsWith("\"")) {
+                    search = search.substring(1, search.length() - 1);
+                }
+                if (search.startsWith("`") && search.endsWith("`")) {
+                    search = search.substring(1, search.length() - 1);
                 }
                 for (ClassFile file : classFileList) {
                     try {
