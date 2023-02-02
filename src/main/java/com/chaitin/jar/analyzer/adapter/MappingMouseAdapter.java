@@ -254,6 +254,9 @@ public class MappingMouseAdapter extends MouseAdapter {
                 if (obj.getMethod().getName().startsWith("lambda$")) {
                     continue;
                 }
+                if (obj.getMethod().getName().startsWith("access$")) {
+                    continue;
+                }
                 if (obj.getMethod().getName().equals("<clinit>")) {
                     continue;
                 }
