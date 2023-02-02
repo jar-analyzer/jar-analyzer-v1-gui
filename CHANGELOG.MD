@@ -185,7 +185,9 @@ Others:
 - [important] [feat] 表达式搜索支持子类父类递归分析 #68
 - [bug] 使用Fira字体在某些情况下有意外的问题 #74
 - [feat] 表达式支持方法前后缀 #69
+- [feat] 代码面板应该支持普通的字符串搜索等功能 #76
 - [improve] 字符串搜索应该处理不必要的前后缀字符 #73
+- [improve] 滚动条应该加入两侧的按钮 #75
 
 下载说明：
 - `jar-analyzer-*.jar` 使用 `java -jar` 启动（使用`Java 8`以上启动，支持 `Windows/Mac/Linux`）
