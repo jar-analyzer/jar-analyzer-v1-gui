@@ -7,6 +7,8 @@
 
 ## 介绍
 
+简单的介绍：https://mp.weixin.qq.com/s/Rrx6x5M_28YRcQQCdxuEeQ
+
 没有英文文档，老外请自行翻译
 
 一个用于分析`jar`包的GUI工具，尤其适合从事代码安全审计。可以在同时分析多个`jar`文件，可以轻易地搜索目标方法。
