@@ -625,6 +625,9 @@ public class JarAnalyzerForm {
             if (obj.getMethod().getName().startsWith("lambda$")) {
                 continue;
             }
+            if (obj.getMethod().getName().startsWith("access$")) {
+                continue;
+            }
             if (obj.getMethod().getName().equals("<clinit>")) {
                 continue;
             }
@@ -838,6 +841,9 @@ public class JarAnalyzerForm {
         for (String s : keySet) {
             MethodObj obj = tempResults.get(s);
             if (obj.getMethod().getName().startsWith("lambda$")) {
+                continue;
+            }
+            if (obj.getMethod().getName().startsWith("access$")) {
                 continue;
             }
             if (obj.getMethod().getName().equals("<clinit>")) {
