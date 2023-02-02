@@ -29,7 +29,6 @@ import org.objectweb.asm.Type;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
-import javax.swing.text.DefaultCaret;
 import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
