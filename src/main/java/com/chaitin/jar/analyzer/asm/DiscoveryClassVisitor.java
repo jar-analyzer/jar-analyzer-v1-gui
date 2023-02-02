@@ -63,12 +63,14 @@ public class DiscoveryClassVisitor extends ClassVisitor {
     public MethodVisitor visitMethod(int access, String name, String desc,
                                      String signature, String[] exceptions) {
         boolean isStatic = (access & Opcodes.ACC_STATIC) != 0;
+        Set<String> mAnno = new HashSet<>();
         discoveredMethods.add(new MethodReference(
                 classHandle,
                 name,
                 desc,
-                isStatic));
-        return super.visitMethod(access, name, desc, signature, exceptions);
+                isStatic, mAnno));
+        MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
+        return new DiscoveryMethodAdapter(Opcodes.ASM9, mv, mAnno);
     }
 
     @Override

@@ -13,6 +13,7 @@ import java.util.Set;
 public class MethodELProcessor {
     private final ClassReference.Handle ch;
     private final MethodReference mr;
+
     private final DefaultListModel<ResObj> searchList;
     private final MethodEL condition;
 
@@ -26,12 +27,15 @@ public class MethodELProcessor {
 
     public void process() {
         Set<ClassReference.Handle> subs = JarAnalyzerForm.inheritanceMap.getSuperClasses(ch);
-        Set<ClassReference.Handle> supers =  JarAnalyzerForm.inheritanceMap.getSubClasses(ch);
+        Set<ClassReference.Handle> supers = JarAnalyzerForm.inheritanceMap.getSubClasses(ch);
 
         String classCon = condition.getClassNameContains();
         String mnCon = condition.getNameContains();
         String retCon = condition.getReturnType();
         Map<Integer, String> paramMap = condition.getParamTypes();
+
+        String methodAnno = condition.getMethodAnno();
+        String classAnno = condition.getClassAnno();
 
         String isSubOf = condition.getIsSubClassOf();
         String isSuperOf = condition.getIsSuperClassOf();
@@ -50,6 +54,8 @@ public class MethodELProcessor {
         boolean ad = true;
         boolean ae = true;
         boolean af = true;
+        boolean ag = true;
+        boolean ah = true;
 
         boolean sb = true;
         boolean sp = true;
@@ -63,6 +69,41 @@ public class MethodELProcessor {
 
         if (mnCon != null && !mnCon.equals("")) {
             ab = mr.getName().contains(mnCon);
+        }
+
+        if (classAnno != null && !classAnno.equals("")) {
+            if (JarAnalyzerForm.classMap.get(ch).getAnnotations() == null ||
+                    JarAnalyzerForm.classMap.get(ch).getAnnotations().size() == 0) {
+                ag = false;
+            } else {
+                boolean fc = false;
+                for (String a : JarAnalyzerForm.classMap.get(ch).getAnnotations()) {
+                    if (a.contains(classAnno)) {
+                        fc = true;
+                        break;
+                    }
+                }
+                if (!fc) {
+                    ag = false;
+                }
+            }
+        }
+
+        if (methodAnno != null && !methodAnno.equals("")) {
+            if (mr.getAnnotations() == null || mr.getAnnotations().size() == 0) {
+                ah = false;
+            } else {
+                boolean fm = false;
+                for (String a : mr.getAnnotations()) {
+                    if (a.contains(methodAnno)) {
+                        fm = true;
+                        break;
+                    }
+                }
+                if (!fm) {
+                    ah = false;
+                }
+            }
         }
 
         if (start != null && !start.equals("")) {
@@ -128,7 +169,7 @@ public class MethodELProcessor {
                 break;
             }
         }
-        if (aa && ab && ac && ad && ae && af && sb && sp && sw && ew) {
+        if (aa && ab && ac && ad && ae && af && ag && ah && sb && sp && sw && ew) {
             searchList.addElement(new ResObj(mr.getHandle(), ch.getName()));
         }
     }

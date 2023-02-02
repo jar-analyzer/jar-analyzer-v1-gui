@@ -15,6 +15,8 @@ public class MethodEL {
     private String isSuperClassOf;
     private Integer paramsNum;
     private Boolean isStatic;
+    private String methodAnno;
+    private String classAnno;
 
     // -------------------- GETTER/SETTER -------------------- //
     public String getStartWith() {
@@ -109,6 +111,22 @@ public class MethodEL {
         isStatic = aStatic;
     }
 
+    public String getMethodAnno() {
+        return methodAnno;
+    }
+
+    public void setMethodAnno(String methodAnno) {
+        this.methodAnno = methodAnno;
+    }
+
+    public String getClassAnno() {
+        return classAnno;
+    }
+
+    public void setClassAnno(String classAnno) {
+        this.classAnno = classAnno;
+    }
+
     public MethodEL() {
         this.paramTypes = new HashMap<>();
         this.paramsNum = null;
@@ -164,6 +182,16 @@ public class MethodEL {
 
     public MethodEL isSuperClassOf(String s) {
         this.isSuperClassOf = s;
+        return this;
+    }
+
+    public MethodEL hasAnno(String s) {
+        this.methodAnno = s;
+        return this;
+    }
+
+    public MethodEL hasClassAnno(String s) {
+        this.classAnno = s;
         return this;
     }
 }

@@ -3,19 +3,23 @@ package com.chaitin.jar.analyzer.core;
 import org.objectweb.asm.Type;
 
 import java.util.Objects;
+import java.util.Set;
 
 public class MethodReference {
     private final ClassReference.Handle classReference;
+    private final Set<String> annotations;
     private final String name;
     private final String desc;
     private final boolean isStatic;
 
     public MethodReference(ClassReference.Handle classReference,
-                           String name, String desc, boolean isStatic) {
+                           String name, String desc, boolean isStatic,
+                           Set<String> annotations) {
         this.classReference = classReference;
         this.name = name;
         this.desc = desc;
         this.isStatic = isStatic;
+        this.annotations = annotations;
     }
 
     public ClassReference.Handle getClassReference() {
@@ -28,6 +32,10 @@ public class MethodReference {
 
     public String getDesc() {
         return desc;
+    }
+
+    public Set<String> getAnnotations() {
+        return annotations;
     }
 
     public boolean isStatic() {
