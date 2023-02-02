@@ -181,6 +181,7 @@ Others:
 
 更新内容：
 - [important] [bug] 表达式搜索存在漏报 #67
+- [important] [bug] 方法定位算法遇到范型时的问题 #70
 - [important] [feat] 表达式搜索支持子类父类递归分析 #68
 - [bug] 使用Fira字体在某些情况下有意外的问题 #74
 - [feat] 表达式支持方法前后缀 #69
