@@ -17,6 +17,7 @@ public class MethodEL {
     private Boolean isStatic;
     private String methodAnno;
     private String classAnno;
+    private String field;
 
     // -------------------- GETTER/SETTER -------------------- //
     public String getStartWith() {
@@ -127,6 +128,14 @@ public class MethodEL {
         this.classAnno = classAnno;
     }
 
+    public String getField() {
+        return field;
+    }
+
+    public void setField(String field) {
+        this.field = field;
+    }
+
     public MethodEL() {
         this.paramTypes = new HashMap<>();
         this.paramsNum = null;
@@ -192,6 +201,11 @@ public class MethodEL {
 
     public MethodEL hasClassAnno(String s) {
         this.classAnno = s;
+        return this;
+    }
+
+    public MethodEL hasField(String s) {
+        this.field = s;
         return this;
     }
 }

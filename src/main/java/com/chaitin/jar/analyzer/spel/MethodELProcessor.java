@@ -43,6 +43,8 @@ public class MethodELProcessor {
         String start = condition.getStartWith();
         String endWith = condition.getEndWith();
 
+        String hasField = condition.getField();
+
         Integer i = condition.getParamsNum();
         Boolean f = condition.isStatic();
         int paramNum = Type.getMethodType(mr.getDesc()).getArgumentTypes().length;
@@ -56,6 +58,7 @@ public class MethodELProcessor {
         boolean af = true;
         boolean ag = true;
         boolean ah = true;
+        boolean ai = true;
 
         boolean sb = true;
         boolean sp = true;
@@ -114,6 +117,19 @@ public class MethodELProcessor {
             ew = mr.getName().endsWith(endWith);
         }
 
+        if (hasField != null && !hasField.equals("")) {
+            boolean ff = false;
+            for (ClassReference.Member m : JarAnalyzerForm.classMap.get(ch).getMembers()) {
+                if (m.getName().contains(hasField)) {
+                    ff = true;
+                    break;
+                }
+            }
+            if (!ff) {
+                ai = false;
+            }
+        }
+
         if (i != null) {
             ac = i == paramNum;
         }
@@ -169,7 +185,7 @@ public class MethodELProcessor {
                 break;
             }
         }
-        if (aa && ab && ac && ad && ae && af && ag && ah && sb && sp && sw && ew) {
+        if (aa && ab && ac && ad && ae && af && ag && ah && ai && sb && sp && sw && ew) {
             searchList.addElement(new ResObj(mr.getHandle(), ch.getName()));
         }
     }

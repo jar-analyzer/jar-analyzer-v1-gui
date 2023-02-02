@@ -184,6 +184,7 @@ Others:
 - [important] [bug] 方法定位算法遇到泛型时的问题 #70
 - [important] [feat] 表达式搜索支持子类父类递归分析 #68
 - [important] [feat] 表达式支持方法注解和类注解搜索 #79
+- [important] [feat] 表达式搜索支持字段搜索 #80
 - [bug] 应该避免处理access$方法 #77
 - [bug] 使用Fira字体在某些情况下有意外的问题 #74
 - [feat] 自动检查更新 #78
