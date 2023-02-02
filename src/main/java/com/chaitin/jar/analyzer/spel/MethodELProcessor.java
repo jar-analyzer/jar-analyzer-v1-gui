@@ -143,7 +143,7 @@ public class MethodELProcessor {
         }
 
         if (isSubOf != null && !isSubOf.equals("")) {
-            isSubOf = isSuperOf.replace(".", "/");
+            isSubOf = isSubOf.replace(".", "/");
             if (subs != null && subs.size() != 0) {
                 boolean t = false;
                 for (ClassReference.Handle h : subs) {
