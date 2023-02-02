@@ -47,7 +47,7 @@ public class CommonForm {
             instance.classText.setText(temp[0]);
             instance.methodText.setText(temp[1]);
             instance.callSearchRadioButton.setSelected(true);
-            JOptionPane.showMessageDialog(commonPanel, "已设置成功");
+            instance.closeCommon();
         });
 
         this.commonTable.addMouseListener(new MouseAdapter() {

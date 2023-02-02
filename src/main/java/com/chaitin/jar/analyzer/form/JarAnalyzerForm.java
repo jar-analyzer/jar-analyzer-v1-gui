@@ -126,6 +126,7 @@ public class JarAnalyzerForm {
     private JButton commonButton;
     private JPanel commonPanel;
     private JLabel commonLabel;
+    private JFrame cFrame;
     private JButton elButton;
     public static List<SpringController> controllers = new ArrayList<>();
     public static final DefaultListModel<ResObj> historyDataList = new DefaultListModel<>();
@@ -959,6 +960,11 @@ public class JarAnalyzerForm {
         }
     }
 
+    public void closeCommon() {
+        cFrame.setVisible(false);
+        cFrame.dispose();
+    }
+
     @SuppressWarnings("all")
     public JarAnalyzerForm() {
         DropTarget dt = new DropTarget() {
@@ -1124,10 +1130,10 @@ public class JarAnalyzerForm {
         });
 
         commonButton.addActionListener(e -> {
-            JFrame frame = new JFrame("Common");
-            frame.setContentPane(new CommonForm(instance).commonPanel);
-            frame.pack();
-            frame.setVisible(true);
+            cFrame = new JFrame("Common");
+            cFrame.setContentPane(new CommonForm(instance).commonPanel);
+            cFrame.pack();
+            cFrame.setVisible(true);
         });
 
         elButton.addActionListener(e -> {
