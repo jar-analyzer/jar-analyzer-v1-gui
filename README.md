@@ -28,20 +28,6 @@
 
 ![](img/005.png)
 
-加入了简单的表达式搜索（beta）功能
-
-```java
-#method
-    .nameContains("方法名包含什么")
-    .classNameContains("该方法类名包含什么")
-    .returnType("方法返回值类型")
-    .paramTypeMap(参数索引 (int),"参数索引类型")
-    .paramsNum(参数个数 (int))
-    .isStatic(是否静态 (boolean))
-```
-
-![](img/007.png)
-
 支持六种搜索方式：
 - 直接根据类和方法名搜索（搜索定义）
 - 根据方法调用搜索（该方法在哪里被调用）
@@ -58,6 +44,107 @@
 使用类定制化的`JSyntaxPane`组件（非官方）来展示`Java`代码
 
 （在该库`https://code.google.com/archive/p/jsyntaxpane`的基础上加了很多黑科技）
+
+## 表达式搜索
+
+支持一种超强的表达式搜索，可以随意组合以搜索你想要的信息
+
+![](img/007.png)
+
+### 1.基础搜索
+
+搜索的基础是方法，你希望搜索怎样的方法
+
+例如我希望搜索方法名以`set`开头并以`value`结尾的方法
+
+```java
+#method
+        .startWith("set")
+        .endWith("value")
+```
+
+例如我希望搜索类名包含`Context`且方法名包含`lookup`的方法
+
+```java
+#method
+        .nameContains("lookup")
+        .classNameContains("Context")
+```
+
+例如我希望搜索返回`Process`类型共3个参数且第二个参数为`String`的方法
+
+```java
+#method
+        .retureType("java.lang.Process")
+        .paramsNum(3)
+        .paramTypeMap(1,"java.lang.String")
+```
+
+### 2.子类与父类
+
+比如我们想找`javax.naming.spi.ObjectFactory`的所有子类（包括子类的子类等）
+
+编写以下规则即可，程序内部会递归地寻找所有的父类
+
+```java
+#method
+        .isSubClassOf("javax.naming.spi.ObjectFactory")
+```
+
+如果想找某个类的所有父类，使用`isSuperClassOf`即可（注意全类名）
+
+注意以上会直接找到所有符合条件类的所有方法，所以我建议再加一些过滤
+
+例如
+
+```java
+#method
+        .isSubClassOf("javax.naming.spi.ObjectFactory")
+        .startWith("xxx")
+        .paramsNum(0)
+```
+
+### 3.注解搜索
+
+比如我们想找`@Controller`注解的所有类的所有方法
+
+编写以下规则
+
+```java
+#method
+        .hasClassAnno("Controller")
+```
+
+比如想找`@RequestMapping`注解的所有方法
+
+```java
+#method
+        .hasAnno("RequestMapping")
+```
+
+同样地由于找到的是所有符合条件类的所有方法，所以我建议再加一些过滤
+
+### 4.实战分析
+
+根据网上师傅提供的`Swing RCE`条件：
+- 必须有一个set方法
+- set方法必须只有一个参数
+- 这一个参数必须是string类型
+- 该类必须是`Component`子类（包括间接子类）
+
+因此我们编写一条规则
+
+```java
+#method
+        .startWith("set")
+        .paramsNum(1)
+        .paramTypeMap(0,"java.lang.String")
+        .isSubClassOf("java.awt.Component")
+```
+
+搜索结果
+
+![](img/008.png)
 
 ## Quick Start
 
