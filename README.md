@@ -3,7 +3,7 @@
 ![](https://img.shields.io/badge/build-Java%208-orange)
 ![](https://img.shields.io/github/downloads/4ra1n/jar-analyzer/total)
 ![](https://img.shields.io/github/v/release/4ra1n/jar-analyzer)
-![](https://img.shields.io/badge/Java%20Code%20Lines-4142-orange)
+![](https://img.shields.io/badge/Java%20Code%20Lines-4404-orange)
 
 ## 介绍
 
