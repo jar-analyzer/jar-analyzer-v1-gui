@@ -152,7 +152,26 @@ public class JarAnalyzerForm {
         }
     }
 
+    private boolean checkJarSize() {
+        try {
+            int total = 0;
+            for (String path : jarPathList) {
+                Path cPath = Paths.get(path);
+                int mb = (int) (Files.size(cPath) / 1024 / 1024);
+                total += mb;
+            }
+            if (total < 300) {
+                return true;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+        return false;
+    }
+
     private void loadJarInternal(String absPath) {
+        jarPathList.clear();
         totalJars++;
         progress.setValue(0);
         new Thread(() -> {
@@ -166,6 +185,12 @@ public class JarAnalyzerForm {
             } else {
                 jarPathList.add(absPath);
             }
+
+            if (!checkJarSize()) {
+                JOptionPane.showMessageDialog(jarAnalyzerPanel, "输入的Jar包过大");
+                return;
+            }
+
             progress.setValue(20);
             classFileList.addAll(CoreUtil.getAllClassesFromJars(jarPathList));
 
