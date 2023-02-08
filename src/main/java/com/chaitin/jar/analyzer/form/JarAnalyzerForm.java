@@ -29,6 +29,7 @@ import org.objectweb.asm.Type;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
@@ -237,6 +238,19 @@ public class JarAnalyzerForm {
         selectJarFileButton.addActionListener(e -> {
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+            fileChooser.setFileHidingEnabled(true);
+            fileChooser.setFileFilter(new FileFilter() {
+                @Override
+                public boolean accept(File f) {
+                    return f.getName().toLowerCase().endsWith(".jar") ||
+                            f.getName().toLowerCase().endsWith(".war");
+                }
+
+                @Override
+                public String getDescription() {
+                    return "NOT JAR/WAR";
+                }
+            });
             int option = fileChooser.showOpenDialog(new JFrame());
             if (option == JFileChooser.APPROVE_OPTION) {
                 File file = fileChooser.getSelectedFile();
