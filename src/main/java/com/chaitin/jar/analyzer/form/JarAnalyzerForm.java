@@ -243,7 +243,8 @@ public class JarAnalyzerForm {
                 @Override
                 public boolean accept(File f) {
                     return f.getName().toLowerCase().endsWith(".jar") ||
-                            f.getName().toLowerCase().endsWith(".war");
+                            f.getName().toLowerCase().endsWith(".war") ||
+                            f.isDirectory();
                 }
 
                 @Override
