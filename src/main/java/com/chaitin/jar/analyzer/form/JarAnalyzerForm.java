@@ -238,7 +238,7 @@ public class JarAnalyzerForm {
         selectJarFileButton.addActionListener(e -> {
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-            fileChooser.setFileHidingEnabled(true);
+            fileChooser.setFileHidingEnabled(false);
             fileChooser.setFileFilter(new FileFilter() {
                 @Override
                 public boolean accept(File f) {
@@ -249,7 +249,7 @@ public class JarAnalyzerForm {
 
                 @Override
                 public String getDescription() {
-                    return "NOT JAR/WAR";
+                    return "jar/war";
                 }
             });
             int option = fileChooser.showOpenDialog(new JFrame());
