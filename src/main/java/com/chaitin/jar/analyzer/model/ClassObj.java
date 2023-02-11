@@ -1,6 +1,8 @@
 package com.chaitin.jar.analyzer.model;
 
+import com.chaitin.jar.analyzer.core.ClassFile;
 import com.chaitin.jar.analyzer.core.ClassReference;
+import com.chaitin.jar.analyzer.form.JarAnalyzerForm;
 
 public class ClassObj {
     private final String className;
@@ -20,8 +22,26 @@ public class ClassObj {
         return this.className;
     }
 
+    private String getJarFileName() {
+        for (ClassFile cf : JarAnalyzerForm.classFileList) {
+            String temp = this.className.replace(".", "/");
+            temp += ".class";
+            String target = cf.getClassName();
+            if (target.contains("BOOT-INF")) {
+                target = target.substring(17);
+            }
+            if (target.contains("WEB-INF")) {
+                target = target.substring(16);
+            }
+            if (target.equals(temp)) {
+                return cf.jarName;
+            }
+        }
+        return "unknown";
+    }
+
     @Override
     public String toString() {
-        return this.className;
+        return this.className + " (" + getJarFileName() + ")";
     }
 }

@@ -264,7 +264,7 @@ public class AllMethodMouseAdapter extends MouseAdapter {
             }
 
             JarAnalyzerForm.curRes = new ResObj(res.getMethod(), res.getClassName());
-            form.currentLabel.setText(res.toString());
+            form.currentLabel.setText(JarAnalyzerForm.curRes.toString());
             form.currentLabel.setToolTipText(res.getMethod().getDescStd());
 
             form.sourceList.setModel(sourceDataList);
