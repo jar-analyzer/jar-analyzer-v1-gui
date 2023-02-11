@@ -51,6 +51,22 @@
 
 支持一种超强的表达式搜索，可以随意组合以搜索你想要的信息
 
+| 表达式               | 参数         | 作用       | 
+|:------------------|:-----------|:---------|
+| nameContains      | String     | 方法名包含    |
+| startWith         | String     | 方法前缀     |
+| endWith           | String     | 方法后缀     |
+| classNameContains | String     | 类名包含     |
+| returnType        | String     | 方法返回类型   |
+| paramTypeMap      | int String | 方法参数对应关系 |
+| paramsNum         | int        | 方法参数个数   |
+| isStatic          | boolean    | 方法是否静态   |
+| isSubClassOf      | String     | 是谁的子类    |
+| isSuperClassOf    | String     | 是谁的父类    |
+| hasAnno           | String     | 方法的注解    |
+| hasClassAnno      | String     | 类的注解     |
+| hasField          | String     | 类字段      |
+
 ![](img/007.png)
 
 ### 1.基础搜索

@@ -203,9 +203,17 @@ Others:
 
 ## 1.1
 
+优化一些细节问题，提高用户体验
+
 更新内容：
 - [important] 选择文件时只显示JAR/WAR文件提高效率 #84
 - [bug] 应该支持隐藏文件/目录 #85
 - [feat] 显示每一个方法和类来自哪一个Jar文件 #86
 - [improve] 限制JAR包大小防止加载过多过大的文件 #83
 - 简单优化 UI 界面
+- 完善 README 文档
+
+下载说明：
+- `jar-analyzer-*.jar` 使用 `java -jar` 启动（使用`Java 8`以上启动，支持 `Windows/Mac/Linux`）
+- `jar-analyzer-*-system-jre.exe` 使用系统`Java 8`以上启动（`Windows`）
+- `jar-analyzer-*-jre-exe.zip` 内置`Java 11 JRE`和 `exe` 版本（`Windows`）
