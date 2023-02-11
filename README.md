@@ -67,6 +67,11 @@
 | hasClassAnno      | String     | 类的注解     |
 | hasField          | String     | 类字段      |
 
+注意：
+- `returnType`和`paramTypeMap`要求类似是完整类名，例如`java.lang.String`，基础类型直接写即可例如`int`
+- `isSubClassOf`和`isSuperClassOf`要求完整类名，例如`java.awt.Component`
+- `hasAnno`和`hasClassAnno`不要求完整类名，直接写即可例如`Controller`
+
 ![](img/007.png)
 
 ### 1.基础搜索
