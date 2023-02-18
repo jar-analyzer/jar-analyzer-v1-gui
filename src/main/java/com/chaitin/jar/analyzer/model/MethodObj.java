@@ -38,7 +38,7 @@ public class MethodObj {
         return sb.toString();
     }
 
-    private String getJarFileName() {
+    public String getJarFileName() {
         for (ClassFile cf : JarAnalyzerForm.classFileList) {
             String temp = this.className.replace(".", "/");
             temp += ".class";
@@ -58,10 +58,9 @@ public class MethodObj {
 
     @Override
     public String toString() {
-        String outputFormat = "%s %s (%s)";
+        String outputFormat = "%s %s";
         return String.format(outputFormat,
                 method.getName(),
-                getNumFromDesc(),
-                getJarFileName());
+                getNumFromDesc());
     }
 }

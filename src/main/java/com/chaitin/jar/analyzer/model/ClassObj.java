@@ -22,7 +22,7 @@ public class ClassObj {
         return this.className;
     }
 
-    private String getJarFileName() {
+    public String getJarFileName() {
         for (ClassFile cf : JarAnalyzerForm.classFileList) {
             String temp = this.className.replace(".", "/");
             temp += ".class";
@@ -42,6 +42,6 @@ public class ClassObj {
 
     @Override
     public String toString() {
-        return this.className + " (" + getJarFileName() + ")";
+        return this.className;
     }
 }

@@ -40,6 +40,7 @@ public class AllMethodMouseAdapter extends MouseAdapter {
         }
     }
 
+    @SuppressWarnings("all")
     public void mouseClicked(MouseEvent evt) {
         JList<?> list = (JList<?>) evt.getSource();
         if (evt.getClickCount() == 1) {
@@ -48,7 +49,7 @@ public class AllMethodMouseAdapter extends MouseAdapter {
             int index = l.locationToIndex(evt.getPoint());
             if (index > -1) {
                 MethodObj res = (MethodObj) m.getElementAt(index);
-                l.setToolTipText(res.getMethod().getDescStd());
+                l.setToolTipText(res.getMethod().getDescStd(res));
 
                 ToolTipManager.sharedInstance().mouseMoved(
                         new MouseEvent(l, 0, 0, 0,
@@ -265,7 +266,7 @@ public class AllMethodMouseAdapter extends MouseAdapter {
 
             JarAnalyzerForm.curRes = new ResObj(res.getMethod(), res.getClassName());
             form.currentLabel.setText(JarAnalyzerForm.curRes.toString());
-            form.currentLabel.setToolTipText(res.getMethod().getDescStd());
+            form.currentLabel.setToolTipText(res.getMethod().getDescStd(JarAnalyzerForm.curRes));
 
             form.sourceList.setModel(sourceDataList);
             form.callList.setModel(callDataList);

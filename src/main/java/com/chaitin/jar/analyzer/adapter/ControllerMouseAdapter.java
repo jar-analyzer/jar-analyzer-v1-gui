@@ -29,6 +29,7 @@ public class ControllerMouseAdapter extends MouseAdapter {
             int index = l.locationToIndex(evt.getPoint());
             if (index > -1) {
                 ClassObj res = (ClassObj) m.getElementAt(index);
+                l.setToolTipText(res.getJarFileName());
                 for (SpringController controller : JarAnalyzerForm.controllers) {
                     if (controller.getClassName().equals(res.getHandle())) {
                         DefaultListModel<MappingObj> mappingDataList = new DefaultListModel<>();

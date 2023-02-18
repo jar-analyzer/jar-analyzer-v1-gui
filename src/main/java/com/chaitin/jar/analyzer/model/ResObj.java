@@ -27,16 +27,16 @@ public class ResObj {
         return methodType.getArgumentTypes().length;
     }
 
-    private String getJarFileName() {
+    public String getJarFileName() {
         for (ClassFile cf : JarAnalyzerForm.classFileList) {
             String temp = this.className.replace(".", "/");
             temp += ".class";
             String target = cf.getClassName();
-            if(target.contains("BOOT-INF")){
-                target =target.substring(17);
+            if (target.contains("BOOT-INF")) {
+                target = target.substring(17);
             }
-            if(target.contains("WEB-INF")){
-                target =target.substring(16);
+            if (target.contains("WEB-INF")) {
+                target = target.substring(16);
             }
             if (target.equals(temp)) {
                 return cf.jarName;
@@ -47,11 +47,10 @@ public class ResObj {
 
     @Override
     public String toString() {
-        String outputFormat = "%s %s (params:%d) (%s)";
+        String outputFormat = "%s %s (params:%d)";
         return String.format(outputFormat,
                 className,
                 method.getName(),
-                getNumFromDesc(),
-                getJarFileName());
+                getNumFromDesc());
     }
 }

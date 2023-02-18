@@ -35,7 +35,7 @@ public class ChanMouseAdapter extends MouseAdapter {
             int index = l.locationToIndex(evt.getPoint());
             if (index > -1) {
                 ResObj res = (ResObj) m.getElementAt(index);
-                l.setToolTipText(res.getMethod().getDescStd());
+                l.setToolTipText(res.getMethod().getDescStd(res));
 
                 ToolTipManager.sharedInstance().mouseMoved(
                         new MouseEvent(l, 0, 0, 0,

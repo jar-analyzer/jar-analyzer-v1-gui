@@ -505,9 +505,11 @@ public class JarAnalyzerForm {
     public void coreClass(MouseEvent evt, JList<?> list) {
         int index = list.locationToIndex(evt.getPoint());
         ClassObj res = (ClassObj) list.getModel().getElementAt(index);
+        list.setToolTipText(res.getJarFileName());
         coreClassInternal(res);
     }
 
+    @SuppressWarnings("all")
     private void coreClassInternal(ClassObj res) {
         String className = res.getClassName();
         String tempPath = className.replace("/", File.separator);
@@ -894,7 +896,7 @@ public class JarAnalyzerForm {
 
         curRes = res;
         currentLabel.setText(res.toString());
-        currentLabel.setToolTipText(res.getMethod().getDescStd());
+        currentLabel.setToolTipText(res.getMethod().getDescStd(curRes));
 
         sourceList.setModel(sourceDataList);
         callList.setModel(callDataList);

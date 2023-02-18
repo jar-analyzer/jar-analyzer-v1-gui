@@ -1,5 +1,9 @@
 package com.chaitin.jar.analyzer.core;
 
+import com.chaitin.jar.analyzer.model.ClassObj;
+import com.chaitin.jar.analyzer.model.MappingObj;
+import com.chaitin.jar.analyzer.model.MethodObj;
+import com.chaitin.jar.analyzer.model.ResObj;
 import org.objectweb.asm.Type;
 
 import java.util.Objects;
@@ -69,7 +73,7 @@ public class MethodReference {
             return desc;
         }
 
-        public String getDescStd() {
+        public String getDescStd(Object res) {
             Type methodType = Type.getMethodType(desc);
             StringBuilder sb = new StringBuilder();
 
@@ -87,7 +91,18 @@ public class MethodReference {
                         .append(argTypes[ix].getClassName());
                 sb.append("\n");
             }
-            sb.deleteCharAt(sb.length() - 1);
+            if(res instanceof ResObj){
+                sb.append(((ResObj)res).getJarFileName());
+            }
+            if(res instanceof MethodObj){
+                sb.append(((MethodObj)res).getJarFileName());
+            }
+            if (res instanceof ClassObj){
+                sb.append(((ClassObj)res).getJarFileName());
+            }
+            if (res instanceof MappingObj){
+                sb.append(((MappingObj)res).getJarFileName());
+            }
             return sb.toString();
         }
 
