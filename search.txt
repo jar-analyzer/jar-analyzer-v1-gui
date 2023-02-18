@@ -1,0 +1,2 @@
+java.lang.Runtime#getRuntime
+java.lang.String#equals

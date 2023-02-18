@@ -5,9 +5,15 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CommonForm {
     public JPanel commonPanel;
@@ -21,16 +27,37 @@ public class CommonForm {
 
     static {
         a = new String[]{"Class", "Method"};
-        b = new String[][]{
-                new String[]{"javax.naming.Context", "lookup"},
-                new String[]{"java.lang.Runtime", "exec"},
-                new String[]{"java.lang.ProcessBuilder", "start"},
-                new String[]{"java.io.ObjectInputStream", "readObject"},
-                new String[]{"org.springframework.expression.Expression", "getValue"},
-                new String[]{"org.yaml.snakeyaml.Yaml", "load"},
-                new String[]{"com.alibaba.fastjson.JSON", "parse"},
-                new String[]{"java.beans.XMLDecoder", "readObject"}
-        };
+        List<String[]> temp = new ArrayList<>();
+        temp.add(new String[]{"javax.naming.Context", "lookup"});
+        temp.add(new String[]{"java.lang.Runtime", "exec"});
+        temp.add(new String[]{"java.lang.ProcessBuilder", "start"});
+        temp.add(new String[]{"java.io.ObjectInputStream", "readObject"});
+        temp.add(new String[]{"org.springframework.expression.Expression", "getValue"});
+        temp.add(new String[]{"org.yaml.snakeyaml.Yaml", "load"});
+        temp.add(new String[]{"com.alibaba.fastjson.JSON", "parse"});
+        temp.add(new String[]{"java.beans.XMLDecoder", "readObject"});
+        Path path = Paths.get("search.txt");
+        if (Files.exists(path)) {
+            try {
+                byte[] data = Files.readAllBytes(path);
+                String input = new String(data);
+                String[] sp = input.split("\n");
+                for (String s : sp) {
+                    s = s.trim();
+                    if (s.equals("")) {
+                        continue;
+                    }
+                    if (s.endsWith("\r")) {
+                        s = s.substring(0, s.length() - 1);
+                    }
+                    String[] k = s.split("#");
+                    String[] r = new String[]{k[0], k[1]};
+                    temp.add(r);
+                }
+            } catch (Exception ignored) {
+            }
+        }
+        b = temp.toArray(new String[0][0]);
     }
 
     public CommonForm(JarAnalyzerForm instance) {

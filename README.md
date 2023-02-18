@@ -194,6 +194,15 @@
 
 ![](img/006.png)
 
+注意：这里的常见搜索内容可以自定义补充
+
+在当前目录新建`search.txt`文件，一行一个以`#`分割类名和方法，例如
+
+```text
+java.lang.Runtime#getRuntime
+java.lang.String#equals
+```
+
 二进制搜索只会返回是否存在，不会返回具体信息
 
 ![](img/004.png)
