@@ -98,7 +98,7 @@
 
 ```java
 #method
-        .retureType("java.lang.Process")
+        .returnType("java.lang.Process")
         .paramsNum(3)
         .paramTypeMap(1,"java.lang.String")
 ```

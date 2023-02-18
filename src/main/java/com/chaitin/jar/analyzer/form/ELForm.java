@@ -30,14 +30,29 @@ public class ELForm {
         elEditor.setEditorKit(java);
         java.deinstallComponent(elEditor, "jsyntaxpane.components.LineNumbersRuler");
 
+        elEditor.setText("#method\n" +
+                "        .startWith(\"set\")\n" +
+                "        .endWith(\"value\")\n" +
+                "        .nameContains(\"lookup\")\n" +
+                "        .classNameContains(\"Context\")\n" +
+                "        .returnType(\"java.lang.Process\")\n" +
+                "        .paramTypeMap(0,\"java.lang.String\")\n" +
+                "        .paramsNum(1)\n" +
+                "        .isStatic(false)\n" +
+                "        .isSubClassOf(\"java.awt.Component\")\n" +
+                "        .isSuperClassOf(\"com.test.SomeClass\")\n" +
+                "        .hasClassAnno(\"Controller\")\n" +
+                "        .hasAnno(\"RequestMapping\")\n" +
+                "        .hasField(\"context\")");
+
         checkButton.addActionListener(e -> {
             try {
                 ExpressionParser parser = new SpelExpressionParser();
                 String spel = elEditor.getText();
                 parser.parseExpression(spel);
-                JOptionPane.showMessageDialog(this.elEditor, "验证成功");
+                JOptionPane.showMessageDialog(this.elEditor, "解析通过，正确的表达式");
             } catch (Exception ignored) {
-                JOptionPane.showMessageDialog(this.elEditor, "错误的表达式");
+                JOptionPane.showMessageDialog(this.elEditor, "解析异常，错误的表达式");
             }
         });
 
