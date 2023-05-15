@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.chaitin</groupId>
+    <groupId>me.n1ar4</groupId>
     <artifactId>jar-analyzer</artifactId>
     <version>1.2</version>
 
@@ -117,7 +117,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>com.chaitin.jar.analyzer.Application</mainClass>
+                            <mainClass>me.n1ar4.jar.analyzer.Application</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
