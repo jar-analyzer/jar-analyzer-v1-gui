@@ -2,7 +2,8 @@ package me.n1ar4.jar.analyzer.util;
 
 import me.n1ar4.jar.analyzer.core.ClassFile;
 import me.n1ar4.jar.analyzer.form.JarAnalyzerForm;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -14,7 +15,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
 public class JarUtil {
-    private static final Logger logger = Logger.getLogger(JarUtil.class);
+    private static final Logger logger = LogManager.getLogger(JarUtil.class);
     private static final Set<ClassFile> classFileSet = new HashSet<>();
 
     public static List<ClassFile> resolveNormalJarFile(String jarPath) {

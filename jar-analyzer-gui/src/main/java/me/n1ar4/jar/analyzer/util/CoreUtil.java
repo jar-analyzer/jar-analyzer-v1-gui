@@ -1,7 +1,8 @@
 package me.n1ar4.jar.analyzer.util;
 
 import me.n1ar4.jar.analyzer.core.ClassFile;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.Set;
 
 public class CoreUtil {
-    private static final Logger logger = Logger.getLogger(CoreUtil.class);
+    private static final Logger logger = LogManager.getLogger(CoreUtil.class);
 
     public static List<ClassFile> getAllClassesFromJars(List<String> jarPathList) {
         logger.info("get all classes");

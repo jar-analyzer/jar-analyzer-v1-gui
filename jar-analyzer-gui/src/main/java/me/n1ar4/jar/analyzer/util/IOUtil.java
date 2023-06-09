@@ -1,12 +1,14 @@
 package me.n1ar4.jar.analyzer.util;
 
-import org.apache.log4j.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 
 public class IOUtil {
-    private static final Logger logger = Logger.getLogger(IOUtil.class);
+    private static final Logger logger = LogManager.getLogger(IOUtil.class);
 
     public static void copy(InputStream inputStream, OutputStream outputStream) {
         try {

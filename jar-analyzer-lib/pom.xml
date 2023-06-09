@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>me.n1ar4</groupId>
+        <artifactId>jar-analyzer</artifactId>
+        <version>1.2</version>
+    </parent>
+
+    <artifactId>jar-analyzer-lib</artifactId>
+    <packaging>jar</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>lib</groupId>
+            <artifactId>panel</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>lib</groupId>
+            <artifactId>fern</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+    </dependencies>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>fern</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <file>${basedir}/lib/fern.jar</file>
+                            <groupId>lib</groupId>
+                            <artifactId>fern</artifactId>
+                            <version>1.0.0</version>
+                            <packaging>jar</packaging>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>panel</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <file>${basedir}/lib/panel.jar</file>
+                            <groupId>lib</groupId>
+                            <artifactId>panel</artifactId>
+                            <version>1.0.0</version>
+                            <packaging>jar</packaging>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

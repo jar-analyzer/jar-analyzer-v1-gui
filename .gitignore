@@ -1,7 +1,5 @@
 .idea/
 target/
-jar-analyzer/
-jar-analyzer-*/
 release/*.jar
 release/*.exe
 release/*.zip
