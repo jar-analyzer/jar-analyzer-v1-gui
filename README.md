@@ -5,6 +5,8 @@
 ![](https://img.shields.io/github/v/release/4ra1n/jar-analyzer)
 ![](https://img.shields.io/badge/Java%20Code%20Lines-4576-orange)
 
+## 最近在做命令行版本，暂不更新GUI版，命令行版会进步很多
+
 ## 介绍
 
 简单的介绍：https://mp.weixin.qq.com/s/Rrx6x5M_28YRcQQCdxuEeQ
