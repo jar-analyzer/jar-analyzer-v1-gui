@@ -341,3 +341,11 @@ class Cat extends Animal {
 首先确保数据不会丢失，然后我们可以自行手动分析反编译的代码
 - `Zoo.run -> Animal.eat`
 - `Animal.eat -> Dog.eat`/`Animal.eat -> Cat.eat`
+
+## Thanks
+
+<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/IntelliJ_IDEA.svg" alt="IntelliJ IDEA logo.">
+
+
+This project is developed using JetBrains IDEA.
+Thanks to JetBrains for providing me with a free license, which is a strong support for me.
