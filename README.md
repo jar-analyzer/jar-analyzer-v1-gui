@@ -1,5 +1,5 @@
 # Archive
-## Jar Analyzer V2 is developing: https://github.com/jar-analyzer/jar-analyzer
+## Jar Analyzer V2: https://github.com/jar-analyzer/jar-analyzer
 
 # Jar Analyzer
 ![](https://img.shields.io/badge/build-passing-brightgreen)
