@@ -10,6 +10,10 @@
 
 ## Note
 
+**本项目不再维护**
+
+**建议使用新版 `Jar Analyzer V2` https://github.com/jar-analyzer/jar-analyzer**
+
 [Jar-Analyzer 命令行版本](https://github.com/4ra1n/jar-analyzer-cli)
 
 [Jar-Analyzer Cli Version](https://github.com/4ra1n/jar-analyzer-cli)
